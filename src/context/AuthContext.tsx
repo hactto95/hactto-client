@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { API_BASE_URL } from '../utils';
 
@@ -21,6 +21,66 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const clearAuthAndNotify = (isExpired = true) => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  window.dispatchEvent(new Event('auth:logout'));
+  if (isExpired) {
+    window.dispatchEvent(
+      new CustomEvent('auth:required', {
+        detail: {
+          title: '세션이 만료되었습니다',
+          desc: '로그인 세션이 만료되어 자동으로 로그아웃되었습니다.\n다시 로그인해 주세요.',
+        },
+      }),
+    );
+  }
+};
+
+let refreshPromise: Promise<string | null> | null = null;
+
+export const refreshAccessToken = async (): Promise<string | null> => {
+  if (refreshPromise) return refreshPromise;
+
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    clearAuthAndNotify(true);
+    return null;
+  }
+
+  refreshPromise = (async () => {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        const payload = refreshData.data || refreshData;
+        const { accessToken, refreshToken: newRefresh } = payload;
+        localStorage.setItem('accessToken', accessToken);
+        if (newRefresh) {
+          localStorage.setItem('refreshToken', newRefresh);
+        }
+        return accessToken as string;
+      } else {
+        clearAuthAndNotify(true);
+        return null;
+      }
+    } catch {
+      clearAuthAndNotify(true);
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -49,6 +109,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user');
     setUser(null);
   };
+
+  useEffect(() => {
+    const handleAuthLogout = () => {
+      logout();
+    };
+    window.addEventListener('auth:logout', handleAuthLogout);
+    return () => {
+      window.removeEventListener('auth:logout', handleAuthLogout);
+    };
+  }, []);
 
   const updateUser = (userData: User) => {
     localStorage.setItem('user', JSON.stringify(userData));
@@ -92,43 +162,27 @@ export const useAuth = () => {
 export const authFetch = async (url: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('accessToken');
   const headers = new Headers(options.headers || {});
-  if (token) {
+  if (token && !headers.has('Authorization')) {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
   let response = await fetch(url, { ...options, headers });
 
-  if (response.status === 401) {
-    // Try refresh
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-      });
-      if (refreshRes.ok) {
-        const refreshData = await refreshRes.json();
-        const payload = refreshData.data || refreshData;
-        const { accessToken, refreshToken: newRefresh } = payload;
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', newRefresh);
-        headers.set('Authorization', `Bearer ${accessToken}`);
-        response = await fetch(url, { ...options, headers });
-      } else {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        window.location.reload();
+  if (
+    response.status === 401 &&
+    !url.includes('/auth/login') &&
+    !url.includes('/auth/refresh')
+  ) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers.set('Authorization', `Bearer ${newToken}`);
+      response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        clearAuthAndNotify(true);
       }
     } else {
-      window.dispatchEvent(new Event('auth:required'));
+      clearAuthAndNotify(true);
     }
-  }
-
-  // If response is still 401 after everything, dispatch the event
-  if (response.status === 401) {
-    window.dispatchEvent(new Event('auth:required'));
   }
 
   return response;

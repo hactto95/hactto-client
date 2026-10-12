@@ -9,6 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import type { AlertState, SubscriptionStatus } from '../types';
 import { API_BASE_URL, fetchAndCacheAlgorithms } from '../utils';
+import { refreshAccessToken } from './AuthContext';
 
 // Google Crawler Bot Detection to bypass access blocking
 const isGoogleBot =
@@ -156,7 +157,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       newInit.headers = headers;
 
-      const response = await originalFetch(input, newInit);
+      let response = await originalFetch(input, newInit);
+
+      if (
+        response.status === 401 &&
+        token &&
+        !urlString.includes('/auth/login') &&
+        !urlString.includes('/auth/refresh')
+      ) {
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          headers.set('Authorization', `Bearer ${newToken}`);
+          newInit.headers = headers;
+          response = await originalFetch(input, newInit);
+        }
+      }
 
       if (response.status === 403 && !urlString.includes('/user/register')) {
         try {
