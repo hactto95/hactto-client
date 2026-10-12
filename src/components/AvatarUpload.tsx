@@ -108,13 +108,10 @@ export function AvatarUpload({
       const formData = new FormData();
       formData.append('file', croppedBlob, 'avatar.jpg');
 
-      const uploadRes = await authFetch(
-        `${API_BASE_URL}/user/avatar/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        },
-      );
+      const uploadRes = await authFetch(`${API_BASE_URL}/user/avatar/upload`, {
+        method: 'POST',
+        body: formData,
+      });
 
       if (!uploadRes.ok) throw new Error('Failed to upload image');
       const uploadData = await uploadRes.json();

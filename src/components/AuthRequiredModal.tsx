@@ -3,10 +3,33 @@ import { useNavigate } from 'react-router-dom';
 
 export const AuthRequiredModal: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState<{
+    title: string;
+    desc: string;
+  }>({
+    title: '로그인이 필요합니다',
+    desc: '해당 기능은 회원 전용입니다.\n로그인 후 다시 이용해주세요.',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleAuthRequired = () => setShowAuthModal(true);
+    const handleAuthRequired = (e?: Event) => {
+      const customEvent = e as CustomEvent<{ title?: string; desc?: string }>;
+      if (customEvent?.detail?.title || customEvent?.detail?.desc) {
+        setModalMessage({
+          title: customEvent.detail.title || '로그인이 필요합니다',
+          desc:
+            customEvent.detail.desc ||
+            '해당 기능은 회원 전용입니다.\n로그인 후 다시 이용해주세요.',
+        });
+      } else {
+        setModalMessage({
+          title: '로그인이 필요합니다',
+          desc: '해당 기능은 회원 전용입니다.\n로그인 후 다시 이용해주세요.',
+        });
+      }
+      setShowAuthModal(true);
+    };
     window.addEventListener('auth:required', handleAuthRequired);
     window.addEventListener('show-login-modal', handleAuthRequired);
     return () => {
@@ -83,7 +106,7 @@ export const AuthRequiredModal: React.FC = () => {
               fontSize: '1.25rem',
             }}
           >
-            로그인이 필요합니다
+            {modalMessage.title}
           </h3>
           <p
             style={{
@@ -91,11 +114,10 @@ export const AuthRequiredModal: React.FC = () => {
               color: 'var(--text-dim)',
               fontSize: '0.9rem',
               lineHeight: '1.5',
+              whiteSpace: 'pre-line',
             }}
           >
-            해당 기능은 회원 전용입니다.
-            <br />
-            로그인 후 다시 이용해주세요.
+            {modalMessage.desc}
           </p>
         </div>
 
