@@ -106,7 +106,7 @@ export function Board() {
   const [lottoIdentifier, setLottoIdentifier] = useState<string | null>(null);
   const [lottoError, setLottoError] = useState<string | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string>('');
-  // Tracks original filename returned by presigned-url API
+  // Tracks original filename returned by upload API
   const [uploadedFilename, setUploadedFilename] = useState<string>('');
 
   // Dialog State
@@ -282,39 +282,24 @@ export function Board() {
   const handleImageUpload = async (
     file: File,
   ): Promise<{ imageUrl: string; originalFilename: string }> => {
-    const res = await authFetch(`${API_BASE_URL}/user/board/presigned-url`, {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('filename', file.name);
+
+    const res = await authFetch(`${API_BASE_URL}/user/board/upload`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        filename: file.name,
-        contentType: file.type,
-        originalFilename: file.name,
-      }),
+      body: formData,
     });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err?.message || '업로드 URL 발급에 실패했습니다.');
+      throw new Error(err?.message || '이미지 업로드에 실패했습니다.');
     }
     const { data } = await res.json();
 
     const originalFilename: string = data.originalFilename || file.name;
     // Also update state for UI display (existing file row)
     setUploadedFilename(originalFilename);
-
-    const uploadRes = await fetch(data.uploadUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': file.type },
-      body: file,
-    });
-
-    if (!uploadRes.ok) {
-      throw new Error(
-        'S3 이미지 업로드에 실패했습니다. (CORS 또는 권한 오류를 확인하세요)',
-      );
-    }
 
     return { imageUrl: data.imageUrl, originalFilename };
   };

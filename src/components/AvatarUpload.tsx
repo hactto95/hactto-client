@@ -104,32 +104,21 @@ export function AvatarUpload({
     try {
       const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
 
-      // 1. Get Presigned URL
-      const presignedRes = await authFetch(
-        `${API_BASE_URL}/user/avatar/presigned-url`,
+      // 1. Upload to Server
+      const formData = new FormData();
+      formData.append('file', croppedBlob, 'avatar.jpg');
+
+      const uploadRes = await authFetch(
+        `${API_BASE_URL}/user/avatar/upload`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ mimeType: 'image/jpeg', extension: 'jpg' }),
+          body: formData,
         },
       );
 
-      if (!presignedRes.ok) throw new Error('Failed to get upload URL');
-      const presignedData = await presignedRes.json();
-      const { uploadUrl, imageUrl } = presignedData.data;
-
-      // 2. Upload to S3
-      const uploadRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'image/jpeg',
-        },
-        body: croppedBlob,
-      });
-
       if (!uploadRes.ok) throw new Error('Failed to upload image');
+      const uploadData = await uploadRes.json();
+      const { imageUrl } = uploadData.data;
 
       // 3. Update DB
       const updateRes = await authFetch(`${API_BASE_URL}/user/avatar`, {
