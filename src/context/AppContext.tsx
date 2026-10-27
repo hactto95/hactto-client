@@ -9,7 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import type { AlertState, SubscriptionStatus } from '../types';
 import { API_BASE_URL, fetchAndCacheAlgorithms } from '../utils';
-import { refreshAccessToken } from './AuthContext';
+import { refreshAccessToken, useAuth } from './AuthContext';
 
 // Google Crawler Bot Detection to bypass access blocking
 const isGoogleBot =
@@ -70,6 +70,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [isSystemAnalyzing, setIsSystemAnalyzing] = useState<boolean>(false);
   const [systemAnalysisProgress, setSystemAnalysisProgress] = useState<{
@@ -221,11 +222,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
 
         const savedMk = localStorage.getItem('mk');
+        const token = localStorage.getItem('accessToken');
+        const authHeaders: HeadersInit | undefined = token
+          ? { Authorization: `Bearer ${token}` }
+          : undefined;
 
         // If a Master Key is saved locally, verify it
         if (savedMk) {
           const adminRes = await fetch(
             `${API_BASE_URL}/check-ip?mk=${encodeURIComponent(savedMk)}`,
+            { headers: authHeaders },
           );
           const adminData = await adminRes.json();
           const adminResult = adminData.data || adminData;
@@ -261,6 +267,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         // Default IP check (always allowed now)
         const res = await fetch(`${API_BASE_URL}/check-ip`, {
           credentials: 'include',
+          headers: authHeaders,
         });
 
         if (!res.ok) {
@@ -420,6 +427,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       loadAdminData(savedKey).catch(() => {});
     }
   }, [checkIpStatus, loadAdminData]);
+
+  useEffect(() => {
+    checkIpStatus(true);
+  }, [user?.id, checkIpStatus]);
 
   // Handle system status check (REST) & real-time updates (WebSocket)
   useEffect(() => {
