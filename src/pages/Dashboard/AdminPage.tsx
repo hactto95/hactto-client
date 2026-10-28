@@ -3656,6 +3656,7 @@ export function AdminPage() {
                 background: 'rgba(15, 17, 26, 0.95)',
                 borderRadius: '12px',
                 textAlign: 'left',
+                overflow: 'hidden',
               }}
             >
               <h4
