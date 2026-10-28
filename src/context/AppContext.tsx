@@ -9,7 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import type { AlertState, SubscriptionStatus } from '../types';
 import { API_BASE_URL, fetchAndCacheAlgorithms } from '../utils';
-import { refreshAccessToken, useAuth } from './AuthContext';
+import { isTokenExpired, refreshAccessToken, useAuth } from './AuthContext';
 
 // Google Crawler Bot Detection to bypass access blocking
 const isGoogleBot =
@@ -144,7 +144,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
 
       const mk = sessionStorage.getItem('mk') || localStorage.getItem('mk');
-      const token = localStorage.getItem('accessToken');
+      let token = localStorage.getItem('accessToken');
+      if (
+        token &&
+        isTokenExpired(token) &&
+        !urlString.includes('/auth/login') &&
+        !urlString.includes('/auth/refresh')
+      ) {
+        token = await refreshAccessToken();
+      }
 
       const newInit = { ...init };
       const headers = new Headers(init?.headers);
@@ -152,8 +160,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (mk) {
         headers.set('x-master-key', mk);
       }
-      if (token && !headers.has('Authorization')) {
+      if (token) {
         headers.set('Authorization', `Bearer ${token}`);
+      } else if (headers.has('Authorization')) {
+        headers.delete('Authorization');
       }
 
       newInit.headers = headers;
@@ -222,7 +232,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
 
         const savedMk = localStorage.getItem('mk');
-        const token = localStorage.getItem('accessToken');
+        let token = localStorage.getItem('accessToken');
+        if (token && isTokenExpired(token)) {
+          token = await refreshAccessToken();
+        }
         const authHeaders: HeadersInit | undefined = token
           ? { Authorization: `Bearer ${token}` }
           : undefined;
