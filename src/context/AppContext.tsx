@@ -9,7 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import type { AlertState, SubscriptionStatus } from '../types';
 import { API_BASE_URL, fetchAndCacheAlgorithms } from '../utils';
-import { refreshAccessToken } from './AuthContext';
+import { isTokenExpired, refreshAccessToken, useAuth } from './AuthContext';
 
 // Google Crawler Bot Detection to bypass access blocking
 const isGoogleBot =
@@ -70,6 +70,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [isSystemAnalyzing, setIsSystemAnalyzing] = useState<boolean>(false);
   const [systemAnalysisProgress, setSystemAnalysisProgress] = useState<{
@@ -143,7 +144,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
 
       const mk = sessionStorage.getItem('mk') || localStorage.getItem('mk');
-      const token = localStorage.getItem('accessToken');
+      let token = localStorage.getItem('accessToken');
+      if (
+        token &&
+        isTokenExpired(token) &&
+        !urlString.includes('/auth/login') &&
+        !urlString.includes('/auth/refresh')
+      ) {
+        token = await refreshAccessToken();
+      }
 
       const newInit = { ...init };
       const headers = new Headers(init?.headers);
@@ -151,8 +160,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (mk) {
         headers.set('x-master-key', mk);
       }
-      if (token && !headers.has('Authorization')) {
+      if (token) {
         headers.set('Authorization', `Bearer ${token}`);
+      } else if (headers.has('Authorization')) {
+        headers.delete('Authorization');
       }
 
       newInit.headers = headers;
@@ -221,11 +232,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
 
         const savedMk = localStorage.getItem('mk');
+        let token = localStorage.getItem('accessToken');
+        if (token && isTokenExpired(token)) {
+          token = await refreshAccessToken();
+        }
+        const authHeaders: HeadersInit | undefined = token
+          ? { Authorization: `Bearer ${token}` }
+          : undefined;
 
         // If a Master Key is saved locally, verify it
         if (savedMk) {
           const adminRes = await fetch(
             `${API_BASE_URL}/check-ip?mk=${encodeURIComponent(savedMk)}`,
+            { headers: authHeaders },
           );
           const adminData = await adminRes.json();
           const adminResult = adminData.data || adminData;
@@ -261,6 +280,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         // Default IP check (always allowed now)
         const res = await fetch(`${API_BASE_URL}/check-ip`, {
           credentials: 'include',
+          headers: authHeaders,
         });
 
         if (!res.ok) {
@@ -420,6 +440,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       loadAdminData(savedKey).catch(() => {});
     }
   }, [checkIpStatus, loadAdminData]);
+
+  useEffect(() => {
+    checkIpStatus(true);
+  }, [user?.id, checkIpStatus]);
 
   // Handle system status check (REST) & real-time updates (WebSocket)
   useEffect(() => {
