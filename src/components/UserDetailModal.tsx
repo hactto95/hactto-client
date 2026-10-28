@@ -38,7 +38,7 @@ export function UserDetailModal({
   onClose,
   openPaymentModal,
 }: UserDetailModalProps) {
-  const { freeHon, paidHon, subscription, showAlert } = useApp();
+  const { freeHon, paidHon, subscription, showAlert, checkIpStatus } = useApp();
   const { user, updateUser, logout } = useAuth();
   const nickname = user?.nickname;
   const userId = user?.id;
@@ -114,13 +114,22 @@ export function UserDetailModal({
 
         setErrorMsg('');
       }
-      if (activeTab === 'HISTORY') {
+      if (activeTab === 'PROFILE') {
+        checkIpStatus(true);
+      } else if (activeTab === 'HISTORY') {
         fetchHistory();
       } else if (activeTab === 'NOTIFICATIONS') {
         fetchNotifications();
       }
     }
-  }, [isOpen, activeTab, nickname, fetchHistory, fetchNotifications]);
+  }, [
+    isOpen,
+    activeTab,
+    nickname,
+    checkIpStatus,
+    fetchHistory,
+    fetchNotifications,
+  ]);
 
   // Close modal on Escape key press
   useEffect(() => {

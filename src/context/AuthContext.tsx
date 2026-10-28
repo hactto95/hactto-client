@@ -22,6 +22,24 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export const isTokenExpired = (token: string | null): boolean => {
+  if (!token) return true;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(
+      base64.length + ((4 - (base64.length % 4)) % 4),
+      '=',
+    );
+    const payload = JSON.parse(atob(padded));
+    if (typeof payload?.exp !== 'number') return false;
+    return payload.exp * 1000 <= Date.now();
+  } catch {
+    return true;
+  }
+};
+
 export const clearAuthAndNotify = (isExpired = true) => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
@@ -45,7 +63,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
   if (refreshPromise) return refreshPromise;
 
   const refreshToken = localStorage.getItem('refreshToken');
-  if (!refreshToken) {
+  if (!refreshToken || isTokenExpired(refreshToken)) {
     clearAuthAndNotify(true);
     return null;
   }
@@ -85,8 +103,15 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const token = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
     const storedUser = localStorage.getItem('user');
     if (token && storedUser) {
+      if (isTokenExpired(token) && isTokenExpired(refreshToken)) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        return null;
+      }
       try {
         return JSON.parse(storedUser);
       } catch {
@@ -115,6 +140,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout();
     };
     window.addEventListener('auth:logout', handleAuthLogout);
+
+    const token = localStorage.getItem('accessToken');
+    if (token && isTokenExpired(token)) {
+      void refreshAccessToken();
+    }
+
     return () => {
       window.removeEventListener('auth:logout', handleAuthLogout);
     };
@@ -160,7 +191,15 @@ export const useAuth = () => {
 
 // Helper for authenticated fetch
 export const authFetch = async (url: string, options: RequestInit = {}) => {
-  const token = localStorage.getItem('accessToken');
+  let token = localStorage.getItem('accessToken');
+  if (
+    token &&
+    isTokenExpired(token) &&
+    !url.includes('/auth/login') &&
+    !url.includes('/auth/refresh')
+  ) {
+    token = await refreshAccessToken();
+  }
   const headers = new Headers(options.headers || {});
   if (token && !headers.has('Authorization')) {
     headers.set('Authorization', `Bearer ${token}`);

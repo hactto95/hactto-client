@@ -23,7 +23,7 @@ interface Inquiry {
 }
 
 export function Support() {
-  const { showAlert } = useApp();
+  const { showAlert, checkIpStatus } = useApp();
 
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -140,6 +140,7 @@ export function Support() {
       if (res.ok) {
         showAlert('success', '환불이 승인되어 완료되었습니다.');
         fetchInquiries();
+        checkIpStatus(true);
       } else {
         const data = await res.json();
         showAlert('error', data.message || '환불 처리에 실패했습니다.');
