@@ -64,6 +64,7 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
           alignItems: 'center',
           padding: '30px 24px 24px 24px',
           textAlign: 'center',
+          overflow: 'hidden',
           animation: 'fadeIn 0.3s ease-out',
         }}
       >

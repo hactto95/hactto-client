@@ -109,6 +109,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
           flexDirection: 'column',
           padding: '24px 30px',
           position: 'relative',
+          overflow: 'hidden',
           animation: 'fadeIn 0.3s ease-out',
         }}
       >
