@@ -162,24 +162,20 @@ body {
   max-height: 80dvh;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
 }
 
 /* Glass card shine effect */
 .glass-card::after {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
+  border-radius: inherit;
   background: linear-gradient(
-    30deg,
+    60deg,
     transparent 45%,
     rgba(255, 255, 255, 0.03) 50%,
     transparent 55%
   );
-  transform: rotate(30deg);
   pointer-events: none;
 }
 

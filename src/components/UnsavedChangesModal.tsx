@@ -45,7 +45,7 @@ export function UnsavedChangesModal({
     <div className="admin-modal-overlay">
       <div
         className="glass-card admin-modal-content"
-        style={{ maxWidth: '440px' }}
+        style={{ maxWidth: '440px', overflow: 'hidden' }}
       >
         {/* Warning Icon */}
         <div

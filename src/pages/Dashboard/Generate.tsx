@@ -918,7 +918,11 @@ export function Generate() {
             <div className="admin-modal-overlay" style={{ zIndex: 1100 }}>
               <div
                 className="glass-card admin-modal-content"
-                style={{ maxWidth: '440px', textAlign: 'center' }}
+                style={{
+                  maxWidth: '440px',
+                  textAlign: 'center',
+                  overflow: 'hidden',
+                }}
               >
                 <div
                   className="status-icon"
@@ -1231,7 +1235,11 @@ export function Generate() {
             <div className="admin-modal-overlay" style={{ zIndex: 1100 }}>
               <div
                 className="glass-card admin-modal-content"
-                style={{ maxWidth: '440px', textAlign: 'center' }}
+                style={{
+                  maxWidth: '440px',
+                  textAlign: 'center',
+                  overflow: 'hidden',
+                }}
               >
                 {/* Warning Icon */}
                 <div

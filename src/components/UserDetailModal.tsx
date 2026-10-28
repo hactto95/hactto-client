@@ -1154,6 +1154,7 @@ export function UserDetailModal({
               maxWidth: '360px',
               width: '90%',
               borderRadius: '16px',
+              overflow: 'hidden',
             }}
           >
             <h3 style={{ margin: '0 0 16px', color: '#ff4b4b' }}>주의</h3>
