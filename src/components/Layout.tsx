@@ -22,6 +22,7 @@ const MENU_GROUPS = [
       { path: '/home', label: '최근 당첨번호' },
       { path: '/search', label: '당첨번호 조회' },
       { path: '/locations', label: '당첨지점 조회' },
+      { path: '/ball-analysis', label: '추첨 번호 분석' },
     ],
   },
   {
