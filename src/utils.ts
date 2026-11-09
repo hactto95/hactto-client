@@ -94,3 +94,36 @@ export const getBallStyle = (num: number) => {
     boxShadow: '0 0 10px rgba(56, 142, 60, 0.3)',
   };
 };
+
+export const getTemperatureMeta = (status?: 'HOT' | 'WARM' | 'COLD') => {
+  switch (status) {
+    case 'HOT':
+      return {
+        label: '열번호 (HOT)',
+        shortLabel: 'HOT',
+        icon: '🔥',
+        color: '#f87171',
+        bg: 'rgba(239, 68, 68, 0.16)',
+        border: 'rgba(239, 68, 68, 0.45)',
+      };
+    case 'WARM':
+      return {
+        label: '온번호 (WARM)',
+        shortLabel: 'WARM',
+        icon: '☀️',
+        color: '#fb923c',
+        bg: 'rgba(249, 115, 22, 0.16)',
+        border: 'rgba(249, 115, 22, 0.45)',
+      };
+    case 'COLD':
+    default:
+      return {
+        label: '냉번호 (COLD)',
+        shortLabel: 'COLD',
+        icon: '❄️',
+        color: '#60a5fa',
+        bg: 'rgba(59, 130, 246, 0.16)',
+        border: 'rgba(59, 130, 246, 0.45)',
+      };
+  }
+};

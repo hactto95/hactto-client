@@ -8,6 +8,7 @@ import {
   getBallStyle,
 } from '../../utils';
 import { LottoAnalysisCard } from '../../components/LottoAnalysisCard';
+import { BallHoverTooltip } from '../../components/BallHoverTooltip';
 
 export function Stats() {
   const { appendAuth, showAlert } = useApp();
@@ -814,44 +815,45 @@ export function Stats() {
                     : null;
 
                 return (
-                  <div
-                    key={i}
-                    className="lotto-ball"
-                    style={{
-                      ...getBallStyle(num),
-                      position: 'relative',
-                      border:
-                        matched || bonusMatched
-                          ? `2px solid ${borderColor}`
-                          : '1px solid rgba(255, 255, 255, 0.15)',
-                      boxShadow: shadowColor
-                        ? `0 0 15px ${shadowColor}`
-                        : getBallStyle(num).boxShadow,
-                    }}
-                  >
-                    {num}
-                    {(matched || bonusMatched) && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '-4px',
-                          right: '-4px',
-                          background: matched ? '#10b981' : '#c084fc',
-                          color: '#fff',
-                          borderRadius: '50%',
-                          width: '14px',
-                          height: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '8px',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        ✓
-                      </div>
-                    )}
-                  </div>
+                  <BallHoverTooltip key={i} ball={num}>
+                    <div
+                      className="lotto-ball"
+                      style={{
+                        ...getBallStyle(num),
+                        position: 'relative',
+                        border:
+                          matched || bonusMatched
+                            ? `2px solid ${borderColor}`
+                            : '1px solid rgba(255, 255, 255, 0.15)',
+                        boxShadow: shadowColor
+                          ? `0 0 15px ${shadowColor}`
+                          : getBallStyle(num).boxShadow,
+                      }}
+                    >
+                      {num}
+                      {(matched || bonusMatched) && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '-4px',
+                            right: '-4px',
+                            background: matched ? '#10b981' : '#c084fc',
+                            color: '#fff',
+                            borderRadius: '50%',
+                            width: '14px',
+                            height: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '8px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                  </BallHoverTooltip>
                 );
               })}
             </div>
@@ -889,16 +891,17 @@ export function Stats() {
               {winningNumber?.numbers ? (
                 <>
                   {winningNumber.numbers.slice(0, 6).map((num, i) => (
-                    <div
-                      key={i}
-                      className="lotto-ball"
-                      style={{
-                        ...getBallStyle(num),
-                        opacity: 0.85,
-                      }}
-                    >
-                      {num}
-                    </div>
+                    <BallHoverTooltip key={i} ball={num}>
+                      <div
+                        className="lotto-ball"
+                        style={{
+                          ...getBallStyle(num),
+                          opacity: 0.85,
+                        }}
+                      >
+                        {num}
+                      </div>
+                    </BallHoverTooltip>
                   ))}
                   <div
                     style={{
@@ -910,15 +913,17 @@ export function Stats() {
                   >
                     +
                   </div>
-                  <div
-                    className="lotto-ball"
-                    style={{
-                      ...getBallStyle(winningNumber.numbers[6] ?? 0),
-                      opacity: 0.85,
-                    }}
-                  >
-                    {winningNumber.numbers[6] ?? 0}
-                  </div>
+                  <BallHoverTooltip ball={winningNumber.numbers[6] ?? 0}>
+                    <div
+                      className="lotto-ball"
+                      style={{
+                        ...getBallStyle(winningNumber.numbers[6] ?? 0),
+                        opacity: 0.85,
+                      }}
+                    >
+                      {winningNumber.numbers[6] ?? 0}
+                    </div>
+                  </BallHoverTooltip>
                 </>
               ) : (
                 <div
@@ -1888,49 +1893,50 @@ export function Stats() {
                                   : null;
 
                               return (
-                                <div
-                                  key={i}
-                                  className="lotto-ball"
-                                  style={{
-                                    ...getBallStyle(num),
-                                    position: 'relative',
-                                    width: '36px',
-                                    height: '36px',
-                                    fontSize: '0.95rem',
-                                    border:
-                                      matched || bonusMatched
-                                        ? `2px solid ${borderColor}`
-                                        : '1px solid rgba(255, 255, 255, 0.15)',
-                                    boxShadow: shadowColor
-                                      ? `0 0 15px ${shadowColor}`
-                                      : getBallStyle(num).boxShadow,
-                                  }}
-                                >
-                                  {num}
-                                  {(matched || bonusMatched) && (
-                                    <div
-                                      style={{
-                                        position: 'absolute',
-                                        top: '-4px',
-                                        right: '-4px',
-                                        background: matched
-                                          ? '#10b981'
-                                          : '#c084fc',
-                                        color: '#fff',
-                                        borderRadius: '50%',
-                                        width: '14px',
-                                        height: '14px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '8px',
-                                        fontWeight: 'bold',
-                                      }}
-                                    >
-                                      ✓
-                                    </div>
-                                  )}
-                                </div>
+                                <BallHoverTooltip key={i} ball={num}>
+                                  <div
+                                    className="lotto-ball"
+                                    style={{
+                                      ...getBallStyle(num),
+                                      position: 'relative',
+                                      width: '36px',
+                                      height: '36px',
+                                      fontSize: '0.95rem',
+                                      border:
+                                        matched || bonusMatched
+                                          ? `2px solid ${borderColor}`
+                                          : '1px solid rgba(255, 255, 255, 0.15)',
+                                      boxShadow: shadowColor
+                                        ? `0 0 15px ${shadowColor}`
+                                        : getBallStyle(num).boxShadow,
+                                    }}
+                                  >
+                                    {num}
+                                    {(matched || bonusMatched) && (
+                                      <div
+                                        style={{
+                                          position: 'absolute',
+                                          top: '-4px',
+                                          right: '-4px',
+                                          background: matched
+                                            ? '#10b981'
+                                            : '#c084fc',
+                                          color: '#fff',
+                                          borderRadius: '50%',
+                                          width: '14px',
+                                          height: '14px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          fontSize: '8px',
+                                          fontWeight: 'bold',
+                                        }}
+                                      >
+                                        ✓
+                                      </div>
+                                    )}
+                                  </div>
+                                </BallHoverTooltip>
                               );
                             })}
                         </div>
@@ -1968,19 +1974,20 @@ export function Stats() {
                             {winningNumbers
                               .slice(0, 6)
                               .map((num: number, i: number) => (
-                                <div
-                                  key={i}
-                                  className="lotto-ball"
-                                  style={{
-                                    ...getBallStyle(num),
-                                    width: '36px',
-                                    height: '36px',
-                                    fontSize: '0.95rem',
-                                    opacity: 0.85,
-                                  }}
-                                >
-                                  {num}
-                                </div>
+                                <BallHoverTooltip key={i} ball={num}>
+                                  <div
+                                    className="lotto-ball"
+                                    style={{
+                                      ...getBallStyle(num),
+                                      width: '36px',
+                                      height: '36px',
+                                      fontSize: '0.95rem',
+                                      opacity: 0.85,
+                                    }}
+                                  >
+                                    {num}
+                                  </div>
+                                </BallHoverTooltip>
                               ))}
                             <div
                               style={{
@@ -1992,18 +1999,20 @@ export function Stats() {
                             >
                               +
                             </div>
-                            <div
-                              className="lotto-ball"
-                              style={{
-                                ...getBallStyle(winningNumbers[6] ?? 0),
-                                width: '36px',
-                                height: '36px',
-                                fontSize: '0.95rem',
-                                opacity: 0.85,
-                              }}
-                            >
-                              {winningNumbers[6] ?? 0}
-                            </div>
+                            <BallHoverTooltip ball={winningNumbers[6] ?? 0}>
+                              <div
+                                className="lotto-ball"
+                                style={{
+                                  ...getBallStyle(winningNumbers[6] ?? 0),
+                                  width: '36px',
+                                  height: '36px',
+                                  fontSize: '0.95rem',
+                                  opacity: 0.85,
+                                }}
+                              >
+                                {winningNumbers[6] ?? 0}
+                              </div>
+                            </BallHoverTooltip>
                           </div>
                         </div>
                       )}

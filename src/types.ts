@@ -117,3 +117,20 @@ export interface SubscriptionStatus {
   startsAt?: string;
   endsAt?: string;
 }
+
+export interface LotteryBallStat {
+  ball: number;
+  totalEpisodes: number;
+  totalCount: number;
+  bonusCount: number;
+  appearanceRate: number;
+  rank: number;
+  positionCounts: number[];
+  recentTen: number;
+  recentThirty: number;
+  status: 'HOT' | 'WARM' | 'COLD';
+  skip: number;
+  friendlyNumbers: number[];
+  friendlyCounts?: number[];
+  latestEpisode: number;
+}

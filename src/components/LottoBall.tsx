@@ -1,5 +1,6 @@
 import type { MatchResult } from '../types';
 import { getBallStyle } from '../utils';
+import { BallHoverTooltip } from './BallHoverTooltip';
 
 interface LottoBallsProps {
   numbers: number[];
@@ -32,18 +33,19 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
             : '1px solid rgba(255,255,255,0.15)';
         const scale = isMatched || isBonusMatched ? '1.1' : '1';
         return (
-          <div
-            key={i}
-            className="lotto-ball"
-            style={{
-              ...getBallStyle(num),
-              opacity,
-              border,
-              transform: `scale(${scale})`,
-            }}
-          >
-            {num}
-          </div>
+          <BallHoverTooltip key={i} ball={num}>
+            <div
+              className="lotto-ball"
+              style={{
+                ...getBallStyle(num),
+                opacity,
+                border,
+                transform: `scale(${scale})`,
+              }}
+            >
+              {num}
+            </div>
+          </BallHoverTooltip>
         );
       })}
       {numbers.length === 7 && (
@@ -66,17 +68,19 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
               : '1px solid rgba(255,255,255,0.15)';
             const bonusScale = isBonusMatched ? '1.1' : '1';
             return (
-              <div
-                className="lotto-ball"
-                style={{
-                  ...getBallStyle(bonusNumber),
-                  opacity: bonusOpacity,
-                  border: bonusBorder,
-                  transform: `scale(${bonusScale})`,
-                }}
-              >
-                {bonusNumber}
-              </div>
+              <BallHoverTooltip ball={bonusNumber}>
+                <div
+                  className="lotto-ball"
+                  style={{
+                    ...getBallStyle(bonusNumber),
+                    opacity: bonusOpacity,
+                    border: bonusBorder,
+                    transform: `scale(${bonusScale})`,
+                  }}
+                >
+                  {bonusNumber}
+                </div>
+              </BallHoverTooltip>
             );
           })()}
         </>
