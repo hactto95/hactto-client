@@ -14,6 +14,7 @@ import { BlockedPage } from './pages/BlockedPage';
 import { Home } from './pages/Dashboard/Home';
 import { Search } from './pages/Dashboard/Search';
 import { Locations } from './pages/Dashboard/Locations';
+import { BallAnalysis } from './pages/Dashboard/BallAnalysis';
 import { Stats } from './pages/Dashboard/Stats';
 import { AnalysisCharts } from './pages/Dashboard/AnalysisCharts';
 import { Generate } from './pages/Dashboard/Generate';
@@ -206,6 +207,7 @@ function AppContent() {
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/locations" element={<Locations />} />
+          <Route path="/ball-analysis" element={<BallAnalysis />} />
           <Route path="/stats" element={<Stats />} />
           <Route path="/analysis-charts" element={<AnalysisCharts />} />
           <Route path="/generate" element={<Generate />} />

@@ -7,7 +7,7 @@ import {
   useCallback,
 } from 'react';
 import type { ReactNode } from 'react';
-import type { AlertState, SubscriptionStatus } from '../types';
+import type { AlertState, SubscriptionStatus, LotteryBallStat } from '../types';
 import { API_BASE_URL, fetchAndCacheAlgorithms } from '../utils';
 import { isTokenExpired, refreshAccessToken, useAuth } from './AuthContext';
 
@@ -65,6 +65,9 @@ interface AppContextType {
   setNickname: (name: string | null) => void;
   isBlockedUser: boolean;
   setIsBlockedUser: (val: boolean) => void;
+  ballStatsList: LotteryBallStat[];
+  ballStatsMap: Record<number, LotteryBallStat>;
+  refreshBallStats: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -108,6 +111,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const [nickname, setNickname] = useState<string | null>(null);
   const [isBlockedUser, setIsBlockedUser] = useState<boolean>(false);
+  const [ballStatsList, setBallStatsList] = useState<LotteryBallStat[]>([]);
+  const [ballStatsMap, setBallStatsMap] = useState<
+    Record<number, LotteryBallStat>
+  >({});
+
+  const refreshBallStats = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/winning-numbers/lottery-balls`);
+      if (res.ok) {
+        const data = await res.json();
+        const list = (data.data || data || []) as LotteryBallStat[];
+        if (Array.isArray(list)) {
+          setBallStatsList(list);
+          const map: Record<number, LotteryBallStat> = {};
+          list.forEach((item) => {
+            if (item && typeof item.ball === 'number') {
+              map[item.ball] = item;
+            }
+          });
+          setBallStatsMap(map);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch lottery ball stats:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshBallStats();
+  }, [refreshBallStats]);
 
   // Show auto-dismiss alerts
   const showAlert = useCallback((type: 'success' | 'error', text: string) => {
@@ -570,6 +603,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setNickname,
         isBlockedUser,
         setIsBlockedUser,
+        ballStatsList,
+        ballStatsMap,
+        refreshBallStats,
       }}
     >
       {children}

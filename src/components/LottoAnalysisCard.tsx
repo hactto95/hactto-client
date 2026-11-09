@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { LottoAnalysis } from '../types';
 import { getBallStyle } from '../utils';
+import { BallHoverTooltip } from './BallHoverTooltip';
 
 interface LottoAnalysisCardProps {
   numbers: number[];
@@ -131,20 +132,21 @@ export function LottoAnalysisCard({
           const shadow = active ? getBallStyle(num).boxShadow : 'none';
 
           return (
-            <div
-              key={i}
-              className="lotto-ball"
-              style={{
-                ...getBallStyle(num),
-                boxShadow: shadow,
-                border: borderStyle,
-                transform: `scale(${scale})`,
-                opacity: opacity,
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            >
-              {num}
-            </div>
+            <BallHoverTooltip key={i} ball={num}>
+              <div
+                className="lotto-ball"
+                style={{
+                  ...getBallStyle(num),
+                  boxShadow: shadow,
+                  border: borderStyle,
+                  transform: `scale(${scale})`,
+                  opacity: opacity,
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
+                {num}
+              </div>
+            </BallHoverTooltip>
           );
         })}
         {bonusNumber !== undefined && (
@@ -161,21 +163,24 @@ export function LottoAnalysisCard({
             >
               +
             </div>
-            <div
-              className="lotto-ball"
-              style={{
-                ...getBallStyle(bonusNumber),
-                border:
-                  hoveredNumbers === null
-                    ? '1px solid rgba(255, 255, 255, 0.15)'
-                    : '1px solid rgba(255,255,255,0.05)',
-                transform: hoveredNumbers === null ? 'scale(1)' : 'scale(0.9)',
-                opacity: hoveredNumbers === null ? 1 : 0.25,
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            >
-              {bonusNumber}
-            </div>
+            <BallHoverTooltip ball={bonusNumber}>
+              <div
+                className="lotto-ball"
+                style={{
+                  ...getBallStyle(bonusNumber),
+                  border:
+                    hoveredNumbers === null
+                      ? '1px solid rgba(255, 255, 255, 0.15)'
+                      : '1px solid rgba(255,255,255,0.05)',
+                  transform:
+                    hoveredNumbers === null ? 'scale(1)' : 'scale(0.9)',
+                  opacity: hoveredNumbers === null ? 1 : 0.25,
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
+                {bonusNumber}
+              </div>
+            </BallHoverTooltip>
           </>
         )}
       </div>

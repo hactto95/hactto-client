@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { PersonalAnalysis } from '../types';
 import { getBallStyle } from '../utils';
+import { BallHoverTooltip } from './BallHoverTooltip';
 
 interface PersonalAnalysisCardProps {
   numbers: number[]; // 선택한 6개 번호
@@ -196,19 +197,20 @@ export function PersonalAnalysisCard({
             ? '2px solid #ffffff'
             : '1px solid rgba(255, 255, 255, 0.08)';
           return (
-            <div
-              key={i}
-              className="lotto-ball"
-              style={{
-                ...getBallStyle(num),
-                border: borderStyle,
-                transform: `scale(${scale})`,
-                opacity: opacity,
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            >
-              {num}
-            </div>
+            <BallHoverTooltip key={i} ball={num}>
+              <div
+                className="lotto-ball"
+                style={{
+                  ...getBallStyle(num),
+                  border: borderStyle,
+                  transform: `scale(${scale})`,
+                  opacity: opacity,
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
+                {num}
+              </div>
+            </BallHoverTooltip>
           );
         })}
       </div>
