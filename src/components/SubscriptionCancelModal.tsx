@@ -29,33 +29,13 @@ export function SubscriptionCancelModal({
   if (!isOpen) return null;
 
   return createPortal(
-    <div
-      className="admin-modal-overlay"
-      style={{ zIndex: 1200 }}
-      onClick={onClose}
-    >
+    <div className="admin-modal-overlay z-[1200]" onClick={onClose}>
       <div
-        className="glass-card admin-modal-content"
+        className="glass-card admin-modal-content max-w-[420px] text-center pt-[30px] px-6 pb-6 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '420px',
-          textAlign: 'center',
-          padding: '30px 24px 24px 24px',
-          overflow: 'hidden',
-        }}
       >
         {/* Warning Icon */}
-        <div
-          className="status-icon"
-          style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid #ef4444',
-            color: '#ef4444',
-            marginBottom: '20px',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        >
+        <div className="status-icon bg-error/10 border border-error text-error mb-5 mx-auto">
           <svg
             width="32"
             height="32"
@@ -72,22 +52,11 @@ export function SubscriptionCancelModal({
           </svg>
         </div>
 
-        <h2
-          className="access-title"
-          style={{ fontSize: '1.3rem', marginBottom: '10px' }}
-        >
+        <h2 className="access-title text-[1.3rem] mb-2.5">
           정기 구독 해지 안내
         </h2>
 
-        <p
-          className="access-desc"
-          style={{
-            fontSize: '0.85rem',
-            marginBottom: '24px',
-            lineHeight: '1.6',
-            color: 'var(--text-dim)',
-          }}
-        >
+        <p className="access-desc text-[0.85rem] mb-6 leading-[1.6] text-dim">
           정말로 구독을 해지하시겠습니까?
           <br />
           해지 시 <strong>다음 결제일부터 자동 결제가 정지</strong>되며, 현재
@@ -95,19 +64,10 @@ export function SubscriptionCancelModal({
         </p>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+        <div className="flex gap-2.5 w-full">
           <button
             type="button"
-            className="btn-submit"
-            style={{
-              flex: 1,
-              height: '40px',
-              background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
-              color: '#ffffff',
-              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-            }}
+            className="btn-submit flex-1 h-10 bg-linear-to-br from-red-500 to-red-700 text-white shadow-[0_4px_15px_var(--error-glow)] font-semibold text-[0.85rem] border-none"
             disabled={loading}
             onClick={onConfirm}
           >
@@ -115,13 +75,7 @@ export function SubscriptionCancelModal({
           </button>
           <button
             type="button"
-            className="btn-neon btn-outline"
-            style={{
-              flex: 1,
-              height: '40px',
-              margin: 0,
-              fontSize: '0.85rem',
-            }}
+            className="btn-neon btn-outline flex-1 h-10 m-0 text-[0.85rem]"
             disabled={loading}
             onClick={onClose}
           >

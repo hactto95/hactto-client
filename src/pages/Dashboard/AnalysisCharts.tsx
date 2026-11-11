@@ -108,27 +108,9 @@ export function AnalysisCharts() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '350px',
-        }}
-      >
-        <div
-          style={{
-            width: '50px',
-            height: '50px',
-            border: '3px solid rgba(0, 240, 255, 0.1)',
-            borderTopColor: 'var(--primary-cyan)',
-            borderRadius: '50%',
-            animation: 'spinner 0.8s linear infinite',
-            marginBottom: '16px',
-          }}
-        />
-        <p style={{ color: 'var(--text-dim)', fontSize: '0.95rem' }}>
+      <div className="flex flex-col items-center justify-center min-h-[350px]">
+        <div className="w-[50px] h-[50px] border-[3px] border-primary-cyan/10 border-t-primary-cyan rounded-full animate-spin mb-4" />
+        <p className="text-dim text-[0.95rem]">
           당첨 분석 데이터를 로드하고 있습니다...
         </p>
       </div>
@@ -137,13 +119,7 @@ export function AnalysisCharts() {
 
   if (chartData.length === 0) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '40px',
-          color: 'var(--text-dim)',
-        }}
-      >
+      <div className="text-center p-10 text-dim">
         표출할 차트 데이터가 존재하지 않습니다.
       </div>
     );
@@ -215,51 +191,21 @@ export function AnalysisCharts() {
   const acGridLines = [5, 10];
 
   return (
-    <div style={{ color: '#ffffff', paddingBottom: '20px' }}>
+    <div className="flex flex-col gap-6 text-main pb-5">
       {/* Title & Period Selector */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '14px',
-          flexWrap: 'wrap',
-          gap: '12px',
-        }}
-      >
+      <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h2
-            style={{
-              fontSize: '1.15rem',
-              fontWeight: 'bold',
-              color: 'var(--text-main)',
-              margin: 0,
-            }}
-          >
+          <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-main tracking-tight m-0">
             역대 당첨번호 종합 통계 차트
-          </h2>
-          <p
-            style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-dim)',
-              marginTop: '4px',
-            }}
-          >
+          </h1>
+          <p className="text-sm text-dim mt-1.5 m-0">
             데이터베이스에 동기화된 역대 당첨 결과를 바탕으로 통계 트렌드를
             시각화합니다.
           </p>
         </div>
 
         {/* Period selection tabs */}
-        <div
-          style={{
-            display: 'flex',
-            background: 'rgba(255, 255, 255, 0.03)',
-            padding: '4px',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.06)',
-          }}
-        >
+        <div className="flex bg-surface p-1 rounded-xl border border-glass-border">
           {([30, 50, 100, 'all'] as const).map((p) => (
             <button
               key={p}
@@ -268,18 +214,11 @@ export function AnalysisCharts() {
                 setHoveredSumIndex(null);
                 setHoveredAcIndex(null);
               }}
-              style={{
-                background:
-                  period === p ? 'var(--primary-cyan)' : 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '6px 12px',
-                color: period === p ? '#030712' : 'var(--text-dim)',
-                fontSize: '0.75rem',
-                fontWeight: period === p ? 'bold' : 'normal',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
+              className={`border-none rounded-lg py-1.5 px-3.5 text-xs cursor-pointer transition-all duration-200 ${
+                period === p
+                  ? 'bg-primary-cyan text-white font-bold shadow-xs'
+                  : 'bg-transparent text-dim font-semibold hover:text-main'
+              }`}
             >
               {p === 'all' ? '전체' : `${p}회`}
             </button>
@@ -288,17 +227,10 @@ export function AnalysisCharts() {
       </div>
 
       {/* 100% Width Line Charts (Each occupies a full row) */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          marginBottom: '16px',
-        }}
-      >
+      <div className="flex flex-col gap-5">
         {/* Chart 1: Sum Trendline */}
         <div
-          className="glass-card"
+          className="bento-card p-6 relative overflow-hidden min-w-0"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setSumMousePos({
@@ -306,47 +238,17 @@ export function AnalysisCharts() {
               y: e.clientY - rect.top,
             });
           }}
-          style={{
-            padding: '20px',
-            borderRadius: '16px',
-            position: 'relative',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            maxHeight: 'none',
-            overflow: 'hidden',
-            minWidth: 0,
-          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '12px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                color: 'var(--text-main)',
-              }}
-            >
+          <div className="flex justify-between mb-3">
+            <span className="text-[0.85rem] font-bold text-main">
               총합 변동 추이 (Sum Trend)
             </span>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: 'var(--primary-cyan)',
-                fontFamily: 'monospace',
-              }}
-            >
+            <span className="text-xs text-primary-cyan font-mono">
               범위: {minSum + 5} ~ {maxSum - 5}
             </span>
           </div>
 
-          <svg
-            viewBox={`0 0 ${width} ${height}`}
-            style={{ width: '100%', height: 'auto' }}
-          >
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
             <defs>
               <linearGradient id="sumGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -368,7 +270,7 @@ export function AnalysisCharts() {
               y1={padding.top}
               x2={width - padding.right}
               y2={padding.top}
-              stroke="rgba(255,255,255,0.04)"
+              stroke="var(--border-glass-color)"
               strokeDasharray="3 3"
             />
             {sumGridLines.map((level, i) => {
@@ -383,7 +285,7 @@ export function AnalysisCharts() {
                     y1={y}
                     x2={width - padding.right}
                     y2={y}
-                    stroke="rgba(255,255,255,0.04)"
+                    stroke="var(--border-glass-color)"
                     strokeDasharray="3 3"
                   />
                   <text
@@ -403,7 +305,7 @@ export function AnalysisCharts() {
               y1={padding.top + chartH}
               x2={width - padding.right}
               y2={padding.top + chartH}
-              stroke="rgba(255,255,255,0.08)"
+              stroke="var(--border-glass-strong)"
             />
 
             {/* Y Boundary Texts */}
@@ -470,7 +372,7 @@ export function AnalysisCharts() {
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{ filter: 'drop-shadow(0 0 4px rgba(0, 240, 255, 0.4))' }}
+              className="drop-shadow-[0_0_4px_var(--primary-cyan-glow)]"
             />
 
             {/* Interactive dots & hover interaction zones */}
@@ -485,7 +387,7 @@ export function AnalysisCharts() {
                     width={chartW / Math.max(1, chartData.length - 1)}
                     height={chartH}
                     fill="transparent"
-                    style={{ cursor: 'pointer' }}
+                    className="cursor-pointer"
                     onMouseEnter={() => setHoveredSumIndex(i)}
                     onMouseLeave={() => setHoveredSumIndex(null)}
                   />
@@ -497,7 +399,7 @@ export function AnalysisCharts() {
                         y1={padding.top}
                         x2={p.x}
                         y2={padding.top + chartH}
-                        stroke="rgba(0, 240, 255, 0.25)"
+                        stroke="var(--primary-cyan-glow)"
                         strokeWidth="1"
                       />
                       {/* Glowing dot */}
@@ -512,7 +414,7 @@ export function AnalysisCharts() {
                         cx={p.x}
                         cy={p.y}
                         r={4.5}
-                        fill="#ffffff"
+                        fill="var(--bg-elevated)"
                         stroke="var(--primary-cyan)"
                         strokeWidth="1.5"
                       />
@@ -536,31 +438,19 @@ export function AnalysisCharts() {
           {/* HTML Tooltip overlay */}
           {hoveredSumIndex !== null && chartData[hoveredSumIndex] && (
             <div
+              className="absolute bg-modal border border-primary-cyan/30 rounded-lg py-1.5 px-2.5 text-xs pointer-events-none shadow-glass backdrop-blur-sm z-10 whitespace-nowrap"
               style={{
-                position: 'absolute',
                 left: `${sumMousePos.x}px`,
                 top: `${sumMousePos.y}px`,
                 transform: `translate(${sumMousePos.x > 500 ? '-110%' : '15px'}, ${sumMousePos.y > 120 ? '-110%' : '15px'})`,
-                background: 'rgba(10, 11, 18, 0.95)',
-                border: '1px solid rgba(0, 240, 255, 0.3)',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '0.75rem',
-                pointerEvents: 'none',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 10,
-                whiteSpace: 'nowrap',
               }}
             >
-              <div style={{ color: 'var(--text-muted)', fontWeight: 'bold' }}>
+              <div className="text-muted font-bold">
                 {chartData[hoveredSumIndex].episode}회차
               </div>
-              <div style={{ marginTop: '2px' }}>
+              <div className="mt-0.5 text-main">
                 총합:{' '}
-                <span
-                  style={{ color: 'var(--primary-cyan)', fontWeight: 'bold' }}
-                >
+                <span className="text-primary-cyan font-bold">
                   {chartData[hoveredSumIndex].analysis!.sum}
                 </span>
               </div>
@@ -570,7 +460,7 @@ export function AnalysisCharts() {
 
         {/* Chart 2: AC Trendline */}
         <div
-          className="glass-card"
+          className="bento-card p-6 relative overflow-hidden min-w-0"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setAcMousePos({
@@ -578,47 +468,17 @@ export function AnalysisCharts() {
               y: e.clientY - rect.top,
             });
           }}
-          style={{
-            padding: '20px',
-            borderRadius: '16px',
-            position: 'relative',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            maxHeight: 'none',
-            overflow: 'hidden',
-            minWidth: 0,
-          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '12px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                color: 'var(--text-main)',
-              }}
-            >
+          <div className="flex justify-between mb-3">
+            <span className="text-[0.85rem] font-bold text-main">
               AC값 변동 추이 (AC Value Trend)
             </span>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: 'var(--primary-purple)',
-                fontFamily: 'monospace',
-              }}
-            >
+            <span className="text-xs text-primary-purple font-mono">
               범위: {minAc} ~ {maxAc}
             </span>
           </div>
 
-          <svg
-            viewBox={`0 0 ${width} ${height}`}
-            style={{ width: '100%', height: 'auto' }}
-          >
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
             <defs>
               <linearGradient id="acGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -640,7 +500,7 @@ export function AnalysisCharts() {
               y1={padding.top}
               x2={width - padding.right}
               y2={padding.top}
-              stroke="rgba(255,255,255,0.04)"
+              stroke="var(--border-glass-color)"
               strokeDasharray="3 3"
             />
             {acGridLines.map((level, i) => {
@@ -655,7 +515,7 @@ export function AnalysisCharts() {
                     y1={y}
                     x2={width - padding.right}
                     y2={y}
-                    stroke="rgba(255,255,255,0.04)"
+                    stroke="var(--border-glass-color)"
                     strokeDasharray="3 3"
                   />
                   <text
@@ -675,7 +535,7 @@ export function AnalysisCharts() {
               y1={padding.top + chartH}
               x2={width - padding.right}
               y2={padding.top + chartH}
-              stroke="rgba(255,255,255,0.08)"
+              stroke="var(--border-glass-strong)"
             />
 
             {/* Y Boundary Texts */}
@@ -742,7 +602,7 @@ export function AnalysisCharts() {
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{ filter: 'drop-shadow(0 0 4px rgba(189, 0, 255, 0.4))' }}
+              className="drop-shadow-[0_0_4px_var(--primary-purple-glow)]"
             />
 
             {/* Interactive dots */}
@@ -756,7 +616,7 @@ export function AnalysisCharts() {
                     width={chartW / Math.max(1, chartData.length - 1)}
                     height={chartH}
                     fill="transparent"
-                    style={{ cursor: 'pointer' }}
+                    className="cursor-pointer"
                     onMouseEnter={() => setHoveredAcIndex(i)}
                     onMouseLeave={() => setHoveredAcIndex(null)}
                   />
@@ -767,7 +627,7 @@ export function AnalysisCharts() {
                         y1={padding.top}
                         x2={p.x}
                         y2={padding.top + chartH}
-                        stroke="rgba(189, 0, 255, 0.25)"
+                        stroke="var(--primary-purple-glow)"
                         strokeWidth="1"
                       />
                       <circle
@@ -781,7 +641,7 @@ export function AnalysisCharts() {
                         cx={p.x}
                         cy={p.y}
                         r={4.5}
-                        fill="#ffffff"
+                        fill="var(--bg-elevated)"
                         stroke="var(--primary-purple)"
                         strokeWidth="1.5"
                       />
@@ -803,31 +663,19 @@ export function AnalysisCharts() {
 
           {hoveredAcIndex !== null && chartData[hoveredAcIndex] && (
             <div
+              className="absolute bg-modal border border-primary-purple/30 rounded-lg py-1.5 px-2.5 text-xs pointer-events-none shadow-glass backdrop-blur-sm z-10 whitespace-nowrap"
               style={{
-                position: 'absolute',
                 left: `${acMousePos.x}px`,
                 top: `${acMousePos.y}px`,
                 transform: `translate(${acMousePos.x > 500 ? '-110%' : '15px'}, ${acMousePos.y > 120 ? '-110%' : '15px'})`,
-                background: 'rgba(10, 11, 18, 0.95)',
-                border: '1px solid rgba(189, 0, 255, 0.3)',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '0.75rem',
-                pointerEvents: 'none',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 10,
-                whiteSpace: 'nowrap',
               }}
             >
-              <div style={{ color: 'var(--text-muted)', fontWeight: 'bold' }}>
+              <div className="text-muted font-bold">
                 {chartData[hoveredAcIndex].episode}회차
               </div>
-              <div style={{ marginTop: '2px' }}>
+              <div className="mt-0.5 text-main">
                 AC값:{' '}
-                <span
-                  style={{ color: 'var(--primary-purple)', fontWeight: 'bold' }}
-                >
+                <span className="text-primary-purple font-bold">
                   {chartData[hoveredAcIndex].analysis!.ac}
                 </span>
               </div>
@@ -837,41 +685,14 @@ export function AnalysisCharts() {
       </div>
 
       {/* Grid for smaller distribution charts */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: '12px',
-          marginBottom: '12px',
-        }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Chart 3: Decades Distribution */}
-        <div
-          className="glass-card"
-          style={{
-            padding: '20px',
-            borderRadius: '16px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            maxHeight: 'none',
-            overflow: 'hidden',
-            minWidth: 0,
-          }}
-        >
-          <span
-            style={{
-              fontSize: '0.85rem',
-              fontWeight: 'bold',
-              color: 'var(--text-main)',
-              display: 'block',
-              marginBottom: '16px',
-            }}
-          >
+        <div className="bento-card p-6 overflow-hidden min-w-0">
+          <span className="text-[0.85rem] font-bold text-main block mb-4 text-left">
             번대수 분포 빈도 (Decade Distribution)
           </span>
 
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-          >
+          <div className="flex flex-col gap-3">
             {statsSummary?.decades.map((d, i) => {
               // Custom colors per decade
               const colors = [
@@ -887,56 +708,21 @@ export function AnalysisCharts() {
               const percent = Math.round((d.val / totalDecadeCounts) * 100);
 
               return (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '0.78rem',
-                    }}
-                  >
-                    <span
-                      style={{ color: 'var(--text-main)', fontWeight: 600 }}
-                    >
-                      {d.label}
-                    </span>
-                    <span style={{ color: 'var(--text-dim)' }}>
+                <div key={i} className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[0.78rem]">
+                    <span className="text-main font-semibold">{d.label}</span>
+                    <span className="text-dim">
                       평균{' '}
-                      <span
-                        style={{
-                          color: 'var(--text-main)',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {d.avg}개
-                      </span>{' '}
-                      ({percent}%)
+                      <span className="text-main font-bold">{d.avg}개</span> (
+                      {percent}%)
                     </span>
                   </div>
-                  <div
-                    style={{
-                      height: '8px',
-                      width: '100%',
-                      background: 'rgba(255, 255, 255, 0.03)',
-                      borderRadius: '4px',
-                      overflow: 'hidden',
-                      border: '1px solid rgba(255, 255, 255, 0.05)',
-                    }}
-                  >
+                  <div className="h-2 w-full bg-surface rounded overflow-hidden border border-glass-border">
                     <div
+                      className="h-full rounded transition-[width] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)]"
                       style={{
-                        height: '100%',
                         width: `${percent}%`,
                         background: colors[i],
-                        borderRadius: '4px',
-                        transition: 'width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
                       }}
                     />
                   </div>
@@ -947,40 +733,12 @@ export function AnalysisCharts() {
         </div>
 
         {/* Chart 4: Temperature Distribution */}
-        <div
-          className="glass-card"
-          style={{
-            padding: '20px',
-            borderRadius: '16px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            maxHeight: 'none',
-            overflow: 'hidden',
-            minWidth: 0,
-          }}
-        >
-          <span
-            style={{
-              fontSize: '0.85rem',
-              fontWeight: 'bold',
-              color: 'var(--text-main)',
-              display: 'block',
-              marginBottom: '16px',
-            }}
-          >
+        <div className="bento-card p-6 overflow-hidden min-w-0">
+          <span className="text-[0.85rem] font-bold text-main block mb-4 text-left">
             출현 번호 온도 분포 (Temperature Distribution)
           </span>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'flex-end',
-              height: '120px',
-              paddingBottom: '10px',
-              borderBottom: '1px solid rgba(255,255,255,0.08)',
-              marginBottom: '12px',
-            }}
-          >
+          <div className="flex justify-around items-end h-[120px] pb-2.5 border-b border-glass-border mb-3">
             {[
               {
                 type: 'HOT',
@@ -1010,41 +768,23 @@ export function AnalysisCharts() {
               return (
                 <div
                   key={t.type}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    width: '70px',
-                    gap: '8px',
-                  }}
+                  className="flex flex-col items-center w-[70px] gap-2"
                 >
                   <span
-                    style={{
-                      fontSize: '0.8rem',
-                      fontWeight: 'bold',
-                      color: t.color,
-                    }}
+                    className="text-[0.8rem] font-bold"
+                    style={{ color: t.color }}
                   >
                     {t.avg}개
                   </span>
                   <div
+                    className="w-8 rounded-t-md transition-[height] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)]"
                     style={{
                       height: `${heightPct * 0.7}px`,
-                      width: '32px',
                       background: t.gradient,
-                      borderRadius: '6px 6px 0 0',
                       boxShadow: `0 0 10px rgba(${t.type === 'HOT' ? '239,68,68' : t.type === 'WARM' ? '249,115,22' : '59,130,246'}, 0.25)`,
-                      transition: 'height 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
                     }}
                   />
-                  <span
-                    style={{
-                      fontSize: '0.72rem',
-                      color: 'var(--text-muted)',
-                      fontWeight: 'bold',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
+                  <span className="text-[0.72rem] text-muted font-bold whitespace-nowrap">
                     {t.label}
                   </span>
                 </div>
@@ -1052,14 +792,7 @@ export function AnalysisCharts() {
             })}
           </div>
 
-          <p
-            style={{
-              fontSize: '0.74rem',
-              color: 'var(--text-dim)',
-              lineHeight: '1.4',
-              margin: 0,
-            }}
-          >
+          <p className="text-[0.74rem] text-dim leading-[1.4] m-0 text-left">
             * <b>열번호 🔥:</b> 최근 5회차 이내 다득점 번호들
             <br />* <b>온번호 🟠:</b> 최근 6~10회차 출현 이력이 있는 번호들
             <br />* <b>냉번호 ❄️:</b> 최근 10회차 이상 출현하지 않은 미출현
@@ -1069,56 +802,21 @@ export function AnalysisCharts() {
       </div>
 
       {/* Full width Gauge Card: Odd/Even Ratio */}
-      <div
-        className="glass-card"
-        style={{
-          padding: '20px 24px',
-          borderRadius: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          background: 'rgba(255, 255, 255, 0.015)',
-          maxHeight: 'none',
-          overflow: 'hidden',
-          minWidth: 0,
-          marginTop: '16px',
-        }}
-      >
-        <span
-          style={{
-            fontSize: '0.88rem',
-            fontWeight: 'bold',
-            color: 'var(--text-main)',
-            display: 'block',
-            marginBottom: '12px',
-          }}
-        >
+      <div className="bento-card p-6 overflow-hidden min-w-0">
+        <span className="text-[0.88rem] font-bold text-main block mb-3 text-left">
           홀수 vs 짝수 비율 (Odd vs Even Ratio)
         </span>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-          }}
-        >
+        <div className="flex gap-6 items-center justify-between flex-wrap">
           {/* Circular Donut gauge */}
-          <div
-            style={{
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              flexShrink: 0,
-            }}
-          >
+          <div className="relative w-20 h-20 shrink-0">
             <svg width="80" height="80" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
                 r="40"
                 fill="transparent"
-                stroke="rgba(255, 255, 255, 0.03)"
+                stroke="var(--border-glass-color)"
                 strokeWidth="12"
               />
               {/* Even (Cyan) Arc */}
@@ -1134,11 +832,7 @@ export function AnalysisCharts() {
                   251.2 - (251.2 * (statsSummary?.evenPct || 50)) / 100
                 }
                 transform={`rotate(${-90 + (360 * (statsSummary?.oddPct || 50)) / 100} 50 50)`}
-                style={{
-                  transition:
-                    'transform 0.6s cubic-bezier(0.1, 0.8, 0.3, 1), stroke-dashoffset 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
-                  filter: 'drop-shadow(0 0 4px rgba(14, 165, 233, 0.3))',
-                }}
+                className="transition-[transform,stroke-dashoffset] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)] drop-shadow-[0_0_4px_rgba(14,165,233,0.3)]"
               />
               {/* Odd (Purple) Arc */}
               <circle
@@ -1153,111 +847,43 @@ export function AnalysisCharts() {
                   251.2 - (251.2 * (statsSummary?.oddPct || 50)) / 100
                 }
                 transform="rotate(-90 50 50)"
-                style={{
-                  transition:
-                    'stroke-dashoffset 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
-                  filter: 'drop-shadow(0 0 4px rgba(244, 63, 94, 0.3))',
-                }}
+                className="transition-[stroke-dashoffset] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)] drop-shadow-[0_0_4px_rgba(244,63,94,0.3)]"
               />
             </svg>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.95rem',
-                  fontWeight: 'bold',
-                  color: '#ffffff',
-                  fontFamily: 'monospace',
-                }}
-              >
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-[0.95rem] font-bold text-main font-mono">
                 {statsSummary?.oddPct}:{statsSummary?.evenPct}
               </span>
-              <span style={{ fontSize: '0.55rem', color: 'var(--text-dim)' }}>
-                홀:짝
-              </span>
+              <span className="text-[0.55rem] text-dim">홀:짝</span>
             </div>
           </div>
 
           {/* Description list / segmented bars */}
-          <div style={{ flex: 1, minWidth: '220px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '6px',
-                fontSize: '0.76rem',
-              }}
-            >
-              <span
-                style={{
-                  color: 'var(--color-odd, #f43f5e)',
-                  fontWeight: 'bold',
-                }}
-              >
+          <div className="flex-1 min-w-[220px]">
+            <div className="flex justify-between mb-1.5 text-[0.76rem]">
+              <span className="text-odd font-bold">
                 홀수 (Odd): {statsSummary?.oddPct}%
               </span>
-              <span
-                style={{
-                  color: 'var(--color-even, #0ea5e9)',
-                  fontWeight: 'bold',
-                }}
-              >
+              <span className="text-even font-bold">
                 짝수 (Even): {statsSummary?.evenPct}%
               </span>
             </div>
 
             {/* Segmented bar */}
-            <div
-              style={{
-                height: '12px',
-                width: '100%',
-                borderRadius: '6px',
-                display: 'flex',
-                overflow: 'hidden',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-              }}
-            >
+            <div className="h-3 w-full rounded-md flex overflow-hidden border border-glass-border">
               <div
-                style={{
-                  width: `${statsSummary?.oddPct}%`,
-                  background:
-                    'linear-gradient(90deg, #f43f5e 0%, #fb7185 100%)',
-                  transition: 'width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
-                }}
+                className="bg-gradient-to-r from-[#f43f5e] to-[#fb7185] transition-[width] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)]"
+                style={{ width: `${statsSummary?.oddPct}%` }}
               />
               <div
-                style={{
-                  width: `${statsSummary?.evenPct}%`,
-                  background:
-                    'linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%)',
-                  transition: 'width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)',
-                }}
+                className="bg-gradient-to-r from-[#0ea5e9] to-[#38bdf8] transition-[width] duration-600 ease-[cubic-bezier(0.1,0.8,0.3,1)]"
+                style={{ width: `${statsSummary?.evenPct}%` }}
               />
             </div>
           </div>
         </div>
 
-        <p
-          style={{
-            fontSize: '0.75rem',
-            color: 'var(--text-dim)',
-            marginTop: '12px',
-            lineHeight: '1.4',
-            margin: 0,
-            textAlign: 'left',
-          }}
-        >
+        <p className="text-xs text-dim mt-3 leading-[1.4] mb-0 text-left">
           선택한 최근 <b>{period === 'all' ? '전체' : `${period}회차`}</b> 동안
           출현한 전체 당첨번호 공들 중 홀수와 짝수의 비율입니다. 이론상 로또
           홀짝 비율의 확률적 기댓값은 약 50:50에 수렴합니다.

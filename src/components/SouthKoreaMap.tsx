@@ -35,62 +35,39 @@ export function SouthKoreaMap({
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
 
   return (
-    <div
-      className="map-container"
-      style={{ position: 'relative', width: '100%', height: '100%' }}
-    >
+    <div className="map-container relative h-full w-full">
       <svg
         viewBox={southKoreaMap.viewBox}
-        className="korea-svg-map"
-        style={{ width: '100%', height: 'auto', maxHeight: '100%' }}
+        className="korea-svg-map h-auto max-h-full w-full"
       >
-        {southKoreaMap.locations.map((location: any) => (
-          <path
-            key={location.id}
-            id={location.id}
-            name={location.name}
-            d={location.path}
-            className={`map-path ${hoveredLocation === location.id || selectedRegionId === location.id ? 'hovered' : ''}`}
-            onMouseEnter={() => setHoveredLocation(location.id)}
-            onMouseLeave={() => setHoveredLocation(null)}
-            onClick={() => {
-              setHoveredLocation(null);
-              onLocationClick?.(location.id, location.name);
-            }}
-            style={{
-              cursor: 'pointer',
-              transition: 'fill 0.3s ease, transform 0.3s ease',
-              stroke: 'var(--bg-main)',
-              strokeWidth: 1.5,
-              fill:
-                hoveredLocation === location.id ||
-                selectedRegionId === location.id
-                  ? 'var(--primary-cyan)'
-                  : 'var(--glass-bg)',
-            }}
-          >
-            <title>{regionNameMap[location.name] || location.name}</title>
-          </path>
-        ))}
+        {southKoreaMap.locations.map((location: any) => {
+          const isSelectedOrHovered =
+            hoveredLocation === location.id || selectedRegionId === location.id;
+          return (
+            <path
+              key={location.id}
+              id={location.id}
+              name={location.name}
+              d={location.path}
+              className={`map-path cursor-pointer stroke-glass-border-strong stroke-[1.5] transition-all duration-300 ${
+                isSelectedOrHovered
+                  ? 'hovered fill-primary-cyan'
+                  : 'fill-slate-300/70 dark:fill-slate-800/80'
+              }`}
+              onMouseEnter={() => setHoveredLocation(location.id)}
+              onMouseLeave={() => setHoveredLocation(null)}
+              onClick={() => {
+                setHoveredLocation(null);
+                onLocationClick?.(location.id, location.name);
+              }}
+            >
+              <title>{regionNameMap[location.name] || location.name}</title>
+            </path>
+          );
+        })}
       </svg>
       {hoveredLocation && hoveredLocation !== selectedRegionId && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0, 0, 0, 0.7)',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            pointerEvents: 'none',
-            fontSize: '14px',
-            backdropFilter: 'blur(4px)',
-            border: '1px solid var(--primary-cyan)',
-            transition: 'opacity 0.2s ease',
-          }}
-        >
+        <div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-[20px] border border-primary-cyan bg-modal px-4 py-2 text-sm font-semibold text-main shadow-glass backdrop-blur-md transition-opacity duration-200">
           {regionNameMap[
             southKoreaMap.locations.find(
               (loc: any) => loc.id === hoveredLocation,

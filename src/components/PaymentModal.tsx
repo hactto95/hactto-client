@@ -301,117 +301,34 @@ export function PaymentModal({
   };
 
   return createPortal(
-    <div
-      className="admin-modal-overlay"
-      style={{
-        zIndex: 100000,
-      }}
-    >
-      <div
-        className="glass-card"
-        style={{
-          width: '90%',
-          maxWidth: '960px',
-          padding: '35px',
-          maxHeight: '85vh',
-          overflow: 'hidden',
-          textAlign: 'left',
-          position: 'relative',
-        }}
-      >
+    <div className="admin-modal-overlay z-100000">
+      <div className="glass-card w-[90%] max-w-[960px] p-[35px] max-h-[85vh] overflow-hidden text-left relative">
         {/* 결제 진행 중 오버레이 */}
         {paymentStatus.status === 'PENDING' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(10, 11, 16, 0.85)',
-              backdropFilter: 'blur(6px)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 100,
-              borderRadius: 'inherit',
-            }}
-          >
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                border: '3px solid rgba(0, 240, 255, 0.1)',
-                borderTopColor: 'var(--primary-cyan)',
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-                marginBottom: '18px',
-              }}
-            />
-            <p
-              style={{
-                color: '#ffffff',
-                fontWeight: 'bold',
-                margin: '0 0 8px 0',
-                fontSize: '1.1rem',
-              }}
-            >
+          <div className="absolute inset-0 bg-overlay backdrop-blur-sm flex flex-col justify-center items-center z-100 rounded-[inherit]">
+            <div className="w-10 h-10 border-3 border-primary-cyan/20 border-t-primary-cyan rounded-full animate-spin mb-[18px]" />
+            <p className="text-main font-bold m-0 mb-2 text-[1.1rem]">
               결제 요청 확인 중...
             </p>
-            <p
-              style={{
-                color: 'var(--text-dim)',
-                fontSize: '0.85rem',
-                margin: 0,
-              }}
-            >
+            <p className="text-dim text-[0.85rem] m-0">
               결제창에서 결제 완료 시 자동으로 화면이 전환됩니다.
             </p>
           </div>
         )}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: '25px',
-          }}
-        >
+        <div className="flex justify-between items-start mb-[25px]">
           <div>
-            <h2
-              className="title-gradient"
-              style={{ fontSize: '1.6rem', margin: 0 }}
-            >
+            <h2 className="title-gradient text-[1.6rem] m-0">
               hactto 충전 및 구독 상점
             </h2>
-            <p
-              style={{
-                color: 'var(--text-dim)',
-                fontSize: '0.85rem',
-                margin: '5px 0 0 0',
-              }}
-            >
+            <p className="text-dim text-[0.85rem] mt-[5px] mb-0">
               혼(Hon)을 충전하거나 무제한 이용권을 구독하여 실시간 알고리즘
               분석기를 제약 없이 이용해 보세요.
             </p>
-            <p
-              style={{
-                color: '#ef4444',
-                fontSize: '0.72rem',
-                margin: '4px 0 0 0',
-                opacity: 0.85,
-              }}
-            >
+            <p className="text-error text-[0.72rem] mt-1 mb-0 opacity-85">
               ※ 모든 환불 및 취소 요청은{' '}
               <span
                 onClick={() => setShowRefundModal(true)}
-                style={{
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  color: 'var(--primary-cyan)',
-                  fontWeight: '600',
-                }}
+                className="underline cursor-pointer text-primary-cyan font-semibold"
               >
                 hactto 환불 규정
               </span>
@@ -420,62 +337,27 @@ export function PaymentModal({
           </div>
           <button
             onClick={onClose}
-            className="secondary-btn"
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              padding: 0,
-            }}
+            className="secondary-btn w-9 h-9 rounded-full p-0"
           >
             ✕
           </button>
         </div>
 
         {alert && (
-          <div style={{ marginBottom: '20px' }}>
+          <div className="mb-5">
             <Alert alert={alert} />
           </div>
         )}
 
         {hasActiveRefund && (
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '12px 16px',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              borderRadius: '8px',
-              color: '#ef4444',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
+          <div className="mb-5 px-4 py-3 bg-error/10 border border-error/25 rounded-lg text-error text-[0.85rem] font-semibold flex items-center gap-2">
             ⚠️ 진행 중인 환불 문의 또는 최종 수락 대기 중인 환불 건이 있어 추가
             결제 및 구독 신청이 제한됩니다.
           </div>
         )}
 
         {subscription?.status === 'ACTIVE' && (
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '12px 16px',
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.25)',
-              borderRadius: '8px',
-              color: '#60a5fa',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              gap: '4px',
-            }}
-          >
+          <div className="mb-5 px-4 py-3 bg-blue-500/10 border border-blue-500/25 rounded-lg text-blue-600 dark:text-blue-400 text-[0.85rem] font-semibold flex flex-col items-start gap-1">
             <div>
               ℹ️ 현재 {subscription.plan === 'YEARLY' ? '연간' : '월간'} 무제한
               구독이 활성화되어 있어 HON 추가 결제가 불가능합니다.
@@ -483,12 +365,7 @@ export function PaymentModal({
                 ' (연간 구독 중에는 월간 구독 결제도 불가합니다)'}
             </div>
             {subscription.endsAt && (
-              <div
-                style={{
-                  fontSize: '0.78rem',
-                  color: 'rgba(255, 255, 255, 0.65)',
-                }}
-              >
+              <div className="text-[0.78rem] text-muted">
                 구독 유효기간 (다음 결제일):{' '}
                 {new Date(subscription.endsAt).toLocaleDateString('ko-KR')}
               </div>
@@ -497,82 +374,30 @@ export function PaymentModal({
         )}
 
         {subscription?.status !== 'ACTIVE' && paidHon > 0 && (
-          <div
-            style={{
-              marginBottom: '20px',
-              padding: '12px 16px',
-              background: 'rgba(234, 179, 8, 0.1)',
-              border: '1px solid rgba(234, 179, 8, 0.25)',
-              borderRadius: '8px',
-              color: '#facc15',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
+          <div className="mb-5 px-4 py-3 bg-amber-500/10 border border-amber-500/25 rounded-lg text-amber-600 dark:text-yellow-400 text-[0.85rem] font-semibold flex items-center gap-2">
             💡 보유하고 계신 충전/유료 HON({paidHon} HON)은 정기 구독을
             취소/만료하신 후에 언제든 다시 이어서 이용하실 수 있습니다.
           </div>
         )}
 
         {/* 3열 카드 그리드 레이아웃 */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '20px',
-            marginTop: '10px',
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5 mt-2.5">
           {/* 1번째 열: 혼 단건 충전 카드 (내부에 가로로 긴 미니 카드 3개 포함) */}
           <div
-            className="glass-card"
-            style={{
-              padding: '24px 20px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              background: 'rgba(255, 255, 255, 0.02)',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              minHeight: '450px',
-              overflow: 'visible',
-              maxHeight: 'none',
-              boxShadow:
-                highlight === 'HON'
-                  ? '0 0 0 2px var(--primary-cyan), 0 0 20px 4px rgba(0, 240, 255, 0.4)'
-                  : 'none',
-              transition: 'box-shadow 0.5s ease',
-            }}
+            className={`glass-card py-6 px-5 border border-glass-border bg-surface flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+              highlight === 'HON'
+                ? 'shadow-[0_0_0_2px_var(--primary-cyan),0_0_20px_4px_var(--primary-cyan-glow)]'
+                : 'shadow-none'
+            }`}
           >
-            <h4
-              style={{
-                fontSize: '1.1rem',
-                color: 'var(--primary-cyan)',
-                margin: '0 0 8px 0',
-              }}
-            >
+            <h4 className="text-[1.1rem] text-primary-cyan m-0 mb-2">
               혼(Hon) 단건 충전
             </h4>
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-dim)',
-                margin: '0 0 14px 0',
-              }}
-            >
+            <p className="text-[0.8rem] text-dim m-0 mb-3.5">
               정가 50원/HON 기준, 현재 파격적인 할인 이벤트가 적용된 금액입니다.
             </p>
 
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                flex: 1,
-              }}
-            >
+            <div className="flex flex-col gap-3 flex-1">
               {/* 1,000원 -> 30혼 가로 미니 카드 */}
               <div
                 onClick={() =>
@@ -580,104 +405,28 @@ export function PaymentModal({
                   subscription?.status !== 'ACTIVE' &&
                   handlePayment(1000, '30 HON 충전')
                 }
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
-                  borderRadius: '8px',
-                  cursor:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 'not-allowed'
-                      : 'pointer',
-                  transition: 'all 0.2s ease',
-                  flex: 1,
-                  opacity:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 0.4
-                      : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor = 'var(--primary-cyan)';
-                  e.currentTarget.style.background = 'rgba(0, 240, 255, 0.04)';
-                }}
-                onMouseLeave={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.06)';
-                  e.currentTarget.style.background =
-                    'rgba(255, 255, 255, 0.03)';
-                }}
+                className={`flex justify-between items-center px-4 py-3 bg-surface border border-glass-border rounded-lg transition-all duration-200 flex-1 ${
+                  hasActiveRefund || subscription?.status === 'ACTIVE'
+                    ? 'cursor-not-allowed opacity-40'
+                    : 'cursor-pointer opacity-100 hover:border-primary-cyan hover:bg-primary-cyan/5'
+                }`}
               >
-                <div style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: '#ffffff',
-                    }}
-                  >
+                <div className="text-left whitespace-nowrap">
+                  <div className="text-[0.95rem] font-bold text-main">
                     30 HON
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.65rem',
-                      color: 'var(--text-dim)',
-                      marginTop: '2px',
-                      letterSpacing: '-0.2px',
-                    }}
-                  >
+                  <div className="text-[0.65rem] text-dim mt-0.5 tracking-tight">
                     1HON당 약 33.3원
                   </div>
                 </div>
-                <div
-                  style={{
-                    textAlign: 'right',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    marginLeft: '8px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      gap: '6px',
-                      marginBottom: '2px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      33%
-                    </span>
-                    <span
-                      style={{
-                        textDecoration: 'line-through',
-                        color: 'var(--text-dim)',
-                        fontSize: '0.75rem',
-                      }}
-                    >
+                <div className="text-right whitespace-nowrap shrink-0 ml-2">
+                  <div className="flex items-center justify-end gap-1.5 mb-0.5">
+                    <span className="text-error text-xs font-bold">33%</span>
+                    <span className="line-through text-dim text-xs">
                       1,500원
                     </span>
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: 'var(--primary-cyan)',
-                    }}
-                  >
+                  <div className="text-[0.95rem] font-bold text-primary-cyan">
                     1,000원
                   </div>
                 </div>
@@ -690,104 +439,28 @@ export function PaymentModal({
                   subscription?.status !== 'ACTIVE' &&
                   handlePayment(3000, '100 HON 충전')
                 }
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
-                  borderRadius: '8px',
-                  cursor:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 'not-allowed'
-                      : 'pointer',
-                  transition: 'all 0.2s ease',
-                  flex: 1,
-                  opacity:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 0.4
-                      : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor = 'var(--primary-cyan)';
-                  e.currentTarget.style.background = 'rgba(0, 240, 255, 0.04)';
-                }}
-                onMouseLeave={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.06)';
-                  e.currentTarget.style.background =
-                    'rgba(255, 255, 255, 0.03)';
-                }}
+                className={`flex justify-between items-center px-4 py-3 bg-surface border border-glass-border rounded-lg transition-all duration-200 flex-1 ${
+                  hasActiveRefund || subscription?.status === 'ACTIVE'
+                    ? 'cursor-not-allowed opacity-40'
+                    : 'cursor-pointer opacity-100 hover:border-primary-cyan hover:bg-primary-cyan/5'
+                }`}
               >
-                <div style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: '#ffffff',
-                    }}
-                  >
+                <div className="text-left whitespace-nowrap">
+                  <div className="text-[0.95rem] font-bold text-main">
                     100 HON
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.65rem',
-                      color: 'var(--text-dim)',
-                      marginTop: '2px',
-                      letterSpacing: '-0.2px',
-                    }}
-                  >
+                  <div className="text-[0.65rem] text-dim mt-0.5 tracking-tight">
                     1HON당 30원 (추천)
                   </div>
                 </div>
-                <div
-                  style={{
-                    textAlign: 'right',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    marginLeft: '8px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      gap: '6px',
-                      marginBottom: '2px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      40%
-                    </span>
-                    <span
-                      style={{
-                        textDecoration: 'line-through',
-                        color: 'var(--text-dim)',
-                        fontSize: '0.75rem',
-                      }}
-                    >
+                <div className="text-right whitespace-nowrap shrink-0 ml-2">
+                  <div className="flex items-center justify-end gap-1.5 mb-0.5">
+                    <span className="text-error text-xs font-bold">40%</span>
+                    <span className="line-through text-dim text-xs">
                       5,000원
                     </span>
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: 'var(--primary-cyan)',
-                    }}
-                  >
+                  <div className="text-[0.95rem] font-bold text-primary-cyan">
                     3,000원
                   </div>
                 </div>
@@ -800,105 +473,28 @@ export function PaymentModal({
                   subscription?.status !== 'ACTIVE' &&
                   handlePayment(5000, '200 HON 충전')
                 }
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
-                  borderRadius: '8px',
-                  cursor:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 'not-allowed'
-                      : 'pointer',
-                  transition: 'all 0.2s ease',
-                  flex: 1,
-                  opacity:
-                    hasActiveRefund || subscription?.status === 'ACTIVE'
-                      ? 0.4
-                      : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor = 'var(--primary-cyan)';
-                  e.currentTarget.style.background = 'rgba(0, 240, 255, 0.04)';
-                }}
-                onMouseLeave={(e) => {
-                  if (hasActiveRefund || subscription?.status === 'ACTIVE')
-                    return;
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.06)';
-                  e.currentTarget.style.background =
-                    'rgba(255, 255, 255, 0.03)';
-                }}
+                className={`flex justify-between items-center px-4 py-3 bg-surface border border-glass-border rounded-lg transition-all duration-200 flex-1 ${
+                  hasActiveRefund || subscription?.status === 'ACTIVE'
+                    ? 'cursor-not-allowed opacity-40'
+                    : 'cursor-pointer opacity-100 hover:border-primary-cyan hover:bg-primary-cyan/5'
+                }`}
               >
-                <div style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: '#ffffff',
-                    }}
-                  >
+                <div className="text-left whitespace-nowrap">
+                  <div className="text-[0.95rem] font-bold text-main">
                     200 HON
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.65rem',
-                      color: 'var(--text-dim)',
-                      marginTop: '2px',
-                      fontWeight: '600',
-                      letterSpacing: '-0.3px',
-                    }}
-                  >
+                  <div className="text-[0.65rem] text-dim mt-0.5 font-semibold tracking-tight">
                     1HON당 25원 (최대 할인! 🔥)
                   </div>
                 </div>
-                <div
-                  style={{
-                    textAlign: 'right',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    marginLeft: '8px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      gap: '6px',
-                      marginBottom: '2px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      50%
-                    </span>
-                    <span
-                      style={{
-                        textDecoration: 'line-through',
-                        color: 'var(--text-dim)',
-                        fontSize: '0.75rem',
-                      }}
-                    >
+                <div className="text-right whitespace-nowrap shrink-0 ml-2">
+                  <div className="flex items-center justify-end gap-1.5 mb-0.5">
+                    <span className="text-error text-xs font-bold">50%</span>
+                    <span className="line-through text-dim text-xs">
                       10,000원
                     </span>
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.95rem',
-                      fontWeight: 'bold',
-                      color: 'var(--primary-cyan)',
-                    }}
-                  >
+                  <div className="text-[0.95rem] font-bold text-primary-cyan">
                     5,000원
                   </div>
                 </div>
@@ -908,93 +504,33 @@ export function PaymentModal({
 
           {/* 2번째 열: 월간 무제한 이용권 */}
           <div
-            className="glass-card"
-            style={{
-              padding: '24px 20px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              background: 'rgba(255, 255, 255, 0.02)',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              minHeight: '450px',
-              overflow: 'visible',
-              maxHeight: 'none',
-              boxShadow:
-                highlight === 'SUBSCRIPTION'
-                  ? '0 0 0 2px var(--primary-purple), 0 0 20px 4px rgba(168, 85, 247, 0.4)'
-                  : 'none',
-              transition: 'box-shadow 0.5s ease',
-            }}
+            className={`glass-card py-6 px-5 border border-glass-border bg-surface flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+              highlight === 'SUBSCRIPTION'
+                ? 'shadow-[0_0_0_2px_var(--primary-purple),0_0_20px_4px_var(--primary-purple-glow)]'
+                : 'shadow-none'
+            }`}
           >
-            <h4
-              style={{
-                fontSize: '1.1rem',
-                color: 'var(--primary-purple)',
-                margin: '0 0 8px 0',
-              }}
-            >
+            <h4 className="text-[1.1rem] text-primary-purple m-0 mb-2">
               월간 무제한 구독
             </h4>
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-dim)',
-                margin: '0 0 14px 0',
-              }}
-            >
+            <p className="text-[0.8rem] text-dim m-0 mb-3.5">
               번거로운 충전 없이 한 달 동안 무제한 분석이 가능합니다.
             </p>
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: '#ffffff',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-                marginBottom: '15px',
-                textAlign: 'left',
-              }}
-            >
-              <div
-                style={{ display: 'flex', gap: '6px', alignItems: 'center' }}
-              >
-                <span style={{ color: 'var(--primary-purple)' }}>✓</span>
+            <div className="text-[0.8rem] text-main flex flex-col gap-2 mb-[15px] text-left">
+              <div className="flex gap-1.5 items-center">
+                <span className="text-primary-purple">✓</span>
                 <span>실시간 알고리즘 무제한 분석</span>
               </div>
             </div>
-            <div
-              style={{
-                fontSize: '1.6rem',
-                fontWeight: 'bold',
-                color: '#ffffff',
-                margin: '15px 0',
-              }}
-            >
-              12,000 원{' '}
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                / 월
-              </span>
+            <div className="text-[1.6rem] font-bold text-main my-[15px]">
+              12,000 원 <span className="text-[0.8rem] text-dim">/ 월</span>
             </div>
 
             {subscription?.plan === 'MONTHLY' &&
             subscription.status === 'ACTIVE' ? (
-              <div
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
+              <div className="w-full mt-auto flex flex-col gap-2">
                 {subscription.endsAt && (
-                  <div
-                    style={{
-                      fontSize: '0.78rem',
-                      color: 'var(--text-dim)',
-                      textAlign: 'center',
-                    }}
-                  >
+                  <div className="text-[0.78rem] text-dim text-center">
                     구독 유효기간 (다음 결제일):{' '}
                     {new Date(subscription.endsAt).toLocaleDateString('ko-KR')}
                   </div>
@@ -1002,47 +538,16 @@ export function PaymentModal({
                 <button
                   onClick={() => setCancelModalOpen(true)}
                   disabled={cancelling}
-                  style={{
-                    width: '100%',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#ef4444',
-                    fontWeight: '600',
-                    fontSize: '0.95rem',
-                    padding: '14px 24px',
-                    borderRadius: '50px',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease-in-out',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                  }}
+                  className="w-full bg-error/10 hover:bg-error/20 text-error font-semibold text-[0.95rem] py-3.5 px-6 rounded-full border border-error/30 cursor-pointer transition-all duration-200"
                 >
                   구독 해지하기 ⚠️
                 </button>
               </div>
             ) : subscription?.plan === 'MONTHLY' &&
               subscription.status === 'CANCELLED' ? (
-              <div
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  color: 'var(--text-dim)',
-                  fontWeight: '600',
-                  fontSize: '0.85rem',
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  textAlign: 'center',
-                  lineHeight: '1.4',
-                }}
-              >
+              <div className="w-full mt-auto bg-surface border border-glass-border text-dim font-semibold text-[0.85rem] py-3 px-4 rounded-xl text-center leading-[1.4]">
                 <div>해지 예약 완료</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+                <div className="text-[0.78rem] text-dim">
                   구독권 유효기간:{' '}
                   {subscription.endsAt
                     ? new Date(subscription.endsAt).toLocaleDateString('ko-KR')
@@ -1058,239 +563,70 @@ export function PaymentModal({
                   (subscription?.status === 'ACTIVE' &&
                     subscription?.plan === 'YEARLY')
                 }
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  background:
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                      ? 'rgba(255, 255, 255, 0.05)'
-                      : 'linear-gradient(135deg, var(--primary-purple) 0%, #a855f7 100%)',
-                  color:
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                      ? 'var(--text-dim)'
-                      : '#ffffff',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  padding: '14px 24px',
-                  borderRadius: '50px',
-                  border: 'none',
-                  cursor:
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                      ? 'not-allowed'
-                      : 'pointer',
-                  boxShadow:
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                      ? 'none'
-                      : '0 4px 20px rgba(168, 85, 247, 0.35)',
-                  transition: 'all 0.2s ease-in-out',
-                  opacity:
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                      ? 0.5
-                      : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                  )
-                    return;
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow =
-                    '0 8px 30px rgba(168, 85, 247, 0.55)';
-                }}
-                onMouseLeave={(e) => {
-                  if (
-                    hasActiveRefund ||
-                    (subscription?.status === 'ACTIVE' &&
-                      subscription?.plan === 'YEARLY')
-                  )
-                    return;
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow =
-                    '0 4px 20px rgba(168, 85, 247, 0.35)';
-                }}
+                className={`w-full mt-auto font-semibold text-[0.95rem] py-3.5 px-6 rounded-full border-none transition-all duration-200 ${
+                  hasActiveRefund ||
+                  (subscription?.status === 'ACTIVE' &&
+                    subscription?.plan === 'YEARLY')
+                    ? 'bg-surface text-dim cursor-not-allowed shadow-none opacity-50'
+                    : 'bg-linear-to-br from-primary-purple to-purple-500 text-white cursor-pointer shadow-[0_4px_20px_rgba(168,85,247,0.35)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(168,85,247,0.55)] opacity-100'
+                }`}
               >
                 월간 무제한 시작하기 ⚡
               </button>
             )}
-            <p
-              style={{
-                fontSize: '0.72rem',
-                color: 'var(--text-dim)',
-                marginTop: '10px',
-                textAlign: 'center',
-                marginBottom: 0,
-              }}
-            >
+            <p className="text-[0.72rem] text-dim mt-2.5 text-center mb-0">
               ※ 언제든 자유롭게 해지할 수 있어요
             </p>
           </div>
 
           {/* 3번째 열: 연간 무제한 이용권 */}
           <div
-            className="glass-card"
-            style={{
-              position: 'relative',
-              padding: '24px 20px',
-              border: '1px solid rgba(234, 179, 8, 0.25)',
-              background: 'rgba(234, 179, 8, 0.015)',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              minHeight: '450px',
-              overflow: 'visible',
-              maxHeight: 'none',
-              boxShadow:
-                highlight === 'SUBSCRIPTION'
-                  ? '0 0 0 2px #eab308, 0 0 20px 4px rgba(234, 179, 8, 0.4)'
-                  : 'none',
-              transition: 'box-shadow 0.5s ease',
-            }}
+            className={`glass-card relative py-6 px-5 border border-yellow-500/25 bg-yellow-500/5 flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+              highlight === 'SUBSCRIPTION'
+                ? 'shadow-[0_0_0_2px_#eab308,0_0_20px_4px_rgba(234,179,8,0.4)]'
+                : 'shadow-none'
+            }`}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: 'rgba(234, 179, 8, 0.12)',
-                border: '1px solid #eab308',
-                color: '#eab308',
-                fontSize: '0.68rem',
-                fontWeight: 'bold',
-                padding: '3px 8px',
-                borderRadius: '20px',
-                boxShadow: '0 0 10px rgba(234, 179, 8, 0.2)',
-                letterSpacing: '0.5px',
-              }}
-            >
+            <div className="absolute top-[15px] right-[15px] bg-yellow-500/12 border border-yellow-500 text-yellow-600 dark:text-yellow-500 text-[0.68rem] font-bold px-2 py-[3px] rounded-full shadow-[0_0_10px_rgba(234,179,8,0.2)] tracking-wide">
               BEST
             </div>
 
-            <h4
-              style={{
-                fontSize: '1.1rem',
-                color: '#eab308',
-                margin: '0 0 8px 0',
-              }}
-            >
+            <h4 className="text-[1.1rem] text-yellow-600 dark:text-yellow-500 m-0 mb-2">
               연간 무제한 구독
             </h4>
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-dim)',
-                margin: '0 0 14px 0',
-              }}
-            >
+            <p className="text-[0.8rem] text-dim m-0 mb-3.5">
               1년 요금 일시 선결제로 30% 정가 절감 효과를 보실 수 있습니다.
             </p>
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: '#ffffff',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-                marginBottom: '15px',
-                textAlign: 'left',
-              }}
-            >
-              <div
-                style={{ display: 'flex', gap: '6px', alignItems: 'center' }}
-              >
-                <span style={{ color: '#eab308' }}>✓</span>
+            <div className="text-[0.8rem] text-main flex flex-col gap-2 mb-[15px] text-left">
+              <div className="flex gap-1.5 items-center">
+                <span className="text-yellow-600 dark:text-yellow-500">✓</span>
                 <span>실시간 알고리즘 무제한 분석 (1년)</span>
               </div>
-              <div
-                style={{ display: 'flex', gap: '6px', alignItems: 'center' }}
-              >
-                <span style={{ color: '#eab308' }}>✓</span>
-                <span style={{ fontWeight: '600' }}>광고 제거 ✨</span>
+              <div className="flex gap-1.5 items-center">
+                <span className="text-yellow-600 dark:text-yellow-500">✓</span>
+                <span className="font-semibold">광고 제거 ✨</span>
               </div>
             </div>
-            <div
-              style={{
-                margin: '15px 0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-                textAlign: 'left',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '1.05rem',
-                    textDecoration: 'line-through',
-                    color: 'var(--text-dim)',
-                    fontWeight: 'normal',
-                  }}
-                >
+            <div className="my-[15px] flex flex-col gap-1 text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[1.05rem] line-through text-dim font-normal">
                   120,000 원
                 </span>
-                <span
-                  style={{
-                    color: '#eab308',
-                    fontSize: '0.95rem',
-                    fontWeight: 'bold',
-                  }}
-                >
+                <span className="text-yellow-600 dark:text-yellow-500 text-[0.95rem] font-bold">
                   ➔
                 </span>
               </div>
-              <div
-                style={{
-                  fontSize: '1.8rem',
-                  fontWeight: 'bold',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: '4px',
-                }}
-              >
+              <div className="text-[1.8rem] font-bold text-main flex items-baseline gap-1">
                 <span>100,000 원</span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-dim)' }}>
-                  / 년
-                </span>
+                <span className="text-[0.85rem] text-dim">/ 년</span>
               </div>
             </div>
 
             {subscription?.plan === 'YEARLY' &&
             subscription.status === 'ACTIVE' ? (
-              <div
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
+              <div className="w-full mt-auto flex flex-col gap-2">
                 {subscription.endsAt && (
-                  <div
-                    style={{
-                      fontSize: '0.78rem',
-                      color: 'var(--text-dim)',
-                      textAlign: 'center',
-                    }}
-                  >
+                  <div className="text-[0.78rem] text-dim text-center">
                     구독 유효기간 (다음 결제일):{' '}
                     {new Date(subscription.endsAt).toLocaleDateString('ko-KR')}
                   </div>
@@ -1298,53 +634,16 @@ export function PaymentModal({
                 <button
                   onClick={() => setCancelModalOpen(true)}
                   disabled={cancelling}
-                  style={{
-                    width: '100%',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#ef4444',
-                    fontWeight: '600',
-                    fontSize: '0.95rem',
-                    padding: '14px 24px',
-                    borderRadius: '50px',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease-in-out',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                  }}
+                  className="w-full bg-error/10 hover:bg-error/20 text-error font-semibold text-[0.95rem] py-3.5 px-6 rounded-full border border-error/30 cursor-pointer transition-all duration-200"
                 >
                   구독 해지하기 ⚠️
                 </button>
               </div>
             ) : subscription?.plan === 'YEARLY' &&
               subscription.status === 'CANCELLED' ? (
-              <div
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  color: 'var(--text-dim)',
-                  fontWeight: '600',
-                  fontSize: '0.85rem',
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  textAlign: 'center',
-                  lineHeight: '1.4',
-                }}
-              >
+              <div className="w-full mt-auto bg-surface border border-glass-border text-dim font-semibold text-[0.85rem] py-3 px-4 rounded-xl text-center leading-[1.4]">
                 <div>해지 예약 완료</div>
-                <div
-                  style={{
-                    fontSize: '0.78rem',
-                    marginTop: '4px',
-                    color: 'var(--text-dim)',
-                  }}
-                >
+                <div className="text-[0.78rem] mt-1 text-dim">
                   구독권 유효기간:{' '}
                   {subscription.endsAt
                     ? new Date(subscription.endsAt).toLocaleDateString('ko-KR')
@@ -1355,50 +654,16 @@ export function PaymentModal({
               <button
                 onClick={() => handlePayment(100000, '연간 무제한 구독')}
                 disabled={purchasing || hasActiveRefund}
-                style={{
-                  width: '100%',
-                  marginTop: 'auto',
-                  background: hasActiveRefund
-                    ? 'rgba(255, 255, 255, 0.05)'
-                    : 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)',
-                  color: hasActiveRefund ? 'var(--text-dim)' : '#090a0f',
-                  fontWeight: '700',
-                  fontSize: '0.95rem',
-                  padding: '14px 24px',
-                  borderRadius: '50px',
-                  border: 'none',
-                  cursor: hasActiveRefund ? 'not-allowed' : 'pointer',
-                  boxShadow: hasActiveRefund
-                    ? 'none'
-                    : '0 4px 20px rgba(234, 179, 8, 0.35)',
-                  transition: 'all 0.2s ease-in-out',
-                  opacity: hasActiveRefund ? 0.5 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasActiveRefund) return;
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow =
-                    '0 8px 30px rgba(234, 179, 8, 0.55)';
-                }}
-                onMouseLeave={(e) => {
-                  if (hasActiveRefund) return;
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow =
-                    '0 4px 20px rgba(234, 179, 8, 0.35)';
-                }}
+                className={`w-full mt-auto font-bold text-[0.95rem] py-3.5 px-6 rounded-full border-none transition-all duration-200 ${
+                  hasActiveRefund
+                    ? 'bg-surface text-dim cursor-not-allowed shadow-none opacity-50'
+                    : 'bg-linear-to-br from-yellow-500 to-yellow-600 text-slate-950 cursor-pointer shadow-[0_4px_20px_rgba(234,179,8,0.35)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(234,179,8,0.55)] opacity-100'
+                }`}
               >
                 연간 패스로 30% 절약하기 🚀
               </button>
             )}
-            <p
-              style={{
-                fontSize: '0.72rem',
-                color: 'var(--text-dim)',
-                marginTop: '10px',
-                textAlign: 'center',
-                marginBottom: 0,
-              }}
-            >
+            <p className="text-[0.72rem] text-dim mt-2.5 text-center mb-0">
               ※ 언제든 자유롭게 해지할 수 있어요
             </p>
           </div>

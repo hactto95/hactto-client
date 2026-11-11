@@ -1,4 +1,5 @@
 import { useApp } from '../context/AppContext';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function SystemAnalyzing() {
   const { systemAnalysisProgress } = useApp();
@@ -24,46 +25,28 @@ export function SystemAnalyzing() {
   );
 
   return (
-    <div
-      className="access-container"
-      style={{ maxWidth: '640px', width: '100%', textAlign: 'center' }}
-    >
-      <div
-        className="glass-card allowed-dashboard"
-        style={{ position: 'relative', overflow: 'hidden' }}
-      >
+    <div className="access-container w-full max-w-[640px] text-center">
+      {/* Theme Toggle */}
+      <div className="fixed top-6 right-6 z-20">
+        <ThemeToggle className="h-10 w-10" />
+      </div>
+
+      <div className="glass-card allowed-dashboard relative overflow-hidden">
         {/* Ambient background pulse */}
         <div
-          style={{
-            position: 'absolute',
-            top: '-50%',
-            left: '-50%',
-            width: '200%',
-            height: '200%',
-            background:
-              'radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 60%)',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
+          className="
+            pointer-events-none absolute -top-1/2 -left-1/2 z-0 h-[200%]
+            w-[200%]
+            bg-[radial-gradient(circle,var(--primary-cyan-glow)_0%,transparent_60%)]
+            opacity-40
+          "
         />
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Animated loading spinner icon */}
-          <div
-            className="status-icon"
-            style={{
-              borderColor: 'var(--primary-cyan)',
-              color: 'var(--primary-cyan)',
-              margin: '0 auto 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              animation: 'spin 3s linear infinite',
-            }}
-          >
+        <div className="relative z-10">
+          {/* System Spinner */}
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-cyan/15 text-primary-cyan">
             <svg
-              width="36"
-              height="36"
+              className="h-7 w-7 animate-spin"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -75,29 +58,13 @@ export function SystemAnalyzing() {
             </svg>
           </div>
 
-          <span
-            className="logo-glow"
-            style={{ fontSize: '2.5rem', display: 'block' }}
-          >
-            hactto
-          </span>
+          <span className="logo-glow block text-[2.5rem]">Hactto</span>
 
-          <h1
-            className="access-title"
-            style={{ marginTop: '16px', color: 'var(--text-main)' }}
-          >
+          <h1 className="access-title mt-4 text-main">
             신규 당첨번호 분석 진행 중
           </h1>
 
-          <p
-            className="access-desc"
-            style={{
-              maxWidth: '480px',
-              margin: '20px auto 24px',
-              lineHeight: '1.6',
-              color: 'var(--text-muted)',
-            }}
-          >
+          <p className="access-desc mx-auto mt-5 mb-6 max-w-[480px] leading-relaxed text-muted">
             매주 토요일 오후 9시부터 서비스 정합성을 위해
             <br />
             당첨번호 수집 및 알고리즘 분석 작업을 수행합니다.
@@ -105,80 +72,36 @@ export function SystemAnalyzing() {
           </p>
 
           {/* Progress Section */}
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-              borderRadius: '14px',
-              padding: '24px',
-              marginBottom: '20px',
-              textAlign: 'left',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '10px',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  color: 'var(--text-main)',
-                }}
-              >
+          <div className="mb-5 rounded-[14px] border border-glass-border bg-surface p-6 text-left">
+            <div className="mb-2.5 flex items-center justify-between">
+              <span className="text-[0.9rem] font-semibold text-main">
                 {statusMessage}
               </span>
-              <span
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  color: 'var(--primary-cyan)',
-                  textShadow: '0 0 8px rgba(0, 240, 255, 0.4)',
-                }}
-              >
+              <span className="text-base font-bold text-primary-cyan">
                 {progress}%
               </span>
             </div>
 
             {/* Progress Bar */}
             <div
-              style={{
-                width: '100%',
-                height: '8px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '4px',
-                overflow: 'hidden',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                marginBottom: etaText ? '12px' : '0',
-              }}
+              className={`
+                h-2 w-full overflow-hidden rounded border border-glass-border
+                bg-surface-hover
+                ${etaText ? 'mb-3' : 'mb-0'}
+              `}
             >
               <div
-                style={{
-                  width: `${progress}%`,
-                  height: '100%',
-                  background:
-                    'linear-gradient(90deg, var(--primary-cyan) 0%, #00e5ff 100%)',
-                  boxShadow: '0 0 10px var(--primary-cyan)',
-                  borderRadius: '4px',
-                  transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
+                className="
+                  h-full rounded bg-primary-cyan
+                  shadow-[0_0_10px_var(--primary-cyan-glow)]
+                  transition-[width] duration-400 ease-in-out
+                "
+                style={{ width: `${progress}%` }}
               />
             </div>
 
             {etaText && (
-              <div
-                style={{
-                  fontSize: '0.8rem',
-                  color: 'var(--text-dim)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
+              <div className="flex items-center gap-1.5 text-[0.8rem] text-dim">
                 <svg
                   width="14"
                   height="14"
@@ -198,43 +121,21 @@ export function SystemAnalyzing() {
           </div>
 
           <div
-            className="feature-item"
-            style={{
-              background: 'rgba(0, 240, 255, 0.03)',
-              border: '1px solid rgba(0, 240, 255, 0.15)',
-              padding: '20px',
-              borderRadius: '12px',
-              textAlign: 'left',
-              marginBottom: '10px',
-            }}
+            className="
+              feature-item mb-2.5 rounded-xl border border-primary-cyan/20
+              bg-primary-cyan/5 p-5 text-left
+            "
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                color: 'var(--primary-cyan)',
-                fontWeight: 600,
-                marginBottom: '8px',
-              }}
-            >
+            <div className="mb-2 flex items-center gap-2.5 font-semibold text-primary-cyan">
               <span
-                className="pulsing-dot"
-                style={{
-                  display: 'inline-block',
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  background: 'var(--primary-cyan)',
-                  boxShadow: '0 0 8px var(--primary-cyan)',
-                }}
-              ></span>
+                className="
+                  inline-block h-2 w-2 animate-pulse rounded-full
+                  bg-primary-cyan shadow-[0_0_8px_var(--primary-cyan)]
+                "
+              />
               실시간 상태 감지 중
             </div>
-            <div
-              className="feature-desc"
-              style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}
-            >
+            <div className="feature-desc text-[0.9rem] text-muted">
               분석이 완료되는 즉시 페이지가 자동으로 새로고침 없이 대시보드로
               전환됩니다.
               <br />
@@ -243,20 +144,6 @@ export function SystemAnalyzing() {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .pulsing-dot {
-          animation: dot-pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes dot-pulse {
-          0%, 100% { opacity: 0.4; transform: scale(0.9); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-      `}</style>
     </div>
   );
 }

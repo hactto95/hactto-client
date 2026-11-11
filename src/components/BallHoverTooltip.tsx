@@ -110,7 +110,7 @@ export function BallHoverTooltip({
     <>
       <div
         ref={triggerRef}
-        style={{ display: 'inline-flex', alignItems: 'center' }}
+        className="inline-flex items-center"
         onMouseEnter={handleOpen}
         onMouseLeave={handleDelayedClose}
         onFocus={handleOpen}
@@ -125,83 +125,35 @@ export function BallHoverTooltip({
           <div
             onMouseEnter={clearHideTimer}
             onMouseLeave={handleDelayedClose}
+            className={`pointer-events-auto fixed z-[99999] min-w-[215px] rounded-xl border border-primary-cyan/35 bg-modal px-3.5 py-2.5 text-[0.78rem] leading-[1.45] text-main shadow-glass backdrop-blur-md ${
+              coords.placeBelow
+                ? '-translate-x-1/2 translate-y-0'
+                : '-translate-x-1/2 -translate-y-full'
+            }`}
             style={{
-              position: 'fixed',
               left: `${coords.left}px`,
               top: `${coords.top}px`,
-              transform: coords.placeBelow
-                ? 'translate(-50%, 0)'
-                : 'translate(-50%, -100%)',
-              zIndex: 99999,
-              minWidth: '215px',
-              background: 'rgba(10, 15, 30, 0.96)',
-              backdropFilter: 'blur(14px)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
-              borderRadius: '12px',
-              padding: '10px 13px',
-              boxShadow:
-                '0 12px 28px rgba(0, 0, 0, 0.75), 0 0 18px rgba(0, 240, 255, 0.15)',
-              color: 'var(--text-main)',
-              fontSize: '0.78rem',
-              lineHeight: 1.45,
-              pointerEvents: 'auto',
             }}
           >
             {/* Header: Ball + Rank + Temperature */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '8px',
-                paddingBottom: '7px',
-                marginBottom: '7px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-              }}
-            >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
+            <div className="mb-2 flex items-center justify-between gap-2 border-b border-glass-border pb-2">
+              <div className="flex items-center gap-1.5">
                 <span
-                  style={{
-                    ...getBallStyle(ball),
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                  }}
+                  className="inline-flex h-[22px] w-[22px] items-center justify-center rounded-full text-[0.72rem] font-extrabold"
+                  style={getBallStyle(ball)}
                 >
                   {ball}
                 </span>
-                <span style={{ fontWeight: 700, fontSize: '0.82rem' }}>
-                  {ball}번
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.68rem',
-                    color: 'var(--text-dim)',
-                  }}
-                >
-                  ({stat.rank}위)
-                </span>
+                <span className="text-[0.82rem] font-bold">{ball}번</span>
+                <span className="text-[0.68rem] text-dim">({stat.rank}위)</span>
               </div>
 
               <span
+                className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.68rem] font-bold"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
                   color: tempMeta.color,
                   background: tempMeta.bg,
-                  border: `1px solid ${tempMeta.border}`,
-                  padding: '2px 7px',
-                  borderRadius: '999px',
+                  borderColor: tempMeta.border,
                 }}
               >
                 <span>{tempMeta.icon}</span>
@@ -210,69 +162,32 @@ export function BallHoverTooltip({
             </div>
 
             {/* Body Metrics */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-              >
-                <span style={{ color: 'var(--text-dim)' }}>등장 확률</span>
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: 'var(--primary-cyan)',
-                  }}
-                >
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between gap-2.5">
+                <span className="text-dim">등장 확률</span>
+                <span className="font-bold text-primary-cyan">
                   {stat.appearanceRate.toFixed(2)}%{' '}
-                  <span
-                    style={{
-                      fontWeight: 400,
-                      fontSize: '0.72rem',
-                      color: 'var(--text-muted)',
-                    }}
-                  >
+                  <span className="text-[0.72rem] font-normal text-muted">
                     ({stat.totalCount}/{stat.totalEpisodes}회)
                   </span>
                 </span>
               </div>
 
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-              >
-                <span style={{ color: 'var(--text-dim)' }}>현재 온도</span>
-                <span style={{ fontWeight: 600, color: tempMeta.color }}>
+              <div className="flex items-center justify-between gap-2.5">
+                <span className="text-dim">현재 온도</span>
+                <span
+                  className="font-semibold"
+                  style={{ color: tempMeta.color }}
+                >
                   {tempMeta.label}
                 </span>
               </div>
 
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-              >
-                <span style={{ color: 'var(--text-dim)' }}>미출현 간격</span>
-                <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>
+              <div className="flex items-center justify-between gap-2.5">
+                <span className="text-dim">미출현 간격</span>
+                <span className="font-semibold text-main">
                   {stat.skip === 0 ? '최근 회차 당첨' : `${stat.skip}주 미출현`}{' '}
-                  <span
-                    style={{
-                      fontWeight: 400,
-                      fontSize: '0.7rem',
-                      color: 'var(--text-muted)',
-                    }}
-                  >
+                  <span className="text-[0.7rem] font-normal text-muted">
                     (최근 {stat.latestEpisode}회)
                   </span>
                 </span>

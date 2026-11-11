@@ -27,119 +27,40 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
   if (!isOpen) return null;
 
   return createPortal(
-    <div
-      className="admin-modal-overlay"
-      onClick={onClose}
-      style={{ zIndex: 1100 }}
-    >
+    <div className="admin-modal-overlay z-[1100]" onClick={onClose}>
       <div
-        className="glass-card"
+        className="glass-card max-w-[680px] w-[90%] max-h-[85vh] h-auto flex flex-col pt-6 px-[30px] pb-5 relative animate-[fadeIn_0.3s_ease-out] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '680px',
-          width: '90%',
-          maxHeight: '85vh',
-          height: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '24px 30px 20px 30px',
-          position: 'relative',
-          animation: 'fadeIn 0.3s ease-out',
-          overflow: 'hidden',
-        }}
       >
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            paddingBottom: '16px',
-            marginBottom: '20px',
-          }}
-        >
-          <h2
-            className="logo-glow"
-            style={{
-              fontSize: '1.4rem',
-              margin: 0,
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-            }}
-          >
+        <div className="flex justify-between items-center border-b border-glass-border pb-4 mb-5">
+          <h2 className="logo-glow text-[1.4rem] m-0 font-bold text-primary-cyan">
             hactto 결제 및 환불 규정
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-dim)',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-dim)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="bg-transparent hover:bg-surface border-none text-dim hover:text-main text-2xl cursor-pointer flex items-center justify-center w-[30px] h-[30px] rounded-full transition-all duration-200"
           >
             &times;
           </button>
         </div>
 
         {/* Scrollable Content */}
-        <div
-          className="scroll-y-container"
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            paddingRight: '8px',
-            fontSize: '0.9rem',
-            lineHeight: '1.7',
-            color: 'var(--text-dim)',
-            textAlign: 'left',
-          }}
-        >
-          <p style={{ marginBottom: '15px' }}>
+        <div className="scroll-y-container flex-1 overflow-y-auto pr-2 text-[0.9rem] leading-[1.7] text-dim text-left">
+          <p className="mb-[15px]">
             hactto 서비스를 이용해 주셔서 감사합니다. hactto의 유료 충전 수단(혼
             단건 충전) 및 무제한 구독 서비스의 결제 취소 및 환불에 관한 세부
             규정은 다음과 같습니다.
           </p>
 
-          <h3
-            style={{
-              fontSize: '1.1rem',
-              color: '#ffffff',
-              marginTop: '20px',
-              marginBottom: '8px',
-              fontWeight: '600',
-            }}
-          >
+          <h3 className="text-[1.1rem] text-main mt-5 mb-2 font-semibold">
             1. 혼(Hon) 단건 충전 환불 규정
           </h3>
-          <p style={{ marginBottom: '10px' }}>
+          <p className="mb-2.5">
             구매한 혼(Hon)에 대해서는 환불 요청 시 아래와 같이 위약금 및
             사용분의 정가를 공제한 금액을 환불합니다.
           </p>
-          <ul
-            style={{
-              paddingLeft: '20px',
-              marginBottom: '15px',
-              listStyleType: 'disc',
-            }}
-          >
+          <ul className="pl-5 mb-[15px] list-disc">
             <li>
               <strong>위약금 공제</strong>: 결제 완료된 원래 충전 금액의{' '}
               <strong>10%</strong>를 위약금으로 공제합니다.
@@ -151,23 +72,7 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
             </li>
             <li>
               <strong>환불 금액 산식</strong>:
-              <div
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  margin: '10px 0',
-                  color: 'var(--primary-cyan)',
-                  textAlign: 'center',
-                  fontSize: '0.8rem',
-                  fontWeight: '600',
-                  wordBreak: 'keep-all',
-                  whiteSpace: 'normal',
-                  overflowX: 'auto',
-                  boxSizing: 'border-box',
-                }}
-              >
+              <div className="bg-surface border border-glass-border p-3 rounded-md my-2.5 text-primary-cyan text-center text-[0.8rem] font-semibold break-keep whitespace-normal overflow-x-auto box-border">
                 환불 금액 = 결제 금액 - (결제 금액 × 10%) - (사용한 혼 개수 ×
                 50원)
               </div>
@@ -185,40 +90,19 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
             </li>
           </ul>
 
-          <h3
-            style={{
-              fontSize: '1.1rem',
-              color: '#ffffff',
-              marginTop: '20px',
-              marginBottom: '8px',
-              fontWeight: '600',
-            }}
-          >
+          <h3 className="text-[1.1rem] text-main mt-5 mb-2 font-semibold">
             2. 무제한 구독권 환불 규정 (월간 및 연간)
           </h3>
-          <p style={{ marginBottom: '10px' }}>
+          <p className="mb-2.5">
             정기 구독 상품(월간 무제한 구독, 연간 무제한 구독)의 환불 규정은
             아래와 같습니다. (결제 후 사용된 서비스 가치는 '예측 생성 시
             알고리즘 복잡도 당 50원'과 '당첨 번호 분석 1건당 250원'을 합산하여
             계산합니다.)
           </p>
-          <ul
-            style={{
-              paddingLeft: '20px',
-              marginBottom: '15px',
-              listStyleType: 'disc',
-            }}
-          >
+          <ul className="pl-5 mb-[15px] list-disc">
             <li>
               <strong>결제일로부터 7일 이내</strong>:
-              <ul
-                style={{
-                  paddingLeft: '15px',
-                  marginTop: '4px',
-                  marginBottom: '8px',
-                  listStyleType: 'circle',
-                }}
-              >
+              <ul className="pl-[15px] mt-1 mb-2 list-[circle]">
                 <li>
                   서비스 미사용: <strong>100% 전액 환불</strong>
                 </li>
@@ -232,14 +116,7 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
             </li>
             <li>
               <strong>결제일로부터 7일 경과 후</strong>:
-              <ul
-                style={{
-                  paddingLeft: '15px',
-                  marginTop: '4px',
-                  marginBottom: '8px',
-                  listStyleType: 'circle',
-                }}
-              >
+              <ul className="pl-[15px] mt-1 mb-2 list-[circle]">
                 <li>
                   서비스 미사용:{' '}
                   <strong>결제 금액 - (결제 금액 × 10% 위약금)</strong>
@@ -265,18 +142,10 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
             </li>
           </ul>
 
-          <h3
-            style={{
-              fontSize: '1.1rem',
-              color: '#ffffff',
-              marginTop: '20px',
-              marginBottom: '8px',
-              fontWeight: '600',
-            }}
-          >
+          <h3 className="text-[1.1rem] text-main mt-5 mb-2 font-semibold">
             3. 환불 신청 절차
           </h3>
-          <p style={{ marginBottom: '15px' }}>
+          <p className="mb-[15px]">
             혼(Hon) 환불 요청은 상단 메뉴의 <strong>1:1 문의</strong> 탭을
             통하여 결제 주문 정보 및 환불 사유를 적어 제출해 주시면 확인 후
             신속하게 처리해 드립니다.
@@ -284,24 +153,10 @@ export const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div
-          style={{
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-            paddingTop: '15px',
-            marginTop: '15px',
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
+        <div className="border-t border-glass-border pt-[15px] mt-[15px] flex justify-end">
           <button
             onClick={onClose}
-            className="secondary-btn"
-            style={{
-              padding: '8px 20px',
-              borderRadius: '20px',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-            }}
+            className="secondary-btn px-5 py-2 rounded-[20px] text-[0.85rem] font-semibold bg-surface hover:bg-surface-hover border border-glass-border text-main cursor-pointer transition-colors"
           >
             확인
           </button>

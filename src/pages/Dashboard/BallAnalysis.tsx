@@ -30,10 +30,6 @@ export function BallAnalysis() {
 
   // Prevent body scroll when modal is open and add ESC key support
   useEffect(() => {
-    const scrollContainer = document.querySelector(
-      '.scroll-y-container',
-    ) as HTMLElement | null;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelectedBall(null);
@@ -42,16 +38,13 @@ export function BallAnalysis() {
 
     if (selectedBall !== null) {
       document.body.style.overflow = 'hidden';
-      if (scrollContainer) scrollContainer.style.overflowY = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
     } else {
       document.body.style.overflow = '';
-      if (scrollContainer) scrollContainer.style.overflowY = 'auto';
     }
 
     return () => {
       document.body.style.overflow = '';
-      if (scrollContainer) scrollContainer.style.overflowY = 'auto';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedBall]);
@@ -91,41 +84,17 @@ export function BallAnalysis() {
   const totalEpisodes = ballStatsList[0]?.totalEpisodes ?? 0;
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '16px',
-        }}
-      >
+    <div className="flex flex-col gap-6">
+      <div className="flex justify-between items-end flex-wrap gap-3">
         <div>
-          <h2
-            className="access-title"
-            style={{ fontSize: '1.3rem', marginBottom: '6px' }}
-          >
+          <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-main tracking-tight m-0">
             추첨 번호 분석 (1 ~ 45번)
-          </h2>
-          <p
-            style={{
-              fontSize: '0.84rem',
-              color: 'var(--text-dim)',
-              margin: 0,
-            }}
-          >
+          </h1>
+          <p className="text-sm text-dim mt-1.5 m-0">
             각 숫자공을 클릭하면 자리별 등장 횟수, 등장 확률, 온도 및 동반 출현
             번호 등 상세 분석 모달을 확인할 수 있습니다.
             {totalEpisodes > 0 && (
-              <span
-                style={{
-                  marginLeft: '8px',
-                  color: 'var(--primary-cyan)',
-                  fontWeight: 600,
-                }}
-              >
+              <span className="ml-2 text-primary-cyan font-semibold">
                 (전체 {totalEpisodes}회차 기준)
               </span>
             )}
@@ -134,47 +103,34 @@ export function BallAnalysis() {
       </div>
 
       {/* Filter & Sort Controls */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '12px',
-          padding: '14px 18px',
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: 'var(--border-glass)',
-          borderRadius: '14px',
-          marginBottom: '20px',
-        }}
-      >
+      <div className="bento-card p-4 sm:px-5 flex justify-between items-center flex-wrap gap-3">
         {/* Temperature Filter Tabs */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="flex gap-2 flex-wrap">
           {(
             [
               {
                 key: 'ALL' as const,
                 label: `전체 (${countsByTemp.ALL || 45})`,
-                activeColor: 'var(--primary-cyan)',
-                activeBg: 'rgba(0, 240, 255, 0.14)',
+                activeClasses:
+                  'bg-primary-cyan text-white border-primary-cyan shadow-sm',
               },
               {
                 key: 'HOT' as const,
                 label: `🔥 열번호 HOT (${countsByTemp.HOT})`,
-                activeColor: '#f87171',
-                activeBg: 'rgba(239, 68, 68, 0.16)',
+                activeClasses:
+                  'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/40',
               },
               {
                 key: 'WARM' as const,
                 label: `☀️ 온번호 WARM (${countsByTemp.WARM})`,
-                activeColor: '#fb923c',
-                activeBg: 'rgba(249, 115, 22, 0.16)',
+                activeClasses:
+                  'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/40',
               },
               {
                 key: 'COLD' as const,
                 label: `❄️ 냉번호 COLD (${countsByTemp.COLD})`,
-                activeColor: '#60a5fa',
-                activeBg: 'rgba(59, 130, 246, 0.16)',
+                activeClasses:
+                  'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/40',
               },
             ] as const
           ).map((tab) => {
@@ -184,21 +140,11 @@ export function BallAnalysis() {
                 key={tab.key}
                 type="button"
                 onClick={() => setTempFilter(tab.key)}
-                style={{
-                  padding: '6px 13px',
-                  borderRadius: '999px',
-                  fontSize: '0.8rem',
-                  fontWeight: isActive ? 700 : 500,
-                  cursor: 'pointer',
-                  background: isActive
-                    ? tab.activeBg
-                    : 'rgba(255, 255, 255, 0.03)',
-                  color: isActive ? tab.activeColor : 'var(--text-dim)',
-                  border: isActive
-                    ? `1px solid ${tab.activeColor}`
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  transition: 'all 0.2s',
-                }}
+                className={`py-1.5 px-3.5 rounded-full text-xs cursor-pointer border transition-all duration-200 ${
+                  isActive
+                    ? `${tab.activeClasses} font-bold`
+                    : 'bg-surface text-dim border-glass-border font-semibold hover:text-main'
+                }`}
               >
                 {tab.label}
               </button>
@@ -207,16 +153,7 @@ export function BallAnalysis() {
         </div>
 
         {/* Sort Options */}
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-          <span
-            style={{
-              fontSize: '0.78rem',
-              color: 'var(--text-muted)',
-              marginRight: '4px',
-            }}
-          >
-            정렬:
-          </span>
+        <div className="flex gap-1.5 items-center bg-surface p-1 rounded-xl border border-glass-border">
           {(
             [
               { key: 'NUMBER' as const, label: '번호순' },
@@ -230,21 +167,11 @@ export function BallAnalysis() {
                 key={opt.key}
                 type="button"
                 onClick={() => setSortBy(opt.key)}
-                style={{
-                  padding: '5px 11px',
-                  borderRadius: '8px',
-                  fontSize: '0.78rem',
-                  fontWeight: isActive ? 700 : 500,
-                  cursor: 'pointer',
-                  background: isActive
-                    ? 'rgba(0, 240, 255, 0.15)'
-                    : 'transparent',
-                  color: isActive ? 'var(--primary-cyan)' : 'var(--text-dim)',
-                  border: isActive
-                    ? '1px solid rgba(0, 240, 255, 0.4)'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  transition: 'all 0.2s',
-                }}
+                className={`py-1.5 px-3 rounded-lg text-xs cursor-pointer border-none transition-all duration-200 ${
+                  isActive
+                    ? 'bg-card text-primary-cyan font-bold shadow-xs'
+                    : 'bg-transparent text-dim font-medium hover:text-main'
+                }`}
               >
                 {opt.label}
               </button>
@@ -255,131 +182,54 @@ export function BallAnalysis() {
 
       {/* 1~45 Balls Grid */}
       {ballStatsList.length === 0 ? (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '60px 20px',
-            color: 'var(--text-dim)',
-          }}
-        >
+        <div className="bento-card text-center py-16 px-5 text-dim">
           번호별 통계 데이터를 불러오는 중...
         </div>
       ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(112px, 1fr))',
-            gap: '12px',
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(136px,1fr))] gap-3.5">
           {filteredAndSortedBalls.map((stat) => {
             const tempMeta = getTemperatureMeta(stat.status);
             return (
               <div
                 key={stat.ball}
                 onClick={() => setSelectedBall(stat.ball)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.07)',
-                  borderRadius: '14px',
-                  padding: '14px 10px 12px 10px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  transition: 'all 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.background = 'rgba(0, 240, 255, 0.05)';
-                  e.currentTarget.style.borderColor = 'rgba(0, 240, 255, 0.35)';
-                  e.currentTarget.style.boxShadow =
-                    '0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(0, 240, 255, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.background =
-                    'rgba(255, 255, 255, 0.02)';
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.07)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
+                className="bento-card bento-card-interactive pt-3.5 px-3.5 pb-3.5 flex flex-col items-center gap-2.5 cursor-pointer relative"
               >
                 {/* Top Row: Rank & Temperature Badge */}
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '0.68rem',
-                  }}
-                >
-                  <span
-                    style={{
-                      color: 'var(--text-muted)',
-                      fontWeight: 600,
-                    }}
-                  >
+                <div className="w-full flex justify-between items-center gap-1.5">
+                  <span className="text-[0.72rem] text-muted font-bold tabular-nums whitespace-nowrap shrink-0">
                     #{stat.rank}위
                   </span>
                   <span
+                    className="inline-flex items-center gap-1 rounded-full py-0.5 px-2 font-bold text-[0.65rem] whitespace-nowrap shrink-0 leading-none"
                     style={{
                       color: tempMeta.color,
                       background: tempMeta.bg,
                       border: `1px solid ${tempMeta.border}`,
-                      borderRadius: '999px',
-                      padding: '1px 6px',
-                      fontWeight: 700,
-                      fontSize: '0.65rem',
                     }}
                   >
-                    {tempMeta.icon} {tempMeta.shortLabel}
+                    <span>{tempMeta.icon}</span>
+                    <span>{tempMeta.shortLabel}</span>
                   </span>
                 </div>
 
                 {/* Lotto Ball */}
                 <div
-                  className="lotto-ball"
-                  style={{
-                    ...getBallStyle(stat.ball),
-                    width: '44px',
-                    height: '44px',
-                    fontSize: '1.05rem',
-                    margin: '2px 0',
-                  }}
+                  className="lotto-ball !w-[46px] !h-[46px] !text-[1.08rem] my-1 mx-0"
+                  style={getBallStyle(stat.ball)}
                 >
                   {stat.ball}
                 </div>
 
                 {/* Bottom Stats Summary */}
-                <div style={{ textAlign: 'center', lineHeight: 1.35 }}>
-                  <div
-                    style={{
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      color: 'var(--text-main)',
-                    }}
-                  >
+                <div className="text-center leading-tight w-full">
+                  <div className="text-[0.82rem] font-bold text-main tabular-nums whitespace-nowrap">
                     {stat.totalCount}회{' '}
-                    <span
-                      style={{
-                        color: 'var(--primary-cyan)',
-                        fontSize: '0.76rem',
-                      }}
-                    >
+                    <span className="text-primary-cyan text-[0.75rem]">
                       ({stat.appearanceRate.toFixed(1)}%)
                     </span>
                   </div>
-                  <div
-                    style={{
-                      fontSize: '0.7rem',
-                      color: 'var(--text-muted)',
-                      marginTop: '2px',
-                    }}
-                  >
+                  <div className="text-[0.7rem] text-muted mt-1 whitespace-nowrap">
                     {stat.skip === 0
                       ? '최근 회차 당첨'
                       : `${stat.skip}주 미출현`}
@@ -399,152 +249,50 @@ export function BallAnalysis() {
             onClick={() => setSelectedBall(null)}
           >
             <div
-              className="glass-card admin-modal-content"
+              className="glass-card admin-modal-content max-w-[680px] w-[94%] !p-0 text-left relative border border-glass-border-strong shadow-glass flex flex-col overflow-hidden !max-h-[88vh]"
               onClick={(e) => e.stopPropagation()}
-              style={{
-                maxWidth: '680px',
-                width: '94%',
-                padding: '0',
-                textAlign: 'left',
-                position: 'relative',
-                border: '1px solid rgba(0, 240, 255, 0.28)',
-                boxShadow:
-                  '0 22px 48px rgba(0, 0, 0, 0.88), 0 0 32px rgba(0, 240, 255, 0.14)',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                maxHeight: '88vh',
-              }}
             >
-              <div
-                style={{
-                  padding: '28px 28px 8px 28px',
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  flex: 1,
-                }}
-              >
+              <div className="pt-7 px-6 sm:px-7 pb-2 overflow-y-auto flex flex-col flex-1">
                 {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => setSelectedBall(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '20px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--text-dim)',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'color 0.2s',
-                    zIndex: 10,
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = 'var(--text-main)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = 'var(--text-dim)')
-                  }
+                  className="absolute top-5 right-5 w-8 h-8 rounded-lg bg-surface border border-glass-border text-dim hover:text-main cursor-pointer flex items-center justify-center transition-colors duration-200 z-10"
                 >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
+                  ✕
                 </button>
 
                 {/* Modal Header */}
                 {(() => {
                   const tempMeta = getTemperatureMeta(selectedStat.status);
                   return (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px',
-                        marginBottom: '22px',
-                        paddingRight: '28px',
-                      }}
-                    >
+                    <div className="flex items-center gap-4 mb-6 pr-8">
                       <div
-                        className="lotto-ball"
-                        style={{
-                          ...getBallStyle(selectedStat.ball),
-                          width: '54px',
-                          height: '54px',
-                          fontSize: '1.3rem',
-                          flexShrink: 0,
-                        }}
+                        className="lotto-ball !w-[54px] !h-[54px] !text-[1.3rem] shrink-0"
+                        style={getBallStyle(selectedStat.ball)}
                       >
                         {selectedStat.ball}
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            flexWrap: 'wrap',
-                            marginBottom: '4px',
-                          }}
-                        >
-                          <h2
-                            className="access-title"
-                            style={{
-                              fontSize: '1.3rem',
-                              color: 'var(--text-main)',
-                              margin: 0,
-                            }}
-                          >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <h2 className="font-display text-xl font-extrabold text-main m-0">
                             {selectedStat.ball}번 추첨 번호 상세 분석
                           </h2>
-                          <span
-                            style={{
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              color: 'var(--primary-cyan)',
-                              background: 'rgba(0, 240, 255, 0.12)',
-                              border: '1px solid rgba(0, 240, 255, 0.35)',
-                              padding: '2px 9px',
-                              borderRadius: '999px',
-                            }}
-                          >
+                          <span className="text-xs font-bold text-primary-cyan bg-primary-cyan/10 border border-primary-cyan/30 py-0.5 px-2.5 rounded-full">
                             전체 출현 {selectedStat.rank}위 / 45개
                           </span>
                           <span
+                            className="text-xs font-bold py-0.5 px-2.5 rounded-full"
                             style={{
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
                               color: tempMeta.color,
                               background: tempMeta.bg,
                               border: `1px solid ${tempMeta.border}`,
-                              padding: '2px 9px',
-                              borderRadius: '999px',
                             }}
                           >
                             {tempMeta.icon} {tempMeta.label}
                           </span>
                         </div>
-                        <p
-                          style={{
-                            fontSize: '0.8rem',
-                            color: 'var(--text-dim)',
-                            margin: 0,
-                          }}
-                        >
+                        <p className="text-xs text-dim m-0">
                           제 1회 ~ 제 {selectedStat.totalEpisodes}회 누적 당첨
                           데이터 기반 정밀 통계
                         </p>
@@ -554,212 +302,76 @@ export function BallAnalysis() {
                 })()}
 
                 {/* Core 4-Metric Summary Cards */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-                    gap: '10px',
-                    marginBottom: '22px',
-                  }}
-                >
-                  <div
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.025)',
-                      border: '1px solid rgba(255, 255, 255, 0.07)',
-                      borderRadius: '12px',
-                      padding: '12px 12px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-dim)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      총 등장 횟수 (1~6번째)
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
+                    <div className="text-[0.68rem] font-semibold text-dim">
+                      총 등장 횟수
                     </div>
-                    <div
-                      style={{
-                        fontSize: '1.2rem',
-                        fontWeight: 800,
-                        color: 'var(--text-main)',
-                        marginTop: '6px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <div className="font-display text-lg font-extrabold text-main mt-1 tabular-nums">
                       {selectedStat.totalCount}회
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: '#c084fc',
-                        marginTop: '4px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      보너스 볼 +{selectedStat.bonusCount}회 별도
+                    <div className="text-[0.68rem] text-primary-purple font-medium mt-0.5">
+                      보너스 +{selectedStat.bonusCount}회 별도
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.025)',
-                      border: '1px solid rgba(255, 255, 255, 0.07)',
-                      borderRadius: '12px',
-                      padding: '12px 12px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-dim)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      등장 확률 (전체 회차 대비)
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
+                    <div className="text-[0.68rem] font-semibold text-dim">
+                      등장 확률
                     </div>
-                    <div
-                      style={{
-                        fontSize: '1.2rem',
-                        fontWeight: 800,
-                        color: 'var(--primary-cyan)',
-                        marginTop: '6px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <div className="font-display text-lg font-extrabold text-primary-cyan mt-1 tabular-nums">
                       {selectedStat.appearanceRate.toFixed(2)}%
                     </div>
+                    <div className="text-[0.68rem] text-muted mt-0.5">
+                      전체 회차 대비
+                    </div>
                   </div>
 
-                  <div
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.025)',
-                      border: '1px solid rgba(255, 255, 255, 0.07)',
-                      borderRadius: '12px',
-                      padding: '12px 12px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-dim)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      미출현 간격 · 최근 회차
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
+                    <div className="text-[0.68rem] font-semibold text-dim">
+                      미출현 간격
                     </div>
                     <div
+                      className="font-display text-base font-extrabold mt-1"
                       style={{
-                        fontSize: '1.04rem',
-                        fontWeight: 800,
                         color: getTemperatureMeta(selectedStat.status).color,
-                        marginTop: '6px',
-                        whiteSpace: 'nowrap',
                       }}
                     >
                       {selectedStat.skip === 0
                         ? '최근 회차 당첨!'
                         : `${selectedStat.skip}주 연속 미출현`}
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-muted)',
-                        marginTop: '4px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      최근 등장: 제 {selectedStat.latestEpisode}회
+                    <div className="text-[0.68rem] text-muted mt-0.5">
+                      최근: 제 {selectedStat.latestEpisode}회
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.025)',
-                      border: '1px solid rgba(255, 255, 255, 0.07)',
-                      borderRadius: '12px',
-                      padding: '12px 12px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-dim)',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
+                    <div className="text-[0.68rem] font-semibold text-dim">
                       최근 단기 흐름
                     </div>
-                    <div
-                      style={{
-                        fontSize: '1.1rem',
-                        fontWeight: 800,
-                        color: 'var(--text-main)',
-                        marginTop: '6px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <div className="font-display text-base font-extrabold text-main mt-1 tabular-nums">
                       10회 중 {selectedStat.recentTen}회
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.68rem',
-                        color: 'var(--text-muted)',
-                        marginTop: '4px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <div className="text-[0.68rem] text-muted mt-0.5">
                       최근 30회 중 {selectedStat.recentThirty}회 등장
                     </div>
                   </div>
                 </div>
 
                 {/* Section 1: Position-by-Position Counts (1st ~ 6th) */}
-                <div
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.25)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '14px',
-                    padding: '16px 18px',
-                    marginBottom: '18px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '14px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '0.88rem',
-                        fontWeight: 700,
-                        color: 'var(--text-main)',
-                      }}
-                    >
+                <div className="bg-surface border border-glass-border rounded-2xl py-4 px-5 mb-4">
+                  <div className="flex justify-between items-center mb-3.5">
+                    <span className="text-sm font-bold text-main">
                       자리별 등장 횟수 (첫번째 ~ 여섯번째 자리)
                     </span>
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-muted)',
-                      }}
-                    >
+                    <span className="text-xs text-muted font-semibold tabular-nums">
                       총 {selectedStat.totalCount}회 (
                       {selectedStat.appearanceRate.toFixed(2)}%)
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px',
-                    }}
-                  >
+                  <div className="flex flex-col gap-2.5">
                     {POSITION_LABELS.map((label, idx) => {
                       const count = selectedStat.positionCounts?.[idx] ?? 0;
                       const shareWithinBall =
@@ -774,63 +386,30 @@ export function BallAnalysis() {
                       return (
                         <div
                           key={label}
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: '92px 1fr 135px',
-                            alignItems: 'center',
-                            gap: '12px',
-                            fontSize: '0.8rem',
-                          }}
+                          className="grid grid-cols-[92px_1fr_115px] items-center gap-3 text-xs"
                         >
-                          <span
-                            style={{
-                              color: 'var(--text-dim)',
-                              fontWeight: 600,
-                            }}
-                          >
+                          <span className="text-dim font-semibold">
                             {label}
                           </span>
 
-                          <div
-                            style={{
-                              height: '10px',
-                              background: 'rgba(255, 255, 255, 0.06)',
-                              borderRadius: '999px',
-                              overflow: 'hidden',
-                            }}
-                          >
+                          <div className="h-2.5 bg-surface-hover rounded-full overflow-hidden">
                             <div
+                              className={`h-full rounded-full transition-[width] duration-350 ease-in-out ${
+                                count > 0 ? 'bg-primary-cyan' : 'bg-transparent'
+                              }`}
                               style={{
                                 width: `${Math.min(100, shareWithinBall)}%`,
-                                height: '100%',
-                                background:
-                                  count > 0
-                                    ? 'linear-gradient(90deg, var(--primary-cyan) 0%, #3b82f6 100%)'
-                                    : 'transparent',
-                                borderRadius: '999px',
-                                transition: 'width 0.35s ease',
                               }}
                             />
                           </div>
 
                           <div
-                            style={{
-                              textAlign: 'right',
-                              fontWeight: 700,
-                              color:
-                                count > 0
-                                  ? 'var(--text-main)'
-                                  : 'var(--text-muted)',
-                            }}
+                            className={`text-right font-bold tabular-nums ${
+                              count > 0 ? 'text-main' : 'text-muted'
+                            }`}
                           >
                             {count}회{' '}
-                            <span
-                              style={{
-                                fontSize: '0.72rem',
-                                fontWeight: 500,
-                                color: 'var(--primary-cyan)',
-                              }}
-                            >
+                            <span className="text-[0.7rem] font-medium text-primary-cyan">
                               ({rateInAllEpisodes.toFixed(2)}%)
                             </span>
                           </div>
@@ -841,51 +420,19 @@ export function BallAnalysis() {
                 </div>
 
                 {/* Section 2: Best Friendly Numbers Top 3 */}
-                <div
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.25)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '14px',
-                    padding: '16px 18px',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '12px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '0.88rem',
-                        fontWeight: 700,
-                        color: 'var(--text-main)',
-                      }}
-                    >
+                <div className="bg-surface border border-glass-border rounded-2xl py-4 px-5">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm font-bold text-main">
                       베스트 궁합 번호 Top 3 (최다 동반 출현 번호)
                     </span>
-                    <span
-                      style={{
-                        fontSize: '0.73rem',
-                        color: 'var(--text-muted)',
-                      }}
-                    >
+                    <span className="text-xs text-muted">
                       번호 클릭 시 해당 공 분석으로 이동
                     </span>
                   </div>
 
                   {selectedStat.friendlyNumbers &&
                   selectedStat.friendlyNumbers.length > 0 ? (
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns:
-                          'repeat(auto-fit, minmax(150px, 1fr))',
-                        gap: '10px',
-                      }}
-                    >
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       {selectedStat.friendlyNumbers.map((friendNum, i) => {
                         const friendStat = ballStatsMap[friendNum];
                         const friendTemp = getTemperatureMeta(
@@ -904,54 +451,16 @@ export function BallAnalysis() {
                           <div
                             key={friendNum}
                             onClick={() => setSelectedBall(friendNum)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              padding: '10px 10px',
-                              background: 'rgba(255, 255, 255, 0.03)',
-                              border: '1px solid rgba(255, 255, 255, 0.08)',
-                              borderRadius: '10px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor =
-                                'var(--primary-cyan)';
-                              e.currentTarget.style.background =
-                                'rgba(0, 240, 255, 0.07)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor =
-                                'rgba(255, 255, 255, 0.08)';
-                              e.currentTarget.style.background =
-                                'rgba(255, 255, 255, 0.03)';
-                            }}
+                            className="flex items-center gap-2.5 p-2.5 bg-card hover:bg-primary-cyan/5 border border-glass-border hover:border-primary-cyan/40 rounded-xl cursor-pointer transition-all duration-200"
                           >
                             <div
-                              className="lotto-ball"
-                              style={{
-                                ...getBallStyle(friendNum),
-                                width: '34px',
-                                height: '34px',
-                                fontSize: '0.88rem',
-                                flexShrink: 0,
-                              }}
+                              className="lotto-ball !w-[34px] !h-[34px] !text-[0.88rem] shrink-0"
+                              style={getBallStyle(friendNum)}
                             >
                               {friendNum}
                             </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div
-                                style={{
-                                  fontSize: '0.78rem',
-                                  fontWeight: 700,
-                                  color: 'var(--text-main)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '5px',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs font-bold text-main flex items-center gap-1 whitespace-nowrap">
                                 <span>
                                   {i + 1}위 ·{' '}
                                   {hasCoCount
@@ -961,8 +470,8 @@ export function BallAnalysis() {
                                       : `${friendNum}번`}
                                 </span>
                                 <span
+                                  className="text-[0.65rem]"
                                   style={{
-                                    fontSize: '0.65rem',
                                     color: friendTemp.color,
                                   }}
                                 >
@@ -970,14 +479,7 @@ export function BallAnalysis() {
                                 </span>
                               </div>
                               {coRate !== undefined && (
-                                <div
-                                  style={{
-                                    fontSize: '0.72rem',
-                                    color: 'var(--text-dim)',
-                                    marginTop: '2px',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                >
+                                <div className="text-[0.72rem] text-dim mt-0.5 whitespace-nowrap">
                                   {hasCoCount ? '동반율' : '등장률'} {coRate}%
                                 </div>
                               )}
@@ -987,12 +489,7 @@ export function BallAnalysis() {
                       })}
                     </div>
                   ) : (
-                    <div
-                      style={{
-                        fontSize: '0.8rem',
-                        color: 'var(--text-dim)',
-                      }}
-                    >
+                    <div className="text-xs text-dim">
                       동반 출현 데이터가 없습니다.
                     </div>
                   )}
@@ -1000,23 +497,10 @@ export function BallAnalysis() {
               </div>
 
               {/* Modal Footer */}
-              <div style={{ padding: '18px 28px 26px 28px', flexShrink: 0 }}>
+              <div className="pt-4 px-6 sm:px-7 pb-6 shrink-0">
                 <button
                   type="button"
-                  className="btn-submit"
-                  style={{
-                    width: '100%',
-                    height: '42px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background:
-                      'linear-gradient(135deg, var(--primary-cyan) 0%, #00b0ff 100%)',
-                    boxShadow: '0 4px 15px rgba(0, 240, 255, 0.25)',
-                    color: '#030712',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                  }}
+                  className="btn-submit w-full h-11 flex items-center justify-center"
                   onClick={() => setSelectedBall(null)}
                 >
                   확인

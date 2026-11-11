@@ -60,38 +60,53 @@ export const getAlgorithmDescription = (type: any): string => {
 export const getBallStyle = (num: number) => {
   if (num <= 0)
     return {
-      background: 'rgba(255,255,255,0.05)',
+      background: 'var(--bg-surface)',
       color: 'var(--text-dim)',
-      border: '1px dashed rgba(255,255,255,0.1)',
+      border: '1.5px dashed var(--border-glass-strong)',
     };
-  if (num < 10)
+  if (num <= 10)
     return {
-      background: 'linear-gradient(135deg, #fbc02d 0%, #f57f17 100%)',
-      color: '#000000',
-      boxShadow: '0 0 10px rgba(245, 127, 23, 0.3)',
-    };
-  if (num < 20)
-    return {
-      background: 'linear-gradient(135deg, #29b6f6 0%, #0288d1 100%)',
+      background:
+        'linear-gradient(145deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%)',
       color: '#ffffff',
-      boxShadow: '0 0 10px rgba(2, 136, 209, 0.3)',
+      boxShadow:
+        '0 4px 12px rgba(245, 158, 11, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.45)',
+      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
-  if (num < 30)
+  if (num <= 20)
     return {
-      background: 'linear-gradient(135deg, #ef5350 0%, #d32f2f 100%)',
+      background:
+        'linear-gradient(145deg, #60a5fa 0%, #3182f6 55%, #1d4ed8 100%)',
       color: '#ffffff',
-      boxShadow: '0 0 10px rgba(211, 47, 47, 0.3)',
+      boxShadow:
+        '0 4px 12px rgba(49, 130, 246, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.4)',
+      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
-  if (num < 40)
+  if (num <= 30)
     return {
-      background: 'linear-gradient(135deg, #bdbdbd 0%, #616161 100%)',
+      background:
+        'linear-gradient(145deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%)',
       color: '#ffffff',
-      boxShadow: '0 0 10px rgba(97, 97, 97, 0.3)',
+      boxShadow:
+        '0 4px 12px rgba(244, 63, 94, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.4)',
+      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+    };
+  if (num <= 40)
+    return {
+      background:
+        'linear-gradient(145deg, #94a3b8 0%, #64748b 55%, #475569 100%)',
+      color: '#ffffff',
+      boxShadow:
+        '0 4px 12px rgba(100, 116, 139, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35)',
+      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
   return {
-    background: 'linear-gradient(135deg, #66bb6a 0%, #388e3c 100%)',
+    background:
+      'linear-gradient(145deg, #34d399 0%, #10b981 55%, #059669 100%)',
     color: '#ffffff',
-    boxShadow: '0 0 10px rgba(56, 142, 60, 0.3)',
+    boxShadow:
+      '0 4px 12px rgba(16, 185, 129, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.4)',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
   };
 };
 
@@ -102,18 +117,18 @@ export const getTemperatureMeta = (status?: 'HOT' | 'WARM' | 'COLD') => {
         label: '열번호 (HOT)',
         shortLabel: 'HOT',
         icon: '🔥',
-        color: '#f87171',
-        bg: 'rgba(239, 68, 68, 0.16)',
-        border: 'rgba(239, 68, 68, 0.45)',
+        color: '#f43f5e',
+        bg: 'rgba(244, 63, 94, 0.12)',
+        border: 'rgba(244, 63, 94, 0.28)',
       };
     case 'WARM':
       return {
         label: '온번호 (WARM)',
         shortLabel: 'WARM',
         icon: '☀️',
-        color: '#fb923c',
-        bg: 'rgba(249, 115, 22, 0.16)',
-        border: 'rgba(249, 115, 22, 0.45)',
+        color: '#f59e0b',
+        bg: 'rgba(245, 158, 11, 0.12)',
+        border: 'rgba(245, 158, 11, 0.28)',
       };
     case 'COLD':
     default:
@@ -121,9 +136,9 @@ export const getTemperatureMeta = (status?: 'HOT' | 'WARM' | 'COLD') => {
         label: '냉번호 (COLD)',
         shortLabel: 'COLD',
         icon: '❄️',
-        color: '#60a5fa',
-        bg: 'rgba(59, 130, 246, 0.16)',
-        border: 'rgba(59, 130, 246, 0.45)',
+        color: '#3182f6',
+        bg: 'rgba(49, 130, 246, 0.12)',
+        border: 'rgba(49, 130, 246, 0.28)',
       };
   }
 };

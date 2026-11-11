@@ -31,8 +31,8 @@ const AdFallback: React.FC<{ format: string }> = ({ format }) => {
         onClick={handleClick}
       >
         <div className="ad-title-wrap">
-          <div className="ad-subtitle">차세대 로또 분석</div>
-          <div className="ad-title">hactto</div>
+          <div className="ad-subtitle">AI LOTTO ANALYTICS</div>
+          <div className="ad-title">Hactto</div>
           <div className="ad-badge">GRAND OPEN</div>
         </div>
 
@@ -46,11 +46,11 @@ const AdFallback: React.FC<{ format: string }> = ({ format }) => {
         </div>
 
         <div className="ad-desc">
-          AI 패턴 분석과 가중치 필터링으로{'\n'}더 스마트한 분석을 시작해
-          보세요.
+          AI 패턴 분석과 가중치 필터링으로{'\n'}
+          <strong>더 스마트한 예측</strong>을 시작해 보세요.
         </div>
-        <button className="ad-button" onClick={handleClick}>
-          분석하러 가기
+        <button type="button" className="ad-button" onClick={handleClick}>
+          분석하러 가기 →
         </button>
       </div>
     );
@@ -62,13 +62,13 @@ const AdFallback: React.FC<{ format: string }> = ({ format }) => {
       onClick={handleClick}
     >
       <div className="ad-left">
-        <span className="ad-logo">hactto</span>
+        <span className="ad-logo">Hactto</span>
         <div className="ad-divider" />
         <div className="ad-text-content">
           <span className="ad-tagline">
-            차세대 로또 분석 <span>hactto</span> grand open!
+            차세대 로또 분석 <span>Hactto</span> GRAND OPEN!
           </span>
-          <span className="ad-subtag">AI 분석 시스템 가동 중</span>
+          <span className="ad-subtag">AI 하이퍼 파라미터 분석 가동 중</span>
         </div>
       </div>
       <div className="ad-right">
@@ -77,7 +77,7 @@ const AdFallback: React.FC<{ format: string }> = ({ format }) => {
           <div className="ad-mini-ball b2" />
           <div className="ad-mini-ball b3" />
         </div>
-        <button className="ad-button" onClick={handleClick}>
+        <button type="button" className="ad-button" onClick={handleClick}>
           바로가기
         </button>
       </div>
@@ -94,10 +94,11 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
 }) => {
   const initialized = useRef(false);
   const insRef = useRef<HTMLModElement>(null);
-  const [adFailed, setAdFailed] = useState(false);
+  const isPlaceholderClient = client.includes('XXXX');
+  const [adFilled, setAdFilled] = useState(false);
 
   useEffect(() => {
-    if (initialized.current) return;
+    if (isPlaceholderClient || initialized.current) return;
 
     let retries = 0;
     const maxRetries = 5;
@@ -105,31 +106,16 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
     const initAd = () => {
       try {
         if (typeof window !== 'undefined' && window.adsbygoogle) {
-          const insElements = document.querySelectorAll(
-            `.adsbygoogle[data-ad-slot="${slot}"]`,
-          );
-          let hasWidth = false;
-
-          for (let i = 0; i < insElements.length; i++) {
-            const el = insElements[i] as HTMLElement;
-            // Check if the element or its parent has width > 0
-            if (
-              el.clientWidth > 0 ||
-              (el.parentElement && el.parentElement.clientWidth > 0)
-            ) {
-              hasWidth = true;
-              break;
-            }
-          }
+          const insEl = insRef.current;
+          const hasWidth =
+            insEl &&
+            (insEl.clientWidth > 0 ||
+              (insEl.parentElement && insEl.parentElement.clientWidth > 0));
 
           if (!hasWidth) {
             if (retries < maxRetries) {
               retries++;
-              setTimeout(initAd, 200); // Retry in 200ms
-            } else {
-              console.warn(
-                `AdSense slot ${slot} initialization skipped: container width is 0.`,
-              );
+              setTimeout(initAd, 200);
             }
             return;
           }
@@ -142,45 +128,53 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
       }
     };
 
-    const timer = setTimeout(initAd, 150); // Initial delay for layout reflow
+    const timer = setTimeout(initAd, 150);
 
-    // Check if the ad failed to load or was blocked by an adblocker after 2 seconds
-    const checkTimer = setTimeout(() => {
-      const isScriptLoaded =
-        typeof window !== 'undefined' &&
-        window.adsbygoogle &&
-        window.adsbygoogle.push !== Array.prototype.push;
-
-      const insEl = insRef.current;
-      if (!insEl) return;
-
-      const hasIframe = insEl.getElementsByTagName('iframe').length > 0;
-      const status = insEl.getAttribute('data-ad-status');
-
-      if (!isScriptLoaded || !hasIframe || status === 'unfilled') {
-        setAdFailed(true);
-      }
-    }, 2500);
+    // Observe data-ad-status changes on <ins> so we only reveal the ad slot when actually filled
+    const insEl = insRef.current;
+    let observer: MutationObserver | null = null;
+    if (insEl && typeof MutationObserver !== 'undefined') {
+      observer = new MutationObserver(() => {
+        const status = insEl.getAttribute('data-ad-status');
+        const hasIframe = insEl.getElementsByTagName('iframe').length > 0;
+        if (status === 'filled' && hasIframe) {
+          setAdFilled(true);
+        }
+      });
+      observer.observe(insEl, {
+        attributes: true,
+        attributeFilter: ['data-ad-status'],
+        childList: true,
+      });
+    }
 
     return () => {
       clearTimeout(timer);
-      clearTimeout(checkTimer);
+      observer?.disconnect();
     };
-  }, [slot]);
+  }, [slot, isPlaceholderClient]);
 
-  if (adFailed) {
+  // When using placeholder publisher ID, render the fallback banner directly
+  if (isPlaceholderClient) {
     return <AdFallback format={format} />;
   }
 
   return (
-    <ins
-      ref={insRef}
-      className="adsbygoogle"
-      style={style}
-      data-ad-client={client}
-      data-ad-slot={slot}
-      data-ad-format={format}
-      data-full-width-responsive={responsive}
-    />
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-[20px]">
+      {!adFilled && <AdFallback format={format} />}
+      <ins
+        ref={insRef}
+        className={`adsbygoogle transition-opacity duration-300 ${
+          adFilled
+            ? 'opacity-100 relative z-10'
+            : 'opacity-0 pointer-events-none absolute inset-0'
+        }`}
+        style={style}
+        data-ad-client={client}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive={responsive}
+      />
+    </div>
   );
 };
