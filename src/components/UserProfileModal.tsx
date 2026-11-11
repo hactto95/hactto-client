@@ -42,109 +42,43 @@ export function UserProfileModal({ userId, onClose }: UserProfileModalProps) {
   }, [userId]);
 
   return createPortal(
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(0,0,0,0.6)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-      }}
-    >
-      <div
-        style={{
-          background: 'var(--bg-main)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '12px',
-          padding: '24px',
-          width: '400px',
-          maxWidth: '90%',
-          color: 'var(--text-main)',
-          position: 'relative',
-        }}
-      >
+    <div className="fixed inset-0 bg-overlay backdrop-blur-xs flex items-center justify-center z-[1000]">
+      <div className="bg-modal border border-glass-border rounded-xl p-6 w-[400px] max-w-[90%] text-main shadow-glass relative">
         <button
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-main)',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-          }}
+          className="absolute top-3 right-3 bg-transparent hover:bg-surface border-none text-dim hover:text-main cursor-pointer text-[1.2rem] w-7 h-7 rounded-full flex items-center justify-center transition-colors"
         >
           &times;
         </button>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            로딩 중...
-          </div>
+          <div className="text-center py-10 text-muted">로딩 중...</div>
         ) : profile ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <div
-              style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: profile.avatarUrl
-                  ? `url(${profile.avatarUrl}) center/cover`
-                  : 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '2rem',
-                fontWeight: 'bold',
-                marginBottom: '16px',
-              }}
-            >
-              {!profile.avatarUrl && profile.nickname.substring(0, 1)}
+          <div className="flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full bg-linear-to-br from-primary-cyan/15 to-primary-purple/15 flex items-center justify-center text-[2rem] font-bold mb-4 overflow-hidden border border-glass-border">
+              {profile.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.nickname}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                profile.nickname.substring(0, 1)
+              )}
             </div>
-            <h2 style={{ margin: '0 0 24px 0', fontSize: '1.2rem' }}>
+            <h2 className="m-0 mb-6 text-[1.2rem] font-bold text-main">
               {profile.nickname}님의 정보
             </h2>
 
-            <div
-              style={{
-                width: '100%',
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: '8px',
-                padding: '16px',
-              }}
-            >
-              <h3
-                style={{
-                  margin: '0 0 16px 0',
-                  fontSize: '1rem',
-                  color: 'var(--primary-cyan)',
-                }}
-              >
+            <div className="w-full bg-surface border border-glass-border rounded-lg p-4">
+              <h3 className="m-0 mb-4 text-base text-primary-cyan font-bold">
                 당첨 기록
               </h3>
-              <div
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-              >
+              <div className="flex flex-col gap-2">
                 {[1, 2, 3, 4, 5].map((rank) => (
-                  <div
-                    key={rank}
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
+                  <div key={rank} className="flex justify-between">
                     <span>{rank}등 당첨</span>
-                    <span style={{ fontWeight: 'bold' }}>
+                    <span className="font-bold">
                       {
                         profile.winningStats[
                           rank as keyof UserProfile['winningStats']
@@ -158,7 +92,7 @@ export function UserProfileModal({ userId, onClose }: UserProfileModalProps) {
             </div>
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div className="text-center py-10 text-muted">
             유저 정보를 불러올 수 없습니다.
           </div>
         )}

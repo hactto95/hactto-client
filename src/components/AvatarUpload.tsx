@@ -142,43 +142,20 @@ export function AvatarUpload({
   return (
     <>
       <div
-        style={{
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          background: currentAvatarUrl
-            ? `url(${currentAvatarUrl}) center/cover`
-            : 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15))',
-          border: '2px solid rgba(0, 240, 255, 0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-main)',
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          boxShadow: '0 0 15px rgba(0, 240, 255, 0.1)',
-          cursor: 'pointer',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
+        className="w-16 h-16 rounded-full bg-linear-to-br from-primary-cyan/15 to-primary-purple/15 border-2 border-primary-cyan/30 flex items-center justify-center text-main text-[2rem] font-bold shadow-[0_0_15px_var(--primary-cyan-glow)] cursor-pointer relative overflow-hidden"
         onClick={() => fileInputRef.current?.click()}
         title="아바타 변경하기"
       >
-        {!currentAvatarUrl && nickname ? nickname.substring(0, 1) : null}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '20px',
-            background: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.6rem',
-          }}
-        >
+        {currentAvatarUrl ? (
+          <img
+            src={currentAvatarUrl}
+            alt={nickname}
+            className="w-full h-full object-cover"
+          />
+        ) : nickname ? (
+          nickname.substring(0, 1)
+        ) : null}
+        <div className="absolute bottom-0 inset-x-0 h-5 bg-black/50 text-white flex items-center justify-center text-[0.6rem]">
           변경
         </div>
       </div>
@@ -188,34 +165,13 @@ export function AvatarUpload({
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="image/*"
-        style={{ display: 'none' }}
+        className="hidden"
       />
 
       {imageSrc &&
         createPortal(
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              background: 'rgba(0,0,0,0.8)',
-              zIndex: 100000,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <div
-              style={{
-                position: 'relative',
-                width: '300px',
-                height: '300px',
-                background: '#333',
-              }}
-            >
+          <div className="fixed inset-0 w-screen h-screen bg-overlay backdrop-blur-xs z-[100000] flex flex-col items-center justify-center">
+            <div className="relative w-[300px] h-[300px] bg-surface-elevated rounded-lg overflow-hidden border border-glass-border">
               <Cropper
                 image={imageSrc}
                 crop={crop}
@@ -228,16 +184,8 @@ export function AvatarUpload({
                 onZoomChange={setZoom}
               />
             </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginTop: '16px',
-                width: '300px',
-              }}
-            >
-              <span style={{ color: 'white', fontSize: '0.9rem' }}>축소</span>
+            <div className="flex items-center gap-3 mt-4 w-[300px]">
+              <span className="text-white text-[0.9rem]">축소</span>
               <input
                 type="range"
                 value={zoom}
@@ -246,36 +194,21 @@ export function AvatarUpload({
                 step={0.1}
                 aria-labelledby="Zoom"
                 onChange={(e) => setZoom(Number(e.target.value))}
-                style={{ flex: 1, cursor: 'pointer' }}
+                className="flex-1 cursor-pointer accent-primary-cyan"
               />
-              <span style={{ color: 'white', fontSize: '0.9rem' }}>확대</span>
+              <span className="text-white text-[0.9rem]">확대</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <div className="flex gap-2.5 mt-5">
               <button
                 onClick={() => setImageSrc(null)}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  background: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
+                className="px-4 py-2 rounded bg-surface-elevated hover:bg-surface-hover text-main border border-glass-border cursor-pointer transition-colors"
               >
                 취소
               </button>
               <button
                 onClick={handleUpload}
                 disabled={isUploading}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  background: 'var(--primary-cyan)',
-                  color: 'black',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                }}
+                className="px-4 py-2 rounded-lg bg-primary-cyan text-white border-none cursor-pointer font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {isUploading ? '저장 중...' : '확인'}
               </button>

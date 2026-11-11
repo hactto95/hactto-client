@@ -146,31 +146,17 @@ export const AdminPolicyManagement: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        color: 'var(--text-main)',
-        padding: '20px',
-        position: 'relative',
-      }}
-    >
+    <div className="text-main p-5 relative">
       <Alert alert={alert} />
-      <h3 style={{ marginBottom: '20px', color: 'var(--primary-cyan)' }}>
-        약관 및 정책 관리
-      </h3>
+      <h3 className="mb-5 text-primary-cyan">약관 및 정책 관리</h3>
 
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+      <div className="flex gap-5 mb-[15px]">
         <div>
-          <label style={{ marginRight: '10px' }}>정책 종류:</label>
+          <label className="mr-2.5">정책 종류:</label>
           <select
             value={policyType}
             onChange={(e) => setPolicyType(e.target.value)}
-            style={{
-              background: 'var(--bg-card)',
-              color: 'var(--text-main)',
-              border: '1px solid var(--border-color)',
-              padding: '8px',
-              borderRadius: '4px',
-            }}
+            className="bg-card text-main border border-glass-border p-2 rounded"
           >
             <option value="privacy">개인정보처리방침</option>
             <option value="terms">이용약관</option>
@@ -178,17 +164,11 @@ export const AdminPolicyManagement: React.FC = () => {
         </div>
 
         <div>
-          <label style={{ marginRight: '10px' }}>버전 선택:</label>
+          <label className="mr-2.5">버전 선택:</label>
           <select
             value={selectedVersionId}
             onChange={(e) => loadVersion(e.target.value)}
-            style={{
-              background: 'var(--bg-card)',
-              color: 'var(--text-main)',
-              border: '1px solid var(--border-color)',
-              padding: '8px',
-              borderRadius: '4px',
-            }}
+            className="bg-card text-main border border-glass-border p-2 rounded"
           >
             <option value="new">-- 새 버전 작성 --</option>
             {versions.map((v) => (
@@ -200,57 +180,30 @@ export const AdminPolicyManagement: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ marginRight: '10px' }}>버전 명 (선택):</label>
+      <div className="mb-[15px]">
+        <label className="mr-2.5">버전 명 (선택):</label>
         <input
           type="text"
           value={version}
           onChange={(e) => setVersion(e.target.value)}
           placeholder="예: v1.1 또는 2026.07.15 시행"
-          style={{
-            background: 'var(--bg-card)',
-            color: 'var(--text-main)',
-            border: '1px solid var(--border-color)',
-            padding: '8px',
-            borderRadius: '4px',
-            width: '250px',
-          }}
+          className="bg-card text-main border border-glass-border p-2 rounded w-[250px]"
         />
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '10px' }}>
-          본문 (HTML 지원):
-        </label>
+      <div className="mb-[15px]">
+        <label className="block mb-2.5">본문 (HTML 지원):</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          style={{
-            width: '100%',
-            height: '400px',
-            background: 'var(--bg-card)',
-            color: 'var(--text-main)',
-            border: '1px solid var(--border-color)',
-            padding: '12px',
-            borderRadius: '4px',
-            fontFamily: 'monospace',
-            lineHeight: '1.5',
-          }}
+          className="w-full h-[400px] bg-card text-main border border-glass-border p-3 rounded font-mono leading-normal"
         />
       </div>
 
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div className="flex gap-2.5">
         <button
           onClick={handleSubmit}
-          style={{
-            background: 'var(--primary-cyan)',
-            color: '#000',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-          }}
+          className="bg-primary-cyan text-white border-none px-5 py-2.5 rounded-lg cursor-pointer font-bold hover:opacity-90 transition-opacity"
         >
           {selectedVersionId === 'new' ? '새 버전 등록' : '수정'}
         </button>
@@ -258,34 +211,17 @@ export const AdminPolicyManagement: React.FC = () => {
         {selectedVersionId !== 'new' && (
           <button
             onClick={handleDelete}
-            style={{
-              background: '#ff4b4b',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-            }}
+            className="bg-error text-white border-none px-5 py-2.5 rounded cursor-pointer font-bold hover:opacity-90 transition-opacity"
           >
             삭제
           </button>
         )}
       </div>
 
-      <div style={{ marginTop: '40px' }}>
+      <div className="mt-10">
         <h4>미리보기 (XSS 방어 적용)</h4>
         <div
-          style={{
-            marginTop: '10px',
-            padding: '20px',
-            background: 'var(--bg-panel)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            minHeight: '100px',
-            maxHeight: '600px',
-            overflowY: 'auto',
-          }}
+          className="mt-2.5 p-5 bg-surface border border-glass-border rounded-lg min-h-[100px] max-h-[600px] overflow-y-auto"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
         />
       </div>

@@ -93,134 +93,37 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   ];
 
   return (
-    <div
-      className="admin-modal-overlay"
-      onClick={onClose}
-      style={{ zIndex: 1000 }}
-    >
+    <div className="admin-modal-overlay z-[1000]" onClick={onClose}>
       <div
-        className="glass-card"
+        className="glass-card max-w-[680px] w-[90%] max-h-[85vh] flex flex-col px-[30px] py-6 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '680px',
-          width: '90%',
-          maxHeight: '85vh',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '24px 30px',
-          position: 'relative',
-          overflow: 'hidden',
-          animation: 'fadeIn 0.3s ease-out',
-        }}
       >
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            paddingBottom: '16px',
-            marginBottom: '20px',
-          }}
-        >
-          <h2
-            className="logo-glow"
-            style={{ fontSize: '1.4rem', margin: 0, fontWeight: 'bold' }}
-          >
+        <div className="flex justify-between items-center border-b border-glass-border pb-4 mb-5">
+          <h2 className="logo-glow text-[1.4rem] m-0 font-bold">
             로또 분석 용어 사전
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-dim)',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-dim)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="bg-transparent hover:bg-surface border-none text-dim hover:text-main text-2xl cursor-pointer flex items-center justify-center w-[30px] h-[30px] rounded-full transition-all duration-200"
           >
             &times;
           </button>
         </div>
 
         {/* Scrollable Terms List */}
-        <div
-          className="scroll-y-container"
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            paddingRight: '8px',
-            fontSize: '0.9rem',
-            lineHeight: '1.6',
-          }}
-        >
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-          >
+        <div className="scroll-y-container flex-1 overflow-y-auto pr-2 text-[0.9rem] leading-[1.6]">
+          <div className="flex flex-col gap-4">
             {terms.map((term, index) => (
               <div
                 key={index}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.05)',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  transition: 'border-color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(0, 240, 255, 0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.05)';
-                }}
+                className="bg-surface border border-glass-border hover:border-primary-cyan/40 rounded-[10px] p-4 transition-colors duration-200"
               >
-                <div
-                  style={{
-                    color: 'var(--primary-cyan)',
-                    fontWeight: 'bold',
-                    fontSize: '0.95rem',
-                    marginBottom: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    textAlign: 'left',
-                  }}
-                >
-                  <span
-                    style={{
-                      width: '6px',
-                      height: '6px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--primary-cyan)',
-                      boxShadow: '0 0 6px var(--primary-cyan)',
-                    }}
-                  />
+                <div className="text-primary-cyan font-bold text-[0.95rem] mb-1.5 flex items-center gap-2 text-left">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-cyan shadow-[0_0_6px_var(--primary-cyan)]" />
                   {term.title}
                 </div>
-                <div
-                  style={{
-                    color: 'var(--text-muted)',
-                    whiteSpace: 'pre-line',
-                    textAlign: 'left',
-                  }}
-                >
+                <div className="text-muted whitespace-pre-line text-left">
                   {term.description}
                 </div>
               </div>

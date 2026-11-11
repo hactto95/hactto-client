@@ -21,27 +21,19 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
           matchResult.winningNumbers.length === 7 &&
           matchResult.winningNumbers[6] === num;
 
-        const opacity = matchResult
-          ? isMatched || isBonusMatched
-            ? 1
-            : 0.35
-          : 1;
-        const border = isMatched
-          ? '2px solid #ffffff'
-          : isBonusMatched
-            ? '2px solid #c084fc'
-            : '1px solid rgba(255,255,255,0.15)';
-        const scale = isMatched || isBonusMatched ? '1.1' : '1';
+        const stateClass = matchResult
+          ? isMatched
+            ? 'scale-110 !border-2 !border-white opacity-100 ring-2 ring-primary-cyan/40'
+            : isBonusMatched
+              ? 'scale-110 !border-2 !border-purple-400 opacity-100'
+              : 'scale-100 opacity-35'
+          : 'scale-100 opacity-100';
+
         return (
           <BallHoverTooltip key={i} ball={num}>
             <div
-              className="lotto-ball"
-              style={{
-                ...getBallStyle(num),
-                opacity,
-                border,
-                transform: `scale(${scale})`,
-              }}
+              className={`lotto-ball ${stateClass}`}
+              style={getBallStyle(num)}
             >
               {num}
             </div>
@@ -50,33 +42,19 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
       })}
       {numbers.length === 7 && (
         <>
-          <div
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: 'var(--text-muted)',
-              margin: '0 4px',
-            }}
-          >
-            +
-          </div>
+          <div className="mx-1 text-[1.2rem] font-bold text-muted">+</div>
           {(() => {
             const isBonusMatched = matchResult?.bonusMatch ?? false;
-            const bonusOpacity = matchResult ? (isBonusMatched ? 1 : 0.35) : 1;
-            const bonusBorder = isBonusMatched
-              ? '2px solid #ffffff'
-              : '1px solid rgba(255,255,255,0.15)';
-            const bonusScale = isBonusMatched ? '1.1' : '1';
+            const bonusClass = matchResult
+              ? isBonusMatched
+                ? 'scale-110 !border-2 !border-white opacity-100 ring-2 ring-primary-cyan/40'
+                : 'scale-100 opacity-35'
+              : 'scale-100 opacity-100';
             return (
               <BallHoverTooltip ball={bonusNumber}>
                 <div
-                  className="lotto-ball"
-                  style={{
-                    ...getBallStyle(bonusNumber),
-                    opacity: bonusOpacity,
-                    border: bonusBorder,
-                    transform: `scale(${bonusScale})`,
-                  }}
+                  className={`lotto-ball ${bonusClass}`}
+                  style={getBallStyle(bonusNumber)}
                 >
                   {bonusNumber}
                 </div>

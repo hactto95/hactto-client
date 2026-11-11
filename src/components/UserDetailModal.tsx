@@ -260,84 +260,29 @@ export function UserDetailModal({
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 99999,
-        padding: '20px',
-        boxSizing: 'border-box',
-      }}
+      className="fixed inset-0 w-full h-full bg-overlay backdrop-blur-md flex items-center justify-center z-99999 p-5 box-border"
       onClick={onClose}
     >
       <div
-        className="glass-card"
-        style={{
-          maxWidth: '560px',
-          width: '100%',
-          height: '85vh',
-          background: 'var(--bg-card)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-          overflow: 'hidden',
-          padding: 20,
-        }}
+        className="glass-card max-w-[560px] w-full h-[85vh] bg-card border border-glass-border rounded-2xl flex flex-col relative overflow-hidden p-5"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          style={{
-            padding: '24px',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            flexShrink: 0,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <h2
-            style={{ margin: 0, fontSize: '1.4rem', color: 'var(--text-main)' }}
-          >
-            내 프로필
-          </h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="p-6 border-b border-glass-border shrink-0 flex justify-between items-center">
+          <h2 className="m-0 text-[1.4rem] text-main">내 프로필</h2>
+          <div className="flex items-center gap-4">
             <button
               onClick={() => {
                 onClose();
                 logout();
               }}
-              style={{
-                background: 'rgba(239, 83, 80, 0.1)',
-                border: '1px solid #ef5350',
-                color: '#ef5350',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                fontWeight: 'bold',
-              }}
+              className="bg-error/10 border border-error text-error cursor-pointer text-[0.85rem] px-3 py-1.5 rounded font-bold"
             >
               로그아웃
             </button>
             <button
               onClick={onClose}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-dim)',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-              }}
+              className="bg-transparent border-none text-dim cursor-pointer text-[1.2rem]"
             >
               ✕
             </button>
@@ -345,14 +290,7 @@ export function UserDetailModal({
         </div>
 
         {/* Tabs */}
-        <div
-          style={{
-            display: 'flex',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            padding: '0 24px',
-            flexShrink: 0,
-          }}
-        >
+        <div className="flex border-b border-glass-border px-6 shrink-0">
           {[
             { id: 'PROFILE', label: '상세 정보' },
             { id: 'HISTORY', label: 'HON 사용 내역' },
@@ -361,67 +299,29 @@ export function UserDetailModal({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TabType)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                borderBottom:
-                  activeTab === tab.id
-                    ? '2px solid var(--primary-cyan)'
-                    : '2px solid transparent',
-                color:
-                  activeTab === tab.id
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)',
-                padding: '16px 20px',
-                fontSize: '0.95rem',
-                fontWeight: activeTab === tab.id ? 'bold' : 'normal',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
+              className={`bg-transparent border-none border-b-2 px-5 py-4 text-[0.95rem] cursor-pointer transition-all duration-200 ${
+                activeTab === tab.id
+                  ? 'border-b-primary-cyan text-primary-cyan font-bold'
+                  : 'border-b-transparent text-dim font-normal'
+              }`}
             >
               {tab.label}
               {tab.id === 'NOTIFICATIONS' &&
                 notifications.some((n) => !n.isRead) && (
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      width: '8px',
-                      height: '8px',
-                      background: '#ff4b4b',
-                      borderRadius: '50%',
-                      marginLeft: '6px',
-                      transform: 'translateY(-2px)',
-                    }}
-                  />
+                  <span className="inline-block w-2 h-2 bg-error rounded-full ml-1.5 -translate-y-0.5" />
                 )}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <div className="flex-1 overflow-y-auto p-6">
           {activeTab === 'PROFILE' && (
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
-            >
+            <div className="flex flex-col gap-8">
               {/* Nickname Section */}
               <section>
                 {nickname ? (
-                  <div
-                    style={{
-                      padding: '40px 24px',
-                      width: '100%',
-                      background: 'rgba(255,255,255,0.03)',
-                      borderRadius: '20px',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '20px',
-                    }}
-                  >
+                  <div className="py-10 px-6 w-full bg-surface rounded-[20px] border border-glass-border shadow-glass flex flex-col items-center justify-center gap-5">
                     <AvatarUpload
                       currentAvatarUrl={user?.avatarUrl || null}
                       nickname={nickname}
@@ -436,50 +336,18 @@ export function UserDetailModal({
                       }}
                       showAlert={showAlert}
                     />
-                    <div
-                      style={{
-                        fontSize: '1.8rem',
-                        fontWeight: '800',
-                        color: 'var(--text-main)',
-                        letterSpacing: '1px',
-                      }}
-                    >
+                    <div className="text-[1.8rem] font-extrabold text-main tracking-[1px]">
                       {nickname}
                     </div>
-                    <div
-                      style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--text-dim)',
-                        background: 'rgba(0,0,0,0.3)',
-                        padding: '8px 16px',
-                        borderRadius: '20px',
-                        display: 'flex',
-                        gap: '8px',
-                        alignItems: 'center',
-                        marginTop: '8px',
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: 'var(--primary-cyan)',
-                          fontWeight: 'bold',
-                        }}
-                      >
+                    <div className="text-[0.85rem] text-dim bg-canvas/70 px-4 py-2 rounded-full flex gap-2 items-center mt-2">
+                      <span className="text-primary-cyan font-bold">
                         고유 식별자
                       </span>
                       <span>{userId}</span>
                       <button
                         onClick={handleCopyId}
                         title="복사하기"
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: 'var(--text-dim)',
-                          cursor: 'pointer',
-                          padding: '0 4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
+                        className="bg-transparent border-none text-dim cursor-pointer px-1 flex items-center"
                       >
                         <svg
                           width="14"
@@ -505,54 +373,16 @@ export function UserDetailModal({
                     </div>
                   </div>
                 ) : (
-                  <div
-                    style={{
-                      padding: '40px 24px',
-                      width: '100%',
-                      background: 'rgba(255,255,255,0.03)',
-                      borderRadius: '20px',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <div
-                      style={{
-                        marginBottom: '32px',
-                        fontSize: '0.85rem',
-                        color: 'var(--text-dim)',
-                        background: 'rgba(0,0,0,0.3)',
-                        padding: '8px 16px',
-                        borderRadius: '20px',
-                        display: 'flex',
-                        gap: '8px',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: 'var(--primary-cyan)',
-                          fontWeight: 'bold',
-                        }}
-                      >
+                  <div className="py-10 px-6 w-full bg-surface rounded-[20px] border border-glass-border shadow-glass flex flex-col justify-center items-center">
+                    <div className="mb-8 text-[0.85rem] text-dim bg-canvas/70 px-4 py-2 rounded-full flex gap-2 items-center">
+                      <span className="text-primary-cyan font-bold">
                         고유 식별자
                       </span>
                       <span>{userId}</span>
                       <button
                         onClick={handleCopyId}
                         title="복사하기"
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: 'var(--text-dim)',
-                          cursor: 'pointer',
-                          padding: '0 4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
+                        className="bg-transparent border-none text-dim cursor-pointer px-1 flex items-center"
                       >
                         <svg
                           width="14"
@@ -576,73 +406,43 @@ export function UserDetailModal({
                         </svg>
                       </button>
                     </div>
-                    <p
-                      style={{
-                        margin: '0 0 24px 0',
-                        fontSize: '0.95rem',
-                        color: 'var(--text-dim)',
-                        lineHeight: '1.6',
-                        textAlign: 'center',
-                      }}
-                    >
+                    <p className="m-0 mb-6 text-[0.95rem] text-dim leading-[1.6] text-center">
                       아직 닉네임을 설정하지 않으셨습니다.
                       <br />
                       닉네임은{' '}
-                      <strong style={{ color: '#ff4b4b' }}>
+                      <strong className="text-error">
                         최초 1회만 설정 가능
                       </strong>
                       하며, 이후 변경이 불가능합니다.
                     </p>
-                    <div style={{ position: 'relative', width: '100%' }}>
+                    <div className="relative w-full">
                       <input
                         type="text"
-                        className="input-glow"
+                        className="input-glow w-full pr-[100px] h-12 text-base"
                         placeholder="2자 이상 20자 이하로 입력"
                         value={nicknameInput}
                         onChange={(e) => setNicknameInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          paddingRight: '100px',
-                          height: '48px',
-                          fontSize: '1rem',
-                        }}
                       />
                       <button
-                        className="btn-submit"
+                        className={`btn-submit absolute right-1 top-1 bottom-1 px-4 py-0 rounded-md text-[0.9rem] border-none ${
+                          isAvailable
+                            ? 'bg-primary-cyan text-white cursor-pointer'
+                            : 'bg-surface text-dim cursor-not-allowed'
+                        }`}
                         disabled={!isAvailable || isChecking}
                         onClick={() => setShowConfirmModal(true)}
-                        style={{
-                          position: 'absolute',
-                          right: '4px',
-                          top: '4px',
-                          bottom: '4px',
-                          padding: '0 16px',
-                          borderRadius: '6px',
-                          fontSize: '0.9rem',
-                          background: isAvailable
-                            ? 'var(--primary-cyan)'
-                            : 'rgba(255,255,255,0.1)',
-                          color: isAvailable ? '#000' : 'var(--text-dim)',
-                          border: 'none',
-                          cursor: isAvailable ? 'pointer' : 'not-allowed',
-                        }}
                       >
                         설정하기
                       </button>
                     </div>
-                    <div style={{ marginTop: '12px', minHeight: '20px' }}>
+                    <div className="mt-3 min-h-[20px]">
                       {errorMsg && (
-                        <div style={{ color: '#ff4b4b', fontSize: '0.85rem' }}>
+                        <div className="text-error text-[0.85rem]">
                           {errorMsg}
                         </div>
                       )}
                       {isAvailable && !errorMsg && (
-                        <div
-                          style={{
-                            color: 'var(--primary-cyan)',
-                            fontSize: '0.85rem',
-                          }}
-                        >
+                        <div className="text-primary-cyan text-[0.85rem]">
                           사용 가능한 닉네임입니다.
                         </div>
                       )}
@@ -654,198 +454,57 @@ export function UserDetailModal({
               {/* Balance & Sub Section */}
               {true && (
                 <section>
-                  <h3
-                    style={{
-                      margin: '0 0 16px 0',
-                      fontSize: '1.1rem',
-                      color: 'var(--text-main)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '4px',
-                        height: '16px',
-                        background: 'var(--text-dim)',
-                        borderRadius: '2px',
-                      }}
-                    />
+                  <h3 className="m-0 mb-4 text-[1.1rem] text-main flex items-center gap-2">
+                    <div className="w-1 h-4 bg-dim rounded-xs" />
                     HON/구독
                   </h3>
 
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '16px',
-                    }}
-                  >
+                  <div className="grid grid-cols-2 gap-4">
                     {/* HON Card */}
-                    <div
-                      style={{
-                        padding: '20px',
-                        borderRadius: '12px',
-                        background:
-                          'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-                        border: '1px solid rgba(0,240,255,0.2)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '-20px',
-                          right: '-20px',
-                          width: '80px',
-                          height: '80px',
-                          background: 'var(--primary-cyan)',
-                          filter: 'blur(40px)',
-                          opacity: 0.2,
-                        }}
-                      />
-                      <div
-                        style={{
-                          fontSize: '0.85rem',
-                          color: 'var(--primary-cyan)',
-                          fontWeight: 'bold',
-                          marginBottom: '8px',
-                        }}
-                      >
+                    <div className="p-5 rounded-xl bg-surface border border-primary-cyan/25 flex flex-col relative overflow-hidden">
+                      <div className="absolute -top-5 -right-5 w-20 h-20 bg-primary-cyan blur-2xl opacity-20" />
+                      <div className="text-[0.85rem] text-primary-cyan font-bold mb-2">
                         보유 HON
                       </div>
-                      <div
-                        style={{
-                          fontSize: '2rem',
-                          fontWeight: '800',
-                          color: '#fff',
-                          marginBottom: '16px',
-                        }}
-                      >
+                      <div className="text-[2rem] font-extrabold text-main mb-4">
                         {totalHon.toLocaleString()}
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                          fontSize: '0.8rem',
-                          color: 'var(--text-dim)',
-                          marginBottom: '20px',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                          }}
-                        >
+                      <div className="flex flex-col gap-1 text-[0.8rem] text-dim mb-5">
+                        <div className="flex justify-between">
                           <span>이벤트 무료</span>
-                          <span style={{ color: '#fff' }}>
+                          <span className="text-main">
                             {freeHon.toLocaleString()}
                           </span>
                         </div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                          }}
-                        >
+                        <div className="flex justify-between">
                           <span>충전 유료</span>
-                          <span style={{ color: '#fff' }}>
+                          <span className="text-main">
                             {paidHon.toLocaleString()}
                           </span>
                         </div>
                       </div>
                       <button
                         onClick={() => openPaymentModal('HON')}
-                        style={{
-                          marginTop: 'auto',
-                          width: '100%',
-                          padding: '10px',
-                          background: 'rgba(0, 240, 255, 0.1)',
-                          color: 'var(--primary-cyan)',
-                          border: '1px solid rgba(0, 240, 255, 0.3)',
-                          borderRadius: '8px',
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.background =
-                            'rgba(0, 240, 255, 0.2)')
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.background =
-                            'rgba(0, 240, 255, 0.1)')
-                        }
+                        className="mt-auto w-full p-2.5 bg-primary-cyan/10 hover:bg-primary-cyan/20 text-primary-cyan border border-primary-cyan/30 rounded-lg font-bold cursor-pointer transition-all duration-200"
                       >
                         충전하기
                       </button>
                     </div>
 
                     {/* Subscribe Card */}
-                    <div
-                      style={{
-                        padding: '20px',
-                        borderRadius: '12px',
-                        background:
-                          'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-                        border: '1px solid rgba(168, 85, 247, 0.2)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '-20px',
-                          right: '-20px',
-                          width: '80px',
-                          height: '80px',
-                          background: 'var(--primary-purple)',
-                          filter: 'blur(40px)',
-                          opacity: 0.2,
-                        }}
-                      />
-                      <div
-                        style={{
-                          fontSize: '0.85rem',
-                          color: 'var(--primary-purple)',
-                          fontWeight: 'bold',
-                          marginBottom: '8px',
-                        }}
-                      >
+                    <div className="p-5 rounded-xl bg-surface border border-primary-purple/25 flex flex-col relative overflow-hidden">
+                      <div className="absolute -top-5 -right-5 w-20 h-20 bg-primary-purple blur-2xl opacity-20" />
+                      <div className="text-[0.85rem] text-primary-purple font-bold mb-2">
                         구독 상태
                       </div>
-                      <div
-                        style={{
-                          fontSize: '1.4rem',
-                          fontWeight: '800',
-                          color: '#fff',
-                          marginBottom: '16px',
-                          lineHeight: '1.2',
-                        }}
-                      >
+                      <div className="text-[1.4rem] font-extrabold text-main mb-4 leading-[1.2]">
                         {isSubscribed
                           ? isYearly
                             ? '연간 무제한'
                             : '월간 무제한'
                           : '미구독'}
                       </div>
-                      <div
-                        style={{
-                          fontSize: '0.8rem',
-                          color: 'var(--text-dim)',
-                          marginBottom: '20px',
-                        }}
-                      >
+                      <div className="text-[0.8rem] text-dim mb-5">
                         {isSubscribed && subscription?.endsAt ? (
                           <>
                             만료일:{' '}
@@ -857,26 +516,7 @@ export function UserDetailModal({
                       </div>
                       <button
                         onClick={() => openPaymentModal('SUBSCRIPTION')}
-                        style={{
-                          marginTop: 'auto',
-                          width: '100%',
-                          padding: '10px',
-                          background: 'rgba(168, 85, 247, 0.1)',
-                          color: 'var(--primary-purple)',
-                          border: '1px solid rgba(168, 85, 247, 0.3)',
-                          borderRadius: '8px',
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.background =
-                            'rgba(168, 85, 247, 0.2)')
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.background =
-                            'rgba(168, 85, 247, 0.1)')
-                        }
+                        className="mt-auto w-full p-2.5 bg-primary-purple/10 hover:bg-primary-purple/20 text-primary-purple border border-primary-purple/30 rounded-lg font-bold cursor-pointer transition-all duration-200"
                       >
                         {isSubscribed ? '구독 관리' : '구독하기'}
                       </button>
@@ -888,27 +528,17 @@ export function UserDetailModal({
           )}
 
           {activeTab === 'HISTORY' && (
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-            >
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-2 mb-2">
                 {['ALL', 'FREE', 'PAID'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setHistoryTab(tab as HistoryTabType)}
-                    style={{
-                      padding: '6px 12px',
-                      fontSize: '0.8rem',
-                      borderRadius: '20px',
-                      background:
-                        historyTab === tab
-                          ? 'var(--primary-cyan)'
-                          : 'rgba(255,255,255,0.05)',
-                      color: historyTab === tab ? '#090a0f' : 'var(--text-dim)',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontWeight: historyTab === tab ? 'bold' : 'normal',
-                    }}
+                    className={`px-3 py-1.5 text-[0.8rem] rounded-full border-none cursor-pointer ${
+                      historyTab === tab
+                        ? 'bg-primary-cyan text-white font-bold'
+                        : 'bg-surface text-dim font-normal'
+                    }`}
                   >
                     {tab === 'ALL'
                       ? '전체 내역'
@@ -920,90 +550,34 @@ export function UserDetailModal({
               </div>
 
               {loadingHistory ? (
-                <div
-                  style={{
-                    padding: '40px',
-                    textAlign: 'center',
-                    color: 'var(--text-dim)',
-                  }}
-                >
-                  불러오는 중...
-                </div>
+                <div className="p-10 text-center text-dim">불러오는 중...</div>
               ) : filteredEvents.length === 0 ? (
-                <div
-                  style={{
-                    padding: '40px',
-                    textAlign: 'center',
-                    color: 'var(--text-dim)',
-                    background: 'rgba(255,255,255,0.02)',
-                    borderRadius: '12px',
-                  }}
-                >
+                <div className="p-10 text-center text-dim bg-surface rounded-xl">
                   해당 HON 내역이 없습니다.
                 </div>
               ) : (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                  }}
-                >
+                <div className="flex flex-col gap-3">
                   {filteredEvents.map((event) => (
                     <div
                       key={event.id}
-                      style={{
-                        padding: '16px',
-                        background: 'rgba(255,255,255,0.03)',
-                        borderRadius: '12px',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                      }}
+                      className="p-4 bg-surface rounded-xl border border-glass-border flex flex-col gap-2"
                     >
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'flex-start',
-                          alignItems: 'baseline',
-                          gap: '12px',
-                        }}
-                      >
+                      <div className="flex justify-start items-baseline gap-3">
                         <div
-                          style={{
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            color:
-                              event.amount > 0
-                                ? 'var(--primary-cyan)'
-                                : '#ff4b4b',
-                          }}
+                          className={`text-[1.1rem] font-bold ${
+                            event.amount > 0
+                              ? 'text-primary-cyan'
+                              : 'text-error'
+                          }`}
                         >
                           {event.amount > 0 ? '+' : ''}
                           {event.amount} HON
                         </div>
-                        <div
-                          style={{
-                            fontSize: '0.9rem',
-                            color: 'var(--text-main)',
-                            textAlign: 'left',
-                            wordBreak: 'keep-all',
-                            overflowWrap: 'break-word',
-                          }}
-                        >
+                        <div className="text-[0.9rem] text-main text-left break-keep wrap-break-word">
                           {event.description || event.type}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'flex-start',
-                          gap: '12px',
-                          fontSize: '0.8rem',
-                          color: 'var(--text-dim)',
-                        }}
-                      >
+                      <div className="flex justify-start gap-3 text-[0.8rem] text-dim">
                         <div>잔액: {event.balance}</div>
                         <div>|</div>
                         <div>{new Date(event.createdAt).toLocaleString()}</div>
@@ -1016,29 +590,11 @@ export function UserDetailModal({
           )}
 
           {activeTab === 'NOTIFICATIONS' && (
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-            >
+            <div className="flex flex-col gap-3">
               {loadingNoti ? (
-                <div
-                  style={{
-                    padding: '40px',
-                    textAlign: 'center',
-                    color: 'var(--text-dim)',
-                  }}
-                >
-                  불러오는 중...
-                </div>
+                <div className="p-10 text-center text-dim">불러오는 중...</div>
               ) : notifications.length === 0 ? (
-                <div
-                  style={{
-                    padding: '40px',
-                    textAlign: 'center',
-                    color: 'var(--text-dim)',
-                    background: 'rgba(255,255,255,0.02)',
-                    borderRadius: '12px',
-                  }}
-                >
+                <div className="p-10 text-center text-dim bg-surface rounded-xl">
                   도착한 알림이 없습니다.
                 </div>
               ) : (
@@ -1051,74 +607,31 @@ export function UserDetailModal({
                         expandedNotiId === noti.id ? null : noti.id,
                       );
                     }}
-                    style={{
-                      padding: '16px',
-                      background: noti.isRead
-                        ? 'rgba(255,255,255,0.02)'
-                        : 'rgba(0,240,255,0.05)',
-                      borderRadius: '12px',
-                      border: noti.isRead
-                        ? '1px solid rgba(255,255,255,0.05)'
-                        : '1px solid rgba(0,240,255,0.2)',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                    }}
+                    className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                      noti.isRead
+                        ? 'bg-surface border border-glass-border'
+                        : 'bg-primary-cyan/10 border border-primary-cyan/25'
+                    }`}
                   >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                        }}
-                      >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
                         {!noti.isRead && (
-                          <div
-                            style={{
-                              width: '8px',
-                              height: '8px',
-                              background: 'var(--primary-cyan)',
-                              borderRadius: '50%',
-                            }}
-                          />
+                          <div className="w-2 h-2 bg-primary-cyan rounded-full" />
                         )}
                         <div
-                          style={{
-                            fontSize: '0.95rem',
-                            fontWeight: noti.isRead ? 'normal' : 'bold',
-                            color: 'var(--text-main)',
-                          }}
+                          className={`text-[0.95rem] text-main ${
+                            noti.isRead ? 'font-normal' : 'font-bold'
+                          }`}
                         >
                           {noti.title}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          fontSize: '0.75rem',
-                          color: 'var(--text-dim)',
-                        }}
-                      >
+                      <div className="text-xs text-dim">
                         {new Date(noti.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                     {expandedNotiId === noti.id && (
-                      <div
-                        style={{
-                          marginTop: '12px',
-                          paddingTop: '12px',
-                          borderTop: '1px solid rgba(255,255,255,0.05)',
-                          fontSize: '0.85rem',
-                          color: 'var(--text-dim)',
-                          lineHeight: '1.6',
-                          whiteSpace: 'pre-wrap',
-                        }}
-                      >
+                      <div className="mt-3 pt-3 border-t border-glass-border text-[0.85rem] text-dim leading-[1.6] whitespace-pre-wrap">
                         {noti.content}
                       </div>
                     )}
@@ -1132,76 +645,27 @@ export function UserDetailModal({
 
       {/* Nickname Confirm Modal */}
       {showConfirmModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 999999,
-          }}
-        >
-          <div
-            className="glass-card"
-            style={{
-              padding: '24px',
-              maxWidth: '360px',
-              width: '90%',
-              borderRadius: '16px',
-              overflow: 'hidden',
-            }}
-          >
-            <h3 style={{ margin: '0 0 16px', color: '#ff4b4b' }}>주의</h3>
-            <p
-              style={{
-                margin: '0 0 24px',
-                fontSize: '0.9rem',
-                color: 'var(--text-main)',
-                lineHeight: '1.5',
-              }}
-            >
+        <div className="fixed inset-0 w-full h-full bg-overlay backdrop-blur-xs flex items-center justify-center z-999999">
+          <div className="glass-card p-6 max-w-[360px] w-[90%] rounded-2xl overflow-hidden">
+            <h3 className="m-0 mb-4 text-error">주의</h3>
+            <p className="m-0 mb-6 text-[0.9rem] text-main leading-[1.5]">
               닉네임을{' '}
-              <strong style={{ color: 'var(--primary-cyan)' }}>
-                {nicknameInput}
-              </strong>
+              <strong className="text-primary-cyan">{nicknameInput}</strong>
               (으)로 설정하시겠습니까?
               <br />
               <br />
               설정 후에는 변경할 수 없습니다.
             </p>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="flex gap-2.5">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'var(--text-main)',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                }}
+                className="flex-1 p-2.5 bg-transparent border border-glass-border text-main rounded-lg cursor-pointer"
               >
                 취소
               </button>
               <button
                 onClick={handleSubmitNickname}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: 'var(--primary-cyan)',
-                  color: '#090a0f',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                }}
+                className="flex-1 p-2.5 bg-primary-cyan text-white border-none rounded-lg cursor-pointer font-bold"
               >
                 {isSubmittingNickname ? '처리중...' : '확인'}
               </button>

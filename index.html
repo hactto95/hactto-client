@@ -2,7 +2,27 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('hactto-theme');
+          var prefersDark = window.matchMedia(
+            '(prefers-color-scheme: dark)',
+          ).matches;
+          var theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : prefersDark
+                ? 'dark'
+                : 'light';
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.classList.toggle('light', theme === 'light');
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hactto - AI 기반 로또 분석</title>
     <meta name="naver-site-verification" content="487b97a54cc83cf61764606be12ee21fa825ad69" />
@@ -21,10 +41,11 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Hactto - AI 기반 로또 분석" />
     <meta name="twitter:description" content="역대 당첨 번호 패턴을 학습한 AI가 최적의 로또 1등 예상 번호를 추천해 드립니다." />
-    <!-- Modern Typography Fonts -->
+    <!-- Modern Typography Fonts (Pretendard + Inter + Outfit) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9049827255129304" crossorigin="anonymous"></script>
   </head>

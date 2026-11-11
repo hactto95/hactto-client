@@ -12,6 +12,8 @@ import { PrivacyModal } from './PrivacyModal';
 import { TermsModal } from './TermsModal';
 import { RefundPolicyModal } from './RefundPolicyModal';
 import { UserDetailModal } from './UserDetailModal';
+import { ThemeToggle } from './ThemeToggle';
+import { HacttoLogo } from './HacttoLogo';
 
 import { API_BASE_URL } from '../utils';
 
@@ -106,10 +108,6 @@ export function Layout() {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    return () => {};
-  }, []);
-
-  useEffect(() => {
     let socket: import('socket.io-client').Socket | null = null;
 
     const fetchUnreadCount = async () => {
@@ -163,15 +161,15 @@ export function Layout() {
       }
       window.removeEventListener('notification-sent', fetchUnreadCount);
     };
-  }, [isAuthenticated, showUserDetailModal]); // refetch when modal closes and poll periodically
+  }, [isAuthenticated, showUserDetailModal]);
 
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobileOrTablet(window.innerWidth <= 1200);
+      setIsMobileOrTablet(window.innerWidth <= 1024);
     };
-    handleResize(); // run initially
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -211,260 +209,291 @@ export function Layout() {
         new Date(subscription.endsAt) > new Date())) &&
     subscription.plan === 'YEARLY';
 
+  // Active sub-items for current group (for quick pill sub-navigation when group has >1 item)
+  const activeGroup = MENU_GROUPS.find((g) =>
+    g.items.some((item) => item.path === location.pathname),
+  );
+
   return (
-    <div className="layout-wrapper">
-      {/* 좌측 구글 광고 지면 */}
-      {!isYearlySubscribed && !isMobileOrTablet && (
-        <div className="google-ad-sidebar left-ad">
-          <AdSenseBanner slot="1234567890" format="vertical" />
-        </div>
-      )}
-
-      <div className="access-container dashboard-main-container">
-        <NoticeBanner />
-        <div className="glass-card dashboard-container">
-          <div
-            className="admin-header"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '24px',
-              borderBottom: '1px solid rgba(255,255,255,0.08)',
-              paddingBottom: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span
-                className="logo-glow"
-                style={{
-                  fontSize: '1.8rem',
-                  cursor: 'pointer',
-                  marginRight: '12px',
-                }}
-                onClick={() => navigate('/home')}
-              >
-                hactto
+    <div className="flex min-h-dvh w-full flex-col">
+      {/* =====================================================================
+          STICKY GLOBAL NAVIGATION BAR (TOSS / LINEAR STYLE)
+         ===================================================================== */}
+      <header className="sticky top-0 z-40 w-full border-b border-glass-border bg-card/85 backdrop-blur-xl transition-colors">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Brand Logo & Desktop Navigation */}
+          <div className="flex items-center gap-8">
+            <button
+              type="button"
+              onClick={() => navigate('/home')}
+              className="group flex cursor-pointer items-center gap-2.5 border-none bg-transparent p-0 focus:outline-none"
+            >
+              <HacttoLogo
+                size={32}
+                className="transition-transform group-hover:scale-105"
+              />
+              <span className="font-display text-xl font-extrabold tracking-tight text-main">
+                Hactto
               </span>
-            </div>
+              <span className="hidden rounded-md bg-primary-cyan/10 px-1.5 py-0.5 text-[0.65rem] font-bold tracking-wide text-primary-cyan sm:inline-block">
+                AI ANALYTICS
+              </span>
+            </button>
 
-            <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-              {!isAdminMode &&
-                (isAuthenticated ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: '0.85rem',
-                      color: 'var(--text-main)',
-                      background: 'rgba(255,255,255,0.05)',
-                      padding: '4px 10px',
-                      borderRadius: '20px',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                    }}
-                    onClick={() => setShowUserDetailModal(true)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background =
-                        'rgba(0, 240, 255, 0.1)';
-                      e.currentTarget.style.borderColor =
-                        'rgba(0, 240, 255, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background =
-                        'rgba(255,255,255,0.05)';
-                      e.currentTarget.style.borderColor =
-                        'rgba(255,255,255,0.1)';
-                    }}
-                    title={'프로필 및 알림 보기'}
-                  >
-                    <span style={{ fontWeight: 'bold' }}>
-                      {user?.nickname || user?.email?.split('@')[0]}
-                    </span>
-                    님
-                    {unreadNotiCount > 0 && (
-                      <div
-                        style={{
-                          background: '#ff4b4b',
-                          color: '#fff',
-                          fontSize: '0.65rem',
-                          fontWeight: 'bold',
-                          padding: '2px 6px',
-                          borderRadius: '10px',
-                          marginLeft: '4px',
-                        }}
+            {/* Desktop Horizontal Navigation */}
+            {!isMobileOrTablet && (
+              <nav className="flex items-center gap-1">
+                {MENU_GROUPS.map((group) => {
+                  const filteredItems = isAdminMode
+                    ? group.items.filter(
+                        (item) =>
+                          item.path !== '/generate' &&
+                          item.path !== '/history' &&
+                          item.path !== '/support',
+                      )
+                    : group.items;
+
+                  if (filteredItems.length === 0) return null;
+
+                  const isActive = filteredItems.some(
+                    (item) => location.pathname === item.path,
+                  );
+
+                  // Single-item group: direct NavLink
+                  if (filteredItems.length === 1) {
+                    const single = filteredItems[0];
+                    return (
+                      <NavLink
+                        key={single.path}
+                        to={single.path}
+                        onClick={(e) => handleTabClick(e, single.path)}
+                        className={`rounded-xl px-3.5 py-2 text-[0.9rem] font-semibold no-underline transition-all ${
+                          isActive
+                            ? 'bg-primary-cyan/10 text-primary-cyan'
+                            : 'text-muted hover:bg-surface-hover hover:text-main'
+                        }`}
                       >
-                        {unreadNotiCount}
+                        {group.title}
+                      </NavLink>
+                    );
+                  }
+
+                  // Multi-item group: hover dropdown
+                  return (
+                    <div key={group.title} className="dropdown-container">
+                      <button
+                        type="button"
+                        onClick={() => navigate(filteredItems[0].path)}
+                        className={`flex cursor-pointer items-center gap-1 rounded-xl border-none px-3.5 py-2 text-[0.9rem] font-semibold transition-all ${
+                          isActive
+                            ? 'bg-primary-cyan/10 text-primary-cyan'
+                            : 'bg-transparent text-muted hover:bg-surface-hover hover:text-main'
+                        }`}
+                      >
+                        <span>{group.title}</span>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="opacity-60"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                      <div className="dropdown-menu">
+                        {filteredItems.map((item) => (
+                          <NavLink
+                            key={item.path}
+                            to={item.path}
+                            onClick={(e) => handleTabClick(e, item.path)}
+                            className={({ isActive }) =>
+                              `dropdown-item ${isActive ? 'active-item' : ''}`
+                            }
+                          >
+                            {item.label}
+                          </NavLink>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                      onClick={() => navigate('/login')}
-                      style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--text-main)',
-                        background: 'transparent',
-                        padding: '4px 8px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#fff';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'var(--text-main)';
-                      }}
-                    >
-                      로그인
-                    </button>
-                    <button
-                      onClick={() => navigate('/login')}
-                      style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--text-main)',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                          'rgba(255, 255, 255, 0.1)';
-                        e.currentTarget.style.color = '#fff';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background =
-                          'rgba(255, 255, 255, 0.05)';
-                        e.currentTarget.style.color = 'var(--text-main)';
-                      }}
-                    >
-                      회원가입
-                    </button>
-                  </div>
-                ))}
-              <button
-                onClick={() => setShowHelpModal(true)}
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: 'var(--text-dim)',
-                  fontSize: '0.85rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.08)';
-                  e.currentTarget.style.color = '#ffffff';
-                  e.currentTarget.style.borderColor = 'var(--primary-cyan)';
-                  e.currentTarget.style.boxShadow =
-                    '0 0 10px rgba(0, 240, 255, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.color = 'var(--text-dim)';
-                  e.currentTarget.style.borderColor =
-                    'rgba(255, 255, 255, 0.1)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-                title="로또 분석 용어 사전"
-              >
-                ?
-              </button>
-              {isMobileOrTablet && (
-                <button
-                  ref={hamburgerRef}
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--text-main)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 0,
-                    outline: 'none',
-                  }}
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    </div>
+                  );
+                })}
+
+                {isAdminMode && (
+                  <NavLink
+                    to="/system"
+                    onClick={(e) => handleTabClick(e, '/system')}
+                    className={({ isActive }) =>
+                      `rounded-xl px-3.5 py-2 text-[0.9rem] font-bold no-underline transition-all ${
+                        isActive
+                          ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                          : 'text-amber-600 hover:bg-amber-500/10 dark:text-amber-400'
+                      }`
+                    }
                   >
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                  </svg>
-                </button>
-              )}
-            </div>
+                    관리자 대시보드
+                  </NavLink>
+                )}
+              </nav>
+            )}
           </div>
 
+          {/* Right: User Profile, Theme Toggle, Help, Mobile Menu Trigger */}
+          <div className="flex items-center gap-2.5">
+            {!isAdminMode &&
+              (isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={() => setShowUserDetailModal(true)}
+                  title="프로필 및 알림 보기"
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-glass-border bg-surface px-3.5 py-1.5 text-[0.85rem] font-medium text-main transition-all hover:border-primary-cyan/40 hover:bg-surface-hover"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-cyan/15 text-[0.7rem] font-bold text-primary-cyan">
+                    {(user?.nickname || user?.email || 'U')[0].toUpperCase()}
+                  </span>
+                  <span className="max-w-[110px] truncate font-semibold">
+                    {user?.nickname || user?.email?.split('@')[0]}
+                  </span>
+                  {unreadNotiCount > 0 && (
+                    <span className="rounded-full bg-error px-1.5 py-0.5 text-[0.68rem] leading-none font-bold text-white">
+                      {unreadNotiCount}
+                    </span>
+                  )}
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/login')}
+                    className="cursor-pointer rounded-xl border-none bg-transparent px-3 py-1.5 text-[0.88rem] font-semibold text-muted transition-colors hover:bg-surface-hover hover:text-main"
+                  >
+                    로그인
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/signup')}
+                    className="cursor-pointer rounded-xl border-none bg-primary-cyan px-3.5 py-1.5 text-[0.85rem] font-semibold text-white shadow-sm transition-all hover:brightness-105"
+                  >
+                    시작하기
+                  </button>
+                </div>
+              ))}
+
+            <ThemeToggle />
+
+            <button
+              type="button"
+              onClick={() => setShowHelpModal(true)}
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-[0.88rem] font-bold text-muted transition-all hover:border-primary-cyan/40 hover:bg-surface-hover hover:text-primary-cyan focus:outline-none"
+              title="로또 분석 용어 사전"
+            >
+              ?
+            </button>
+
+            {isMobileOrTablet && (
+              <button
+                ref={hamburgerRef}
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-main transition-colors hover:bg-surface-hover focus:outline-none"
+                aria-label="메뉴 열기"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  {isMobileMenuOpen ? (
+                    <>
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </>
+                  ) : (
+                    <>
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="18" x2="21" y2="18" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Sub-navigation Pill Bar when current group has multiple sub-pages */}
+        {activeGroup && activeGroup.items.length > 1 && (
+          <div className="border-t border-glass-border bg-surface/60">
+            <div className="mx-auto flex max-w-7xl items-center gap-1.5 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
+              {activeGroup.items.map((sub) => (
+                <NavLink
+                  key={sub.path}
+                  to={sub.path}
+                  onClick={(e) => handleTabClick(e, sub.path)}
+                  className={({ isActive }) =>
+                    `shrink-0 rounded-lg px-3 py-1 text-[0.82rem] font-semibold no-underline transition-all ${
+                      isActive
+                        ? 'bg-card text-primary-cyan shadow-xs ring-1 ring-glass-border'
+                        : 'text-muted hover:text-main'
+                    }`
+                  }
+                >
+                  {sub.label}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Mobile / Tablet Slide-Down Drawer */}
+        {isMobileOrTablet && isMobileMenuOpen && (
           <div
             ref={menuRef}
-            className={`admin-tabs ${isMobileOrTablet && isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
-            style={{ zIndex: 10 }}
+            className="border-t border-glass-border bg-card px-4 py-4 shadow-xl"
           >
-            {MENU_GROUPS.map((group) => {
-              const filteredItems = isAdminMode
-                ? group.items.filter(
-                    (item) =>
-                      item.path !== '/generate' &&
-                      item.path !== '/history' &&
-                      item.path !== '/support',
-                  )
-                : group.items;
+            <div className="mx-auto flex max-w-7xl flex-col gap-2">
+              {MENU_GROUPS.map((group) => {
+                const filteredItems = isAdminMode
+                  ? group.items.filter(
+                      (item) =>
+                        item.path !== '/generate' &&
+                        item.path !== '/history' &&
+                        item.path !== '/support',
+                    )
+                  : group.items;
 
-              if (filteredItems.length === 0) return null;
+                if (filteredItems.length === 0) return null;
 
-              const isActive = filteredItems.some(
-                (item) => location.pathname === item.path,
-              );
+                const isActive = filteredItems.some(
+                  (item) => location.pathname === item.path,
+                );
 
-              return (
-                <div key={group.title} className="dropdown-container">
+                return (
                   <div
-                    className={`tab-btn dropdown-trigger ${
-                      isActive ? 'active-tab' : ''
-                    }`}
-                    onClick={() => {
-                      if (isMobileOrTablet) {
+                    key={group.title}
+                    className="rounded-2xl border border-glass-border bg-surface/50 p-2"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
                         setExpandedMenu(
                           expandedMenu === group.title ? null : group.title,
-                        );
+                        )
                       }
-                    }}
-                    style={{
-                      cursor: isMobileOrTablet ? 'pointer' : 'default',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span>{group.title}</span>
-                    {isMobileOrTablet && (
+                      className={`flex w-full cursor-pointer items-center justify-between rounded-xl border-none bg-transparent px-3 py-2 text-left text-[0.92rem] font-bold ${
+                        isActive ? 'text-primary-cyan' : 'text-main'
+                      }`}
+                    >
+                      <span>{group.title}</span>
                       <svg
                         width="16"
                         height="16"
@@ -474,102 +503,69 @@ export function Layout() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        style={{
-                          transform:
-                            expandedMenu === group.title
-                              ? 'rotate(180deg)'
-                              : 'rotate(0deg)',
-                          transition: 'transform 0.2s',
-                        }}
+                        className={`transition-transform duration-200 ${
+                          expandedMenu === group.title || isActive
+                            ? 'rotate-180'
+                            : 'rotate-0'
+                        }`}
                       >
-                        <polyline points="6 9 12 15 18 9"></polyline>
+                        <polyline points="6 9 12 15 18 9" />
                       </svg>
+                    </button>
+                    {(expandedMenu === group.title || isActive) && (
+                      <div className="mt-1 flex flex-col gap-1 pl-2">
+                        {filteredItems.map((item) => (
+                          <NavLink
+                            key={item.path}
+                            to={item.path}
+                            onClick={(e) => handleTabClick(e, item.path)}
+                            className={({ isActive }) =>
+                              `rounded-xl px-3 py-2 text-[0.88rem] font-medium no-underline transition-colors ${
+                                isActive
+                                  ? 'bg-primary-cyan/10 font-bold text-primary-cyan'
+                                  : 'text-muted hover:bg-surface-hover hover:text-main'
+                              }`
+                            }
+                          >
+                            {item.label}
+                          </NavLink>
+                        ))}
+                      </div>
                     )}
                   </div>
-                  <div
-                    className={`dropdown-menu ${expandedMenu === group.title ? 'expanded' : ''}`}
-                  >
-                    {filteredItems.map((item) => (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        onClick={(e) => handleTabClick(e, item.path)}
-                        className={({ isActive }) =>
-                          `dropdown-item ${isActive ? 'active-item' : ''}`
-                        }
-                      >
-                        {item.label}
-                      </NavLink>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {isAdminMode && (
-              <div className="dropdown-container">
-                <div
-                  className={`tab-btn dropdown-trigger ${
-                    location.pathname === '/system' ? 'active-tab' : ''
-                  }`}
-                  onClick={() => {
-                    if (isMobileOrTablet) {
-                      setExpandedMenu(
-                        expandedMenu === '관리자' ? null : '관리자',
-                      );
-                    }
-                  }}
-                  style={{
-                    color: '#FFD700',
-                    textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
-                    cursor: isMobileOrTablet ? 'pointer' : 'default',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
+              {isAdminMode && (
+                <NavLink
+                  to="/system"
+                  onClick={(e) => handleTabClick(e, '/system')}
+                  className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-[0.92rem] font-bold text-amber-600 no-underline dark:text-amber-400"
                 >
-                  <span>관리자</span>
-                  {isMobileOrTablet && (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style={{
-                        transform:
-                          expandedMenu === '관리자'
-                            ? 'rotate(180deg)'
-                            : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    >
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  )}
-                </div>
-                <div
-                  className={`dropdown-menu ${expandedMenu === '관리자' ? 'expanded' : ''}`}
-                >
-                  <NavLink
-                    to="/system"
-                    onClick={(e) => handleTabClick(e, '/system')}
-                    className={({ isActive }) =>
-                      `dropdown-item ${isActive ? 'active-item' : ''}`
-                    }
-                    style={{ color: '#FFD700', fontWeight: 'bold' }}
-                  >
-                    대시보드
-                  </NavLink>
-                </div>
-              </div>
-            )}
+                  관리자 대시보드
+                </NavLink>
+              )}
+            </div>
           </div>
+        )}
+      </header>
 
-          {/* 모바일/태블릿용 가로형 구글 광고 지면 */}
+      {/* =====================================================================
+          MAIN FULL-SCREEN WORKSPACE (BENTO CONTAINER + SIDE AD RAILS)
+         ===================================================================== */}
+      <div className="mx-auto flex w-full max-w-[1600px] flex-1 justify-center gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        {/* Left Ad Rail (Desktop XL+) */}
+        {!isYearlySubscribed && !isMobileOrTablet && (
+          <aside className="google-ad-sidebar left-ad hidden xl:flex">
+            <AdSenseBanner slot="1234567890" format="vertical" />
+          </aside>
+        )}
+
+        {/* Center Main Content Area */}
+        <main className="flex min-w-0 flex-1 flex-col max-w-6xl">
+          <NoticeBanner />
+
+          {/* Mobile/Tablet Horizontal Ad */}
           {!isYearlySubscribed && isMobileOrTablet && (
             <div className="google-ad-horizontal-wrapper">
               <AdSenseBanner
@@ -585,200 +581,112 @@ export function Layout() {
             </div>
           )}
 
-          <div
-            className="scroll-y-container"
-            style={{
-              position: 'relative',
-              flex: 1,
-              height: '100%',
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              paddingRight: '8px',
-              marginRight: '-8px',
-              minHeight: 0,
-            }}
-          >
+          {/* Page Content */}
+          <div className="flex-1">
             <Outlet />
           </div>
+        </main>
 
-          <Alert alert={alert} />
-
-          {/* Footer containing Privacy Policy and Terms of Service (Essential for AdSense Approval) */}
-          <footer
-            style={{
-              marginTop: '15px',
-              paddingTop: '15px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '0.75rem',
-              color: 'var(--text-dim)',
-              flexShrink: 0,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                gap: '16px',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-              }}
-            >
-              <button
-                onClick={() => setShowPrivacyModal(true)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: showPrivacyModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)',
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                  transition: 'color 0.2s ease',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'var(--primary-cyan)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = showPrivacyModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)';
-                }}
-              >
-                개인정보처리방침
-              </button>
-              <span style={{ opacity: 0.2 }}>|</span>
-              <button
-                onClick={() => setShowTermsModal(true)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: showTermsModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)',
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                  transition: 'color 0.2s ease',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'var(--primary-cyan)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = showTermsModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)';
-                }}
-              >
-                이용약관
-              </button>
-              <span style={{ opacity: 0.2 }}>|</span>
-              <button
-                onClick={() => setShowRefundModal(true)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: showRefundModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)',
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                  transition: 'color 0.2s ease',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'var(--primary-cyan)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = showRefundModal
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)';
-                }}
-              >
-                환불 규정
-              </button>
-            </div>
-            <div
-              style={{
-                textAlign: 'center',
-                lineHeight: '1.6',
-                opacity: 0.7,
-                marginTop: '4px',
-              }}
-            >
-              <span>상호명: 핵또</span>{' '}
-              <span style={{ margin: '0 4px' }}>|</span>{' '}
-              <span>대표자명: 김수완</span>{' '}
-              <span style={{ margin: '0 4px' }}>|</span>{' '}
-              <span>사업자등록번호: 519-18-02415</span>{' '}
-              <span style={{ margin: '0 4px' }}>|</span>{' '}
-              <span>통신판매업신고번호: 없음</span>
-              <br />
-              <span>
-                사업장 소재지: 서울특별시 마포구 와우산로 105, 5층
-                261A호(서교동)
-              </span>
-              <br />
-              <span>고객센터 전화번호: 070-8110-8128</span>{' '}
-              <span style={{ margin: '0 4px' }}>|</span>{' '}
-              <span>이메일 주소: hactto95@gmail.com</span>
-              <br />
-              <span style={{ display: 'block', marginTop: '6px' }}>
-                © {new Date().getFullYear()} hactto. All rights reserved.
-              </span>
-            </div>
-          </footer>
-        </div>
-
-        <UnsavedChangesModal
-          isOpen={showUnsavedModal}
-          onClose={() => setShowUnsavedModal(false)}
-        />
-        <HelpModal
-          isOpen={showHelpModal}
-          onClose={() => setShowHelpModal(false)}
-        />
-
-        <PaymentModal
-          isOpen={showPaymentModal}
-          onClose={() => setShowPaymentModal(false)}
-          onSuccess={checkIpStatus}
-          initialHighlight={paymentTarget}
-        />
-        <PrivacyModal
-          isOpen={showPrivacyModal}
-          onClose={() => setShowPrivacyModal(false)}
-        />
-        <TermsModal
-          isOpen={showTermsModal}
-          onClose={() => setShowTermsModal(false)}
-        />
-        <RefundPolicyModal
-          isOpen={showRefundModal}
-          onClose={() => setShowRefundModal(false)}
-        />
-        <UserDetailModal
-          isOpen={showUserDetailModal}
-          onClose={() => setShowUserDetailModal(false)}
-          openPaymentModal={(target) => {
-            setPaymentTarget(target);
-            setShowPaymentModal(true);
-          }}
-        />
+        {/* Right Ad Rail (Desktop XL+) */}
+        {!isYearlySubscribed && !isMobileOrTablet && (
+          <aside className="google-ad-sidebar right-ad hidden xl:flex">
+            <AdSenseBanner slot="0987654321" format="vertical" />
+          </aside>
+        )}
       </div>
 
-      {/* 우측 구글 광고 지면 */}
-      {!isYearlySubscribed && !isMobileOrTablet && (
-        <div className="google-ad-sidebar right-ad">
-          <AdSenseBanner slot="0987654321" format="vertical" />
+      <Alert alert={alert} />
+
+      {/* =====================================================================
+          CLEAN MODERN SAAS FOOTER
+         ===================================================================== */}
+      <footer className="mt-auto border-t border-glass-border bg-card/60 py-8 text-[0.78rem] text-dim">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-1.5 text-center sm:items-start sm:text-left">
+            <div className="flex items-center gap-2 font-display text-sm font-extrabold text-main">
+              <span>Hactto</span>
+              <span className="text-xs font-normal text-dim">
+                © {new Date().getFullYear()} All rights reserved.
+              </span>
+            </div>
+            <p className="leading-relaxed text-dim">
+              상호명: 핵또 · 대표자명: 김수완 · 사업자등록번호: 519-18-02415 ·
+              통신판매업신고번호: 없음
+              <br />
+              사업장 소재지: 서울특별시 마포구 와우산로 105, 5층 261A호(서교동)
+              · 고객센터: 070-8110-8128 · 이메일: hactto95@gmail.com
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 font-medium">
+            <button
+              type="button"
+              onClick={() => setShowPrivacyModal(true)}
+              className={`cursor-pointer border-none bg-transparent p-0 text-[0.78rem] transition-colors hover:text-primary-cyan ${
+                showPrivacyModal ? 'font-bold text-primary-cyan' : 'text-muted'
+              }`}
+            >
+              개인정보처리방침
+            </button>
+            <span className="opacity-30">·</span>
+            <button
+              type="button"
+              onClick={() => setShowTermsModal(true)}
+              className={`cursor-pointer border-none bg-transparent p-0 text-[0.78rem] transition-colors hover:text-primary-cyan ${
+                showTermsModal ? 'font-bold text-primary-cyan' : 'text-muted'
+              }`}
+            >
+              이용약관
+            </button>
+            <span className="opacity-30">·</span>
+            <button
+              type="button"
+              onClick={() => setShowRefundModal(true)}
+              className={`cursor-pointer border-none bg-transparent p-0 text-[0.78rem] transition-colors hover:text-primary-cyan ${
+                showRefundModal ? 'font-bold text-primary-cyan' : 'text-muted'
+              }`}
+            >
+              환불 규정
+            </button>
+          </div>
         </div>
-      )}
+      </footer>
+
+      {/* Modals */}
+      <UnsavedChangesModal
+        isOpen={showUnsavedModal}
+        onClose={() => setShowUnsavedModal(false)}
+      />
+      <HelpModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+      />
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onSuccess={checkIpStatus}
+        initialHighlight={paymentTarget}
+      />
+      <PrivacyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+      />
+      <RefundPolicyModal
+        isOpen={showRefundModal}
+        onClose={() => setShowRefundModal(false)}
+      />
+      <UserDetailModal
+        isOpen={showUserDetailModal}
+        onClose={() => setShowUserDetailModal(false)}
+        openPaymentModal={(target) => {
+          setPaymentTarget(target);
+          setShowPaymentModal(true);
+        }}
+      />
     </div>
   );
 }

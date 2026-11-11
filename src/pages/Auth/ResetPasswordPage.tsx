@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../utils';
+import { ThemeToggle } from '../../components/ThemeToggle';
 
 export const ResetPasswordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -26,7 +27,6 @@ export const ResetPasswordPage: React.FC = () => {
       return;
     }
 
-    // Client-side regex validation for better UX
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+~`|}{[\]:;?><,./\-=]).{10,}$/;
     if (!passwordRegex.test(password)) {
@@ -62,175 +62,89 @@ export const ResetPasswordPage: React.FC = () => {
 
   if (!token) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          height: '100vh',
-          width: '100vw',
-          backgroundColor: 'var(--bg-dark)',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <div style={{ color: 'var(--error)', fontSize: '1.2rem' }}>
-          {errorMsg}
+      <div className="relative flex min-h-dvh w-full items-center justify-center bg-canvas px-4">
+        <div className="absolute top-6 right-6 z-20">
+          <ThemeToggle />
+        </div>
+        <div className="bento-card max-w-md p-8 text-center">
+          <div className="text-base font-bold text-error">{errorMsg}</div>
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className="btn-submit mt-5 px-6 py-2.5 text-xs"
+          >
+            로그인 페이지로 이동
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: 'var(--bg-dark)',
-        position: 'relative',
-      }}
-    >
-      <div
-        style={{
-          flex: '1',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'var(--bg-dark)',
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-            padding: '40px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            borderRadius: '16px',
-            backdropFilter: 'blur(10px)',
-          }}
-        >
-          <h1
-            style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              marginBottom: '1rem',
-              color: '#fff',
-              textAlign: 'center',
-            }}
-          >
-            비밀번호 재설정
-          </h1>
-          <p
-            style={{
-              color: 'var(--text-muted)',
-              fontSize: '0.9rem',
-              marginBottom: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            새로운 비밀번호를 입력해주세요.
-            <br />
+    <div className="relative flex min-h-dvh w-full flex-col justify-between bg-canvas px-4 py-6">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-end">
+        <ThemeToggle />
+      </div>
+
+      <div className="mx-auto my-8 w-full max-w-[440px] rounded-3xl border border-glass-border bg-card p-8 shadow-glass sm:p-10">
+        <h1 className="mb-2 text-center font-display text-2xl font-extrabold text-main">
+          새 비밀번호 설정
+        </h1>
+        <p className="mb-6 text-center text-sm leading-relaxed text-muted">
+          새로운 비밀번호를 입력해주세요.
+          <br />
+          <span className="text-xs text-dim">
             (영문 대소문자, 숫자, 특수기호 포함 10자리 이상)
-          </p>
+          </span>
+        </p>
 
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '0.9rem',
-                  color: 'var(--text-muted)',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                새 비밀번호
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  width: '100%',
-                  backgroundColor: 'var(--bg-input)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#fff',
-                  fontSize: '1rem',
-                  outline: 'none',
-                }}
-                required
-                placeholder="새 비밀번호를 입력해주세요"
-              />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-muted">
+              새 비밀번호
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-glow"
+              required
+              placeholder="새 비밀번호를 입력해주세요"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-muted">
+              비밀번호 확인
+            </label>
+            <input
+              type="password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              className="input-glow"
+              required
+              placeholder="비밀번호를 한번 더 입력해주세요"
+            />
+          </div>
+
+          {errorMsg && (
+            <div className="rounded-xl border border-error/25 bg-error/10 px-3.5 py-2.5 text-xs font-semibold text-error">
+              {errorMsg}
             </div>
+          )}
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '0.9rem',
-                  color: 'var(--text-muted)',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                비밀번호 확인
-              </label>
-              <input
-                type="password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-                style={{
-                  width: '100%',
-                  backgroundColor: 'var(--bg-input)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#fff',
-                  fontSize: '1rem',
-                  outline: 'none',
-                }}
-                required
-                placeholder="비밀번호를 한번 더 입력해주세요"
-              />
-            </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-submit mt-2 w-full py-3.5 text-sm font-bold"
+          >
+            {loading ? '변경 중...' : '비밀번호 변경하기'}
+          </button>
+        </form>
+      </div>
 
-            <div style={{ minHeight: '24px', marginBottom: '1.5rem' }}>
-              {errorMsg && (
-                <div
-                  style={{
-                    color: 'var(--error)',
-                    fontSize: '0.85rem',
-                    textAlign: 'center',
-                  }}
-                >
-                  {errorMsg}
-                </div>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '14px',
-                borderRadius: '8px',
-                fontWeight: 'bold',
-                fontSize: '1rem',
-                opacity: loading ? 0.7 : 1,
-                backgroundColor: 'var(--primary-cyan)',
-                color: '#000',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              {loading ? '변경 중...' : '비밀번호 변경하기'}
-            </button>
-          </form>
-        </div>
+      <div className="text-center text-xs text-dim">
+        © {new Date().getFullYear()} hactto. All rights reserved.
       </div>
     </div>
   );
