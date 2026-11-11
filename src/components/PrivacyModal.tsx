@@ -66,62 +66,22 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="admin-modal-overlay"
-      onClick={onClose}
-      style={{ zIndex: 1000 }}
-    >
+    <div className="admin-modal-overlay z-[1000]" onClick={onClose}>
       <div
-        className="glass-card"
+        className="glass-card max-w-[680px] w-[90%] max-h-[80vh] h-auto flex flex-col pt-6 px-[30px] pb-5 relative animate-[fadeIn_0.3s_ease-out] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '680px',
-          width: '90%',
-          maxHeight: '80vh',
-          height: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '24px 30px 20px 30px',
-          position: 'relative',
-          animation: 'fadeIn 0.3s ease-out',
-          overflow: 'hidden',
-        }}
       >
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            paddingBottom: '16px',
-            marginBottom: '20px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <h2
-              className="logo-glow"
-              style={{
-                fontSize: '1.4rem',
-                margin: 0,
-                fontWeight: 'bold',
-                color: 'var(--primary-cyan)',
-              }}
-            >
+        <div className="flex justify-between items-center border-b border-glass-border pb-4 mb-5">
+          <div className="flex items-center gap-[15px]">
+            <h2 className="logo-glow text-[1.4rem] m-0 font-bold text-primary-cyan">
               개인정보처리방침
             </h2>
             {versions.length > 0 && (
               <select
                 value={selectedVersionId}
                 onChange={handleVersionChange}
-                style={{
-                  background: 'rgba(0,0,0,0.5)',
-                  color: 'var(--text-main)',
-                  border: '1px solid var(--border-color)',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.85rem',
-                }}
+                className="bg-surface text-main border border-glass-border px-2 py-1 rounded text-[0.85rem]"
               >
                 {versions.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -135,28 +95,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-dim)',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-dim)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="bg-transparent hover:bg-surface border-none text-dim hover:text-main text-2xl cursor-pointer flex items-center justify-center w-[30px] h-[30px] rounded-full transition-all duration-200"
           >
             &times;
           </button>
@@ -164,47 +103,15 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({
 
         {/* Scrollable Content */}
         <div
-          className="scroll-y-container"
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            paddingRight: '8px',
-            fontSize: '0.9rem',
-            lineHeight: '1.7',
-            color: 'var(--text-dim)',
-            textAlign: 'left',
-          }}
+          className="scroll-y-container flex-1 overflow-y-auto pr-2 text-[0.9rem] leading-[1.7] text-dim text-left"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
         />
 
         {/* Footer */}
-        <div
-          style={{
-            marginTop: '20px',
-            paddingTop: '16px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
+        <div className="mt-5 pt-4 border-t border-glass-border flex justify-end">
           <button
             onClick={onClose}
-            className="action-btn"
-            style={{
-              padding: '8px 24px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: 'var(--text-main)',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-            }}
+            className="action-btn px-6 py-2 bg-surface hover:bg-surface-hover border border-glass-border text-main rounded-md cursor-pointer transition-all duration-200"
           >
             닫기
           </button>

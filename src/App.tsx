@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,6 +8,7 @@ import {
 import './App.css';
 import { AppProvider, useApp } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Layout } from './components/Layout';
 import { SystemAnalyzing } from './pages/SystemAnalyzing';
 import { BlockedPage } from './pages/BlockedPage';
@@ -24,7 +25,6 @@ import { Support } from './pages/Dashboard/Support';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { AuthRequiredModal } from './components/AuthRequiredModal';
 import { AdminPage } from './pages/Dashboard/AdminPage';
-import { InteractiveBackground } from './components/InteractiveBackground';
 import { VerifySignup } from './pages/Auth/VerifySignup';
 import { Restore } from './pages/Auth/Restore';
 import { WithdrawConfirm } from './pages/Auth/WithdrawConfirm';
@@ -45,23 +45,12 @@ function AppContent() {
     isBlockedUser,
   } = useApp();
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Global hotkey listener for Admin Auth modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isModifier = e.metaKey || e.ctrlKey;
       const isHKey =
-        e.code === 'KeyH' ||
-        e.key?.toLowerCase() === 'h' ||
-        e.key === 'ㅗ' ||
-        e.key === 'ㅗ';
+        e.code === 'KeyH' || e.key?.toLowerCase() === 'h' || e.key === 'ㅗ';
 
       // Trigger on Cmd+Shift+H (Mac) or Ctrl+Shift+H (Windows)
       if (isModifier && e.shiftKey && isHKey) {
@@ -73,74 +62,15 @@ function AppContent() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown, true); // Use capturing phase to override default browser/element behaviors
-
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [showAdminModal, setAdminError, setAlert, setShowAdminModal]);
 
-  if (isMobile) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          backgroundColor: '#030712',
-          color: 'var(--text-main)',
-          textAlign: 'center',
-          padding: '20px',
-        }}
-      >
-        <div
-          style={{
-            marginBottom: '16px',
-            animation: 'pulse 2s infinite',
-            color: 'var(--primary-cyan)',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <svg
-            width="64"
-            height="64"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-        </div>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '12px' }}>
-          모바일 버전 준비 중
-        </h2>
-        <p style={{ color: 'var(--text-dim)', lineHeight: '1.6' }}>
-          hactto의 모바일 최적화 버전이 현재 준비 중입니다.
-          <br />
-          정상적인 기능 이용을 위해 PC 브라우저로 접속해 주시길 부탁드립니다.
-        </p>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          color: 'var(--text-dim)',
-        }}
-      >
-        불러오는 중...
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-canvas text-muted">
+        <div className="spinner !m-0" />
+        <span className="text-sm font-medium">데이터를 불러오고 있어요...</span>
       </div>
     );
   }
@@ -179,15 +109,10 @@ function AppContent() {
 
   return (
     <>
-      {/* Ambient Moving Glow */}
-      <div className="bg-ambient">
-        <div className="orb orb-cyan"></div>
-        <div className="orb orb-purple"></div>
-        <InteractiveBackground />
-      </div>
+      {/* Subtle Modern Aurora Mesh Background */}
+      <div className="bg-ambient" />
 
       <Routes>
-        {/* Welcome screen is bypassed, redirect to home */}
         <Route path="/" element={<Navigate to="/home" replace />} />
 
         {/* Auth routes */}
@@ -202,7 +127,7 @@ function AppContent() {
           element={<ResetPasswordRequestPage />}
         />
 
-        {/* User Service Dashboard pages wrapped in Layout */}
+        {/* User Service Dashboard pages wrapped in Modern Full-Screen Layout */}
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
@@ -235,13 +160,15 @@ function AppContent() {
 
 export function App() {
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </AppProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </AppProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

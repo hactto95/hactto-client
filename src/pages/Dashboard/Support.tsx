@@ -180,103 +180,34 @@ export function Support() {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        height: '100%',
-      }}
-    >
-      <div style={{ flexShrink: 0 }}>
-        <h3
-          className="section-title"
-          style={{
-            color: 'var(--primary-cyan)',
-            marginBottom: '4px',
-            marginTop: 0,
-          }}
-        >
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-main tracking-tight m-0">
           1:1 관리자 문의하기
-        </h3>
-        <p
-          className="access-desc"
-          style={{ fontSize: '0.85rem', color: 'var(--text-dim)', margin: 0 }}
-        >
+        </h1>
+        <p className="text-sm text-dim mt-1.5 m-0">
           서비스 이용 중 불편한 점이나 건의사항을 남겨주시면 관리자가 신속하게
           답변해 드립니다.
         </p>
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '16px',
-          flex: 1,
-          minHeight: 0,
-        }}
-      >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Inquiry Form */}
-        <div
-          className="glass-card"
-          style={{
-            padding: '20px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <h4
-            style={{
-              fontSize: '1rem',
-              color: 'var(--text-main)',
-              marginBottom: '16px',
-              marginTop: 0,
-            }}
-          >
+        <div className="bento-card p-6 sm:p-7 flex flex-col">
+          <h2 className="text-lg font-bold text-main mb-4 mt-0">
             새 문의 작성
-          </h4>
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              flex: 1,
-            }}
-          >
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <label
-                style={{
-                  fontSize: '0.72rem',
-                  color: 'var(--text-dim)',
-                  textAlign: 'left',
-                }}
-              >
+          </h2>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-muted text-left">
                 문의 유형
               </label>
               <select
-                className="input-glow"
+                className="input-glow text-sm h-11"
                 value={type}
                 onChange={(e) =>
                   setType(e.target.value as 'GENERAL' | 'REFUND')
                 }
-                style={{
-                  fontSize: '0.85rem',
-                  background: 'var(--bg-main)',
-                  color: 'var(--text-main)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '6px',
-                  height: '36px',
-                  padding: '0 8px',
-                  outline: 'none',
-                }}
               >
                 <option value="GENERAL">일반 문의</option>
                 <option value="REFUND">환불 문의 (전체 환불만 가능)</option>
@@ -284,64 +215,32 @@ export function Support() {
             </div>
 
             {type === 'REFUND' && hasPendingRefund && (
-              <div
-                style={{
-                  background: 'rgba(255, 75, 75, 0.1)',
-                  border: '1px solid rgba(255, 75, 75, 0.2)',
-                  color: '#ff4b4b',
-                  fontSize: '0.75rem',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  textAlign: 'left',
-                }}
-              >
+              <div className="bg-error/10 border border-error/20 text-error text-xs p-3 rounded-xl text-left">
                 현재 대기 중이거나 답변 확인 대기 중인 환불 문의가 존재하여 추가
                 환불 문의 작성이 불가능합니다.
               </div>
             )}
 
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <label
-                style={{
-                  fontSize: '0.72rem',
-                  color: 'var(--text-dim)',
-                  textAlign: 'left',
-                }}
-              >
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-muted text-left">
                 제목
               </label>
               <input
                 type="text"
-                className="input-glow"
+                className="input-glow text-sm h-11"
                 placeholder="문의 제목을 입력하세요."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
-                style={{ fontSize: '0.85rem', height: '36px' }}
                 disabled={type === 'REFUND' && hasPendingRefund}
               />
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-                flex: 1,
-              }}
-            >
-              <label
-                style={{
-                  fontSize: '0.72rem',
-                  color: 'var(--text-dim)',
-                  textAlign: 'left',
-                }}
-              >
+            <div className="flex flex-col gap-1.5 flex-1">
+              <label className="text-xs font-bold text-muted text-left">
                 내용
               </label>
               <textarea
-                className="input-glow"
+                className="input-glow min-h-[160px] text-sm resize-none p-3.5 leading-relaxed"
                 placeholder={
                   type === 'REFUND'
                     ? '환불 요청 사유를 상세하게 작성해 주세요. (가입 이벤트로 지급된 50 HON은 보유 HON에서 제외되고 계산되며, 보유 HON이 50 이하일 경우 환불 금액은 무조건 0원입니다.)'
@@ -350,37 +249,13 @@ export function Support() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 maxLength={1000}
-                style={{
-                  flex: 1,
-                  fontSize: '0.85rem',
-                  resize: 'none',
-                  padding: '10px',
-                  lineHeight: '1.5',
-                }}
                 disabled={type === 'REFUND' && hasPendingRefund}
               />
             </div>
             <button
               type="submit"
-              className="btn-submit"
+              className="btn-submit h-11 font-bold"
               disabled={submitting || (type === 'REFUND' && hasPendingRefund)}
-              style={{
-                height: '40px',
-                background:
-                  type === 'REFUND' && hasPendingRefund
-                    ? 'rgba(255,255,255,0.05)'
-                    : 'linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-purple) 100%)',
-                color:
-                  type === 'REFUND' && hasPendingRefund
-                    ? 'var(--text-dim)'
-                    : '#0f111a',
-                fontWeight: 'bold',
-                border: 'none',
-                cursor:
-                  type === 'REFUND' && hasPendingRefund
-                    ? 'not-allowed'
-                    : 'pointer',
-              }}
             >
               {submitting ? '제출 중...' : '문의하기'}
             </button>
@@ -388,135 +263,46 @@ export function Support() {
         </div>
 
         {/* Inquiry List */}
-        <div
-          className="glass-card"
-          style={{
-            padding: '20px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <h4
-            style={{
-              fontSize: '1rem',
-              color: 'var(--text-main)',
-              marginBottom: '16px',
-              marginTop: 0,
-            }}
-          >
+        <div className="bento-card p-6 sm:p-7 flex flex-col">
+          <h2 className="text-lg font-bold text-main mb-4 mt-0">
             내 문의 내역
-          </h4>
+          </h2>
 
           {loading && inquiries.length === 0 ? (
-            <p
-              style={{
-                fontSize: '0.85rem',
-                color: 'var(--text-dim)',
-                textAlign: 'center',
-              }}
-            >
-              불러오는 중...
-            </p>
+            <p className="text-sm text-dim text-center py-10">불러오는 중...</p>
           ) : inquiries.length === 0 ? (
-            <div style={{ padding: '40px 0', textAlign: 'center' }}>
-              <span
-                style={{
-                  fontSize: '2rem',
-                  display: 'block',
-                  marginBottom: '8px',
-                }}
-              >
-                ✉
-              </span>
-              <p
-                style={{
-                  fontSize: '0.82rem',
-                  color: 'var(--text-dim)',
-                  margin: 0,
-                }}
-              >
+            <div className="py-12 px-0 text-center">
+              <span className="text-3xl block mb-2">✉</span>
+              <p className="text-sm text-dim m-0">
                 등록된 문의 내역이 없습니다.
               </p>
             </div>
           ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                flex: 1,
-                minHeight: 0,
-                overflowY: 'auto',
-                paddingRight: '4px',
-              }}
-            >
+            <div className="flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-1">
               {inquiries.map((inq) => {
                 const isExpanded = expandedId === inq.id;
                 return (
                   <div
                     key={inq.id}
-                    style={{
-                      border: '1px solid rgba(255, 255, 255, 0.04)',
-                      background: 'rgba(255, 255, 255, 0.01)',
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      transition: 'all 0.2s ease',
-                      flexShrink: 0,
-                    }}
+                    className="border border-glass-border bg-surface rounded-lg overflow-hidden transition-all duration-200 shrink-0"
                   >
                     {/* Header */}
                     <div
                       onClick={() => toggleExpand(inq.id)}
-                      style={{
-                        padding: '12px 14px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '10px',
-                        background: isExpanded
-                          ? 'rgba(255, 255, 255, 0.03)'
-                          : 'transparent',
-                      }}
+                      className={`py-3 px-3.5 cursor-pointer flex justify-between items-center gap-2.5 ${
+                        isExpanded ? 'bg-surface-hover' : 'bg-transparent'
+                      }`}
                     >
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                          alignItems: 'flex-start',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            gap: '6px',
-                            alignItems: 'center',
-                          }}
-                        >
+                      <div className="flex flex-col gap-1 items-start overflow-hidden">
+                        <div className="flex gap-1.5 items-center">
                           <span
-                            style={{
-                              fontSize: '0.65rem',
-                              padding: '1px 4px',
-                              borderRadius: '4px',
-                              background:
-                                inq.type === 'REFUND'
-                                  ? 'rgba(255, 75, 75, 0.15)'
-                                  : inq.type === 'BLOCK'
-                                    ? 'rgba(255, 165, 0, 0.15)'
-                                    : 'rgba(255, 255, 255, 0.06)',
-                              color:
-                                inq.type === 'REFUND'
-                                  ? '#ff4b4b'
-                                  : inq.type === 'BLOCK'
-                                    ? 'orange'
-                                    : 'var(--text-dim)',
-                            }}
+                            className={`text-[0.65rem] py-px px-1 rounded ${
+                              inq.type === 'REFUND'
+                                ? 'bg-error/15 text-error'
+                                : inq.type === 'BLOCK'
+                                  ? 'bg-amber-500/15 text-amber-500'
+                                  : 'bg-surface-hover text-dim'
+                            }`}
                           >
                             {inq.type === 'REFUND'
                               ? '환불'
@@ -524,50 +310,21 @@ export function Support() {
                                 ? '제재'
                                 : '일반'}
                           </span>
-                          <span
-                            style={{
-                              fontSize: '0.85rem',
-                              fontWeight: '600',
-                              color: 'var(--text-main)',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              maxWidth: '150px',
-                            }}
-                          >
+                          <span className="text-[0.85rem] font-semibold text-main whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
                             {inq.title}
                           </span>
                         </div>
-                        <span
-                          style={{
-                            fontSize: '0.7rem',
-                            color: 'var(--text-dim)',
-                          }}
-                        >
+                        <span className="text-[0.7rem] text-dim">
                           {new Date(inq.createdAt).toLocaleDateString()}
                         </span>
                       </div>
 
                       <span
-                        style={{
-                          fontSize: '0.7rem',
-                          fontWeight: 'bold',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          background:
-                            inq.status === 'ANSWERED'
-                              ? 'rgba(0, 240, 255, 0.12)'
-                              : 'rgba(255, 255, 255, 0.08)',
-                          color:
-                            inq.status === 'ANSWERED'
-                              ? 'var(--primary-cyan)'
-                              : 'var(--text-dim)',
-                          border:
-                            inq.status === 'ANSWERED'
-                              ? '1px solid rgba(0, 240, 255, 0.25)'
-                              : '1px solid rgba(255, 255, 255, 0.1)',
-                          flexShrink: 0,
-                        }}
+                        className={`text-[0.7rem] font-bold py-0.5 px-1.5 rounded shrink-0 ${
+                          inq.status === 'ANSWERED'
+                            ? 'bg-primary-cyan/12 text-primary-cyan border border-primary-cyan/25'
+                            : 'bg-surface-hover text-dim border border-glass-border'
+                        }`}
                       >
                         {inq.refundStatus === 'PROPOSED'
                           ? '승인 대기'
@@ -583,92 +340,35 @@ export function Support() {
 
                     {/* Content (Expanded) */}
                     {isExpanded && (
-                      <div
-                        style={{
-                          padding: '14px',
-                          borderTop: '1px solid rgba(255, 255, 255, 0.04)',
-                          background: 'rgba(0, 0, 0, 0.1)',
-                          fontSize: '0.82rem',
-                          lineHeight: '1.6',
-                          color: 'var(--text-muted)',
-                        }}
-                      >
+                      <div className="p-3.5 border-t border-glass-border bg-surface text-[0.82rem] leading-relaxed text-muted">
                         <div
-                          style={{
-                            whiteSpace: 'pre-wrap',
-                            marginBottom: inq.answer ? '14px' : 0,
-                          }}
+                          className={`whitespace-pre-wrap ${
+                            inq.answer ? 'mb-3.5' : 'mb-0'
+                          }`}
                         >
                           {inq.content}
                         </div>
 
                         {inq.answer && (
-                          <div
-                            style={{
-                              padding: '12px',
-                              background: 'rgba(157, 0, 255, 0.05)',
-                              borderLeft: '3px solid var(--primary-purple)',
-                              borderRadius: '4px',
-                              marginTop: '8px',
-                            }}
-                          >
-                            <span
-                              style={{
-                                color: 'var(--primary-purple)',
-                                fontWeight: 'bold',
-                                fontSize: '0.75rem',
-                                display: 'block',
-                                marginBottom: '4px',
-                              }}
-                            >
+                          <div className="p-3 bg-primary-purple/5 border-l-[3px] border-primary-purple rounded mt-2">
+                            <span className="text-primary-purple font-bold text-xs block mb-1">
                               관리자 답변
                             </span>
-                            <div
-                              style={{
-                                whiteSpace: 'pre-wrap',
-                                color: 'var(--text-main)',
-                              }}
-                            >
+                            <div className="whitespace-pre-wrap text-main">
                               {inq.answer}
                             </div>
-                            <span
-                              style={{
-                                fontSize: '0.65rem',
-                                color: 'var(--text-dim)',
-                                display: 'block',
-                                marginTop: '6px',
-                              }}
-                            >
+                            <span className="text-[0.65rem] text-dim block mt-1.5">
                               {inq.answeredAt &&
                                 new Date(inq.answeredAt).toLocaleString()}
                             </span>
 
                             {/* User approval/cancel actions if proposed */}
                             {inq.refundStatus === 'PROPOSED' && (
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  gap: '8px',
-                                  marginTop: '12px',
-                                  borderTop: '1px solid rgba(255,255,255,0.06)',
-                                  paddingTop: '8px',
-                                }}
-                              >
+                              <div className="flex gap-2 mt-3 border-t border-glass-border pt-2">
                                 <button
                                   type="button"
                                   onClick={() => handleConfirmRefund(inq.id)}
-                                  style={{
-                                    flex: 1,
-                                    height: '32px',
-                                    background:
-                                      'linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-purple) 100%)',
-                                    color: '#0f111a',
-                                    fontWeight: 'bold',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    fontSize: '0.75rem',
-                                    cursor: 'pointer',
-                                  }}
+                                  className="flex-1 h-8 bg-primary-cyan text-white font-bold border-none rounded-lg text-xs cursor-pointer"
                                 >
                                   환불 실행
                                 </button>
@@ -677,28 +377,11 @@ export function Support() {
                           </div>
                         )}
                         {inq.type === 'REFUND' && inq.status === 'PENDING' && (
-                          <div
-                            style={{
-                              display: 'flex',
-                              gap: '8px',
-                              marginTop: '12px',
-                              borderTop: '1px solid rgba(255,255,255,0.06)',
-                              paddingTop: '8px',
-                            }}
-                          >
+                          <div className="flex gap-2 mt-3 border-t border-glass-border pt-2">
                             <button
                               type="button"
                               onClick={() => handleCancelRefund(inq.id)}
-                              style={{
-                                width: '100%',
-                                height: '32px',
-                                background: 'rgba(239, 68, 68, 0.1)',
-                                border: '1px solid rgba(239, 68, 68, 0.2)',
-                                color: '#ef4444',
-                                borderRadius: '4px',
-                                fontSize: '0.75rem',
-                                cursor: 'pointer',
-                              }}
+                              className="w-full h-8 bg-error/10 border border-error/20 text-error rounded text-xs cursor-pointer"
                             >
                               환불 요청 취소
                             </button>

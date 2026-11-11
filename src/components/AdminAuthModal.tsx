@@ -53,53 +53,19 @@ export function AdminAuthModal({ isOpen, onClose }: AdminAuthModalProps) {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: 'rgba(0,0,0,0.85)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 99999,
-        backdropFilter: 'blur(10px)',
-        overflow: 'hidden',
-      }}
+      className="fixed inset-0 w-full h-full bg-overlay flex justify-center items-center z-[99999] backdrop-blur-[10px] overflow-hidden"
       onClick={onClose}
     >
       <div
-        className="glass-card"
-        style={{
-          width: '360px',
-          padding: '24px',
-          background: 'var(--bg-card)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          overflow: 'hidden',
-        }}
+        className="glass-card w-[360px] p-6 bg-card border border-glass-border flex flex-col gap-4 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3
-          style={{
-            margin: 0,
-            color: 'var(--primary-cyan)',
-            fontSize: '1.2rem',
-          }}
-        >
-          관리자 인증
-        </h3>
-        <p style={{ margin: 0, color: 'var(--text-dim)', fontSize: '0.85rem' }}>
+        <h3 className="m-0 text-primary-cyan text-[1.2rem]">관리자 인증</h3>
+        <p className="m-0 text-dim text-[0.85rem]">
           OTP (관리자 키)를 입력해주세요.
         </p>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <input
               ref={inputRef}
@@ -107,50 +73,24 @@ export function AdminAuthModal({ isOpen, onClose }: AdminAuthModalProps) {
               value={adminKey}
               onChange={(e) => setAdminKey(e.target.value)}
               placeholder="Admin Key"
-              className="input-glow"
-              style={{ width: '100%', boxSizing: 'border-box' }}
+              className="input-glow w-full box-border"
             />
             {adminError && (
-              <div
-                style={{
-                  color: '#ff4b4b',
-                  fontSize: '0.75rem',
-                  marginTop: '6px',
-                }}
-              >
-                {adminError}
-              </div>
+              <div className="text-error text-xs mt-1.5">{adminError}</div>
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="flex gap-2">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: 'var(--text-dim)',
-                borderRadius: '6px',
-                cursor: 'pointer',
-              }}
+              className="flex-1 p-2.5 bg-surface hover:bg-surface-hover border border-glass-border text-dim hover:text-main rounded-md cursor-pointer transition-colors"
             >
               취소
             </button>
             <button
               type="submit"
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: 'var(--primary-cyan)',
-                color: '#0f111a',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-              }}
+              className="flex-1 p-2.5 bg-primary-cyan text-white border-none rounded-lg cursor-pointer font-bold hover:opacity-90 transition-opacity"
             >
               인증
             </button>

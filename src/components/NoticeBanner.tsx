@@ -29,7 +29,7 @@ function NoticeText({
     const swapTimeout = setTimeout(() => {
       setDisplayNotice(currentNotice);
       setFade(true);
-    }, 250);
+    }, 220);
 
     return () => {
       clearTimeout(fadeOutTimeout);
@@ -47,7 +47,6 @@ function NoticeText({
     };
 
     checkOverflow();
-    // Re-check on window resize
     window.addEventListener('resize', checkOverflow);
     return () => window.removeEventListener('resize', checkOverflow);
   }, [displayNotice]);
@@ -55,101 +54,38 @@ function NoticeText({
   return (
     <div
       onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        flex: 1,
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'opacity 0.25s ease-in-out',
-        opacity: fade ? 1 : 0,
-      }}
+      className={`flex flex-1 cursor-pointer items-center gap-2.5 overflow-hidden transition-opacity duration-200 ${
+        fade ? 'opacity-100' : 'opacity-0'
+      }`}
     >
-      <span
-        style={{
-          background: 'var(--primary-cyan)',
-          color: '#0a0b10',
-          fontSize: '0.7rem',
-          fontWeight: 'bold',
-          padding: '2px 6px',
-          borderRadius: '4px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          flexShrink: 0,
-          zIndex: 1,
-        }}
-      >
-        NOTICE
+      <span className="shrink-0 rounded-md bg-primary-cyan/12 px-2 py-0.5 text-[0.7rem] font-bold tracking-wide text-primary-cyan">
+        공지
       </span>
 
-      {/* Fixed Title */}
-      <span
-        style={{
-          fontSize: '0.82rem',
-          fontWeight: 'bold',
-          color: 'var(--primary-cyan)',
-          flexShrink: 0,
-        }}
-      >
+      <span className="shrink-0 text-[0.85rem] font-bold text-main">
         {displayNotice.title}
       </span>
 
-      {/* Vertical divider or dash */}
-      <span
-        style={{
-          color: 'rgba(255, 255, 255, 0.3)',
-          fontSize: '0.82rem',
-          flexShrink: 0,
-        }}
-      >
-        |
-      </span>
+      <span className="shrink-0 text-xs text-dim/40">·</span>
 
-      {/* Marquee Content */}
       <div
         ref={containerRef}
-        className={shouldScroll ? 'marquee-container' : ''}
-        style={{
-          position: 'relative',
-          width: '100%',
-          overflow: 'hidden',
-          display: 'flex',
-          maskImage: shouldScroll
-            ? 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
-            : 'none',
-          WebkitMaskImage: shouldScroll
-            ? 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
-            : 'none',
-        }}
+        className={`relative flex w-full overflow-hidden ${
+          shouldScroll
+            ? 'marquee-container [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)]'
+            : ''
+        }`}
       >
         <div
-          className={shouldScroll ? 'marquee-content' : ''}
-          style={{
-            display: 'inline-flex',
-            gap: shouldScroll ? '50px' : '0px',
-            whiteSpace: 'nowrap',
-          }}
+          className={`inline-flex whitespace-nowrap ${
+            shouldScroll ? 'marquee-content gap-[50px]' : 'gap-0'
+          }`}
         >
-          <span
-            ref={textRef}
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-main)',
-              fontWeight: '500',
-            }}
-          >
+          <span ref={textRef} className="text-[0.84rem] text-muted">
             {displayNotice.content}
           </span>
           {shouldScroll && (
-            <span
-              style={{
-                fontSize: '0.82rem',
-                color: 'var(--text-main)',
-                fontWeight: '500',
-              }}
-              aria-hidden="true"
-            >
+            <span className="text-[0.84rem] text-muted" aria-hidden="true">
               {displayNotice.content}
             </span>
           )}
@@ -189,18 +125,16 @@ export function NoticeBanner() {
     return () => window.removeEventListener('refresh-notices', handleRefresh);
   }, []);
 
-  // Automatic notice rotation interval
   useEffect(() => {
     if (notices.length <= 1) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % notices.length);
-    }, 5000); // rotate every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [notices.length]);
 
-  // Disable/Enable page scroll when detail modal is active
   useEffect(() => {
     if (showDetail) {
       document.body.style.overflow = 'hidden';
@@ -222,202 +156,64 @@ export function NoticeBanner() {
 
   return (
     <>
-      <div
-        style={{
-          width: '100%',
-          background:
-            'linear-gradient(90deg, rgba(0, 240, 255, 0.15) 0%, rgba(157, 0, 255, 0.15) 100%)',
-          border: '1px solid rgba(0, 240, 255, 0.25)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: '8px',
-          padding: '10px 16px',
-          marginBottom: '16px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '12px',
-          boxShadow: '0 0 15px rgba(0, 240, 255, 0.1)',
-          animation: 'pulse 3s infinite alternate',
-          flexShrink: 0,
-        }}
-      >
+      <div className="mb-6 flex w-full items-center justify-between gap-3 rounded-2xl border border-glass-border bg-card px-4 py-3 shadow-glass transition-colors hover:border-glass-border-strong">
         <NoticeText
           currentNotice={currentNotice}
           onClick={() => setShowDetail(true)}
         />
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            flexShrink: 0,
-          }}
-        >
-          {notices.length > 1 && (
-            <button
-              onClick={handleNext}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: 'var(--text-dim)',
-                fontSize: '0.7rem',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              다음 공지 ({currentIndex + 1}/{notices.length})
-            </button>
-          )}
-        </div>
+        {notices.length > 1 && (
+          <button
+            type="button"
+            onClick={handleNext}
+            className="shrink-0 cursor-pointer rounded-lg border border-glass-border bg-surface px-2.5 py-1 text-[0.72rem] font-semibold text-muted transition-colors hover:bg-surface-hover hover:text-main"
+          >
+            {currentIndex + 1} / {notices.length} 다음
+          </button>
+        )}
       </div>
 
       {showDetail && (
         <div
           onClick={() => setShowDetail(false)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(3, 4, 8, 0.8)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            zIndex: 9999,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '20px',
-            overflow: 'hidden',
-          }}
+          className="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center bg-overlay p-4 backdrop-blur-md"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%',
-              maxWidth: '540px',
-              background: 'var(--bg-card)',
-              border: 'var(--border-glass)',
-              boxShadow:
-                '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-              borderRadius: '16px',
-              display: 'flex',
-              flexDirection: 'column',
-              maxHeight: '100%',
-              overflow: 'hidden',
-            }}
+            className="flex max-h-[85vh] w-full max-w-[520px] flex-col overflow-hidden rounded-3xl border border-glass-border bg-modal shadow-2xl"
           >
-            {/* Header */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 20px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-              }}
-            >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <span
-                  style={{
-                    background: 'var(--primary-cyan)',
-                    color: '#0a0b10',
-                    fontSize: '0.65rem',
-                    fontWeight: 'bold',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                  }}
-                >
-                  NOTICE
-                </span>
-                <span
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    color: '#ffffff',
-                  }}
-                >
+            <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
+              <div className="flex items-center gap-2">
+                <span className="rounded-md bg-primary-cyan/12 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan">
                   공지사항
                 </span>
+                <span className="text-base font-bold text-main">상세 안내</span>
               </div>
               <button
+                type="button"
                 onClick={() => setShowDetail(false)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'var(--text-dim)',
-                  fontSize: '1.2rem',
-                  cursor: 'pointer',
-                  padding: '4px',
-                }}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-none bg-surface text-dim transition-colors hover:bg-surface-hover hover:text-main"
               >
                 ✕
               </button>
             </div>
 
-            {/* Content (No bottom spacing issues & cleanly scrollable internal content if too long) */}
-            <div
-              style={{
-                padding: '20px',
-                overflowY: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                flex: 1,
-              }}
-            >
-              <div>
-                <h3
-                  style={{
-                    fontSize: '1.15rem',
-                    fontWeight: 'bold',
-                    color: 'var(--primary-cyan)',
-                    marginBottom: '4px',
-                  }}
-                >
-                  {currentNotice.title}
-                </h3>
-              </div>
-
-              <div
-                style={{
-                  fontSize: '0.92rem',
-                  lineHeight: '1.6',
-                  color: 'var(--text-main)',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-all',
-                }}
-              >
+            <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-6">
+              <h3 className="text-lg font-bold text-main">
+                {currentNotice.title}
+              </h3>
+              <div className="text-[0.94rem] leading-relaxed break-all whitespace-pre-wrap text-muted">
                 {currentNotice.content}
               </div>
             </div>
 
-            {/* Footer with Close Button (Compact, removing extra margins) */}
-            <div
-              style={{
-                padding: '12px 20px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                background: 'rgba(255, 255, 255, 0.01)',
-              }}
-            >
+            <div className="flex justify-end border-t border-glass-border bg-surface/50 px-6 py-3.5">
               <button
+                type="button"
                 onClick={() => setShowDetail(false)}
-                className="btn-submit"
-                style={{
-                  padding: '8px 20px',
-                  fontSize: '0.85rem',
-                  borderRadius: '8px',
-                }}
+                className="btn-submit rounded-xl px-5 py-2 text-[0.88rem]"
               >
-                닫기
+                확인
               </button>
             </div>
           </div>

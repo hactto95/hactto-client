@@ -948,342 +948,161 @@ export function AdminPage() {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        overflow: 'hidden',
-      }}
-    >
-      <div
-        style={{
-          background: 'rgba(0, 240, 255, 0.05)',
-          border: '1px solid rgba(0, 240, 255, 0.3)',
-          borderRadius: '16px',
-          padding: '24px',
-          boxShadow: '0 8px 32px 0 rgba(0, 240, 255, 0.1)',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          overflow: 'hidden',
-        }}
-      >
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="bg-primary-cyan/5 border border-primary-cyan/30 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,240,255,0.1)] flex flex-col flex-1 overflow-hidden">
         {/* Modal Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flexShrink: 0,
-          }}
-        >
-          <h2
-            className="access-title"
-            style={{
-              fontSize: '1.4rem',
-              margin: 0,
-              color: 'var(--primary-cyan)',
-            }}
-          >
+        <div className="flex justify-between items-center mb-4 shrink-0">
+          <h2 className="access-title text-[1.4rem] m-0 text-primary-cyan">
             {'관리자 제어판'}
           </h2>
           <button
             onClick={handleClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-dim)',
-              cursor: 'pointer',
-              fontSize: '1.2rem',
-              padding: '4px',
-            }}
+            className="bg-transparent border-none text-dim cursor-pointer text-[1.2rem] p-1 hover:text-main"
           >
             ✕
           </button>
         </div>
 
         {/* Modal Body */}
-        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-            }}
-          >
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="flex flex-col h-full">
             {/* Tabs */}
-            <div
-              className="hide-scrollbar"
-              style={{
-                display: 'flex',
-                gap: '10px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-                paddingBottom: '10px',
-                marginBottom: '20px',
-                flexShrink: 0,
-                flexWrap: 'nowrap',
-                overflowX: 'auto',
-                whiteSpace: 'nowrap',
-                msOverflowStyle: 'none',
-                scrollbarWidth: 'none',
-              }}
-            >
+            <div className="hide-scrollbar flex gap-2.5 border-b border-glass-border pb-2.5 mb-5 shrink-0 flex-nowrap overflow-x-auto whitespace-nowrap [ms-overflow-style:none] [scrollbar-width:none]">
               <style>{`
                   .hide-scrollbar::-webkit-scrollbar {
                     display: none;
                   }
                 `}</style>
               <button
-                className={`tab-btn ${activeTab === 'algo' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'algo'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('algo')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'algo'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 알고리즘
               </button>
               <button
-                className={`tab-btn ${activeTab === 'system' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'system'
+                    ? 'active-tab text-primary-purple'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('system')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'system'
-                      ? 'var(--primary-purple)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 시스템
               </button>
               <button
-                className={`tab-btn ${activeTab === 'notices' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'notices'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('notices')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'notices'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 공지
               </button>
               <button
-                className={`tab-btn ${activeTab === 'inquiries' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'inquiries'
+                    ? 'active-tab text-primary-purple'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('inquiries')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'inquiries'
-                      ? 'var(--primary-purple)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 문의
               </button>
               <button
-                className={`tab-btn ${activeTab === 'users' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'users'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('users')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'users'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 사용자
               </button>
               <button
-                className={`tab-btn ${activeTab === 'NICKNAME_REPORTS' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer ${
+                  activeTab === 'NICKNAME_REPORTS'
+                    ? 'active-tab text-primary-purple'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('NICKNAME_REPORTS')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'NICKNAME_REPORTS'
-                      ? 'var(--primary-purple)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                }}
               >
                 신고
               </button>
               <button
-                className={`tab-btn ${activeTab === 'BANNED_WORDS' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer ${
+                  activeTab === 'BANNED_WORDS'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('BANNED_WORDS')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'BANNED_WORDS'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                }}
               >
                 금지어
               </button>
               <button
-                className={`tab-btn ${activeTab === 'HON_EVENTS' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer ${
+                  activeTab === 'HON_EVENTS'
+                    ? 'active-tab text-primary-purple'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('HON_EVENTS')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'HON_EVENTS'
-                      ? 'var(--primary-purple)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                }}
               >
                 이벤트
               </button>
 
               <button
-                className={`tab-btn ${activeTab === 'NOTIFICATIONS' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'NOTIFICATIONS'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('NOTIFICATIONS')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'NOTIFICATIONS'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 알림 발송
               </button>
 
               <button
-                className={`tab-btn ${activeTab === 'POLICIES' ? 'active-tab' : ''}`}
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'POLICIES'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
                 onClick={() => setActiveTab('POLICIES')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '8px 12px',
-                  fontSize: '0.85rem',
-                  color:
-                    activeTab === 'POLICIES'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                }}
               >
                 정책 관리
               </button>
             </div>
 
             {/* Tab Contents */}
-            <div style={{ flex: 1, minHeight: 0 }}>
+            <div className="flex-1 min-h-0">
               {activeTab === 'algo' && (
                 /* Algorithm Management Tab */
 
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: '0.82rem',
-                      color: 'var(--text-dim)',
-                      margin: '0 0 12px 0',
-                      lineHeight: '1.4',
-                    }}
-                  >
+                <div className="flex flex-col h-full">
+                  <p className="text-[0.82rem] text-dim m-0 mb-3 leading-[1.4]">
                     각 분석 알고리즘의 세부 정보(이름, 복잡도, 설명)를
                     실시간으로 조율하고 관리할 수 있습니다.
                   </p>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      marginBottom: '16px',
-                      flexShrink: 0,
-                    }}
-                  >
+                  <div className="flex justify-end mb-4 shrink-0">
                     <button
                       onClick={handleFetchAlgorithms}
                       disabled={syncingAlgos || loadingAlgos}
-                      className="btn-neon btn-outline"
-                      style={{
-                        fontSize: '0.78rem',
-                        padding: '6px 12px',
-                        height: '32px',
-                        whiteSpace: 'nowrap',
-                      }}
+                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
                     >
                       {syncingAlgos ? '동기화 중...' : '알고리즘 가져오기'}
                     </button>
                   </div>
 
                   {loadingAlgos ? (
-                    <p
-                      style={{
-                        color: 'var(--text-dim)',
-                        fontSize: '0.85rem',
-                      }}
-                    >
+                    <p className="text-dim text-[0.85rem]">
                       목록 불러오는 중...
                     </p>
                   ) : (
-                    <div
-                      className="ip-list-container"
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                        maxHeight: '380px',
-                        overflowY: 'auto',
-                        flex: 1,
-                        paddingRight: '6px',
-                      }}
-                    >
+                    <div className="ip-list-container flex flex-col gap-3 max-h-[380px] overflow-y-auto flex-1 pr-1.5">
                       {algorithms.map((algo) => {
                         const isEditing = editingAlgoType === algo.type;
 
@@ -1291,99 +1110,38 @@ export function AdminPage() {
                           return (
                             <div
                               key={algo.type}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '10px',
-                                background: 'rgba(255, 255, 255, 0.03)',
-                                padding: '16px',
-                                borderRadius: '12px',
-                                border: '1px solid rgba(0, 240, 255, 0.2)',
-                                flexShrink: 0,
-                              }}
+                              className="flex flex-col gap-2.5 bg-surface p-4 rounded-xl border border-primary-cyan/20 shrink-0"
                             >
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: '0.78rem',
-                                    fontWeight: 'bold',
-                                    color: 'var(--primary-cyan)',
-                                  }}
-                                >
+                              <div className="flex justify-between items-center">
+                                <span className="text-[0.78rem] font-bold text-primary-cyan">
                                   [{algo.type}] 수정 중
                                 </span>
-                                <span
-                                  style={{
-                                    fontSize: '0.72rem',
-                                    color: 'var(--text-dim)',
-                                  }}
-                                >
+                                <span className="text-[0.72rem] text-dim">
                                   (타입 변경 불가)
                                 </span>
                               </div>
 
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  gap: '4px',
-                                }}
-                              >
-                                <label
-                                  style={{
-                                    fontSize: '0.75rem',
-                                    color: 'var(--text-dim)',
-                                    textAlign: 'left',
-                                  }}
-                                >
+                              <div className="flex flex-col gap-1">
+                                <label className="text-xs text-dim text-left">
                                   알고리즘 이름
                                 </label>
                                 <input
                                   type="text"
-                                  className="input-glow"
-                                  style={{
-                                    height: '36px',
-                                    padding: '0 10px',
-                                    fontSize: '0.85rem',
-                                  }}
+                                  className="input-glow h-9 px-2.5 text-[0.85rem]"
                                   value={editName}
                                   onChange={(e) => setEditName(e.target.value)}
                                   placeholder="이름 입력"
                                 />
                               </div>
 
-                              <div style={{ display: 'flex', gap: '10px' }}>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '4px',
-                                    width: '90px',
-                                  }}
-                                >
-                                  <label
-                                    style={{
-                                      fontSize: '0.75rem',
-                                      color: 'var(--text-dim)',
-                                      textAlign: 'left',
-                                    }}
-                                  >
+                              <div className="flex gap-2.5">
+                                <div className="flex flex-col gap-1 w-[90px]">
+                                  <label className="text-xs text-dim text-left">
                                     복잡도 (1-5)
                                   </label>
                                   <input
                                     type="number"
-                                    className="input-glow"
-                                    style={{
-                                      height: '36px',
-                                      fontSize: '0.85rem',
-                                      textAlign: 'center',
-                                    }}
+                                    className="input-glow h-9 text-[0.85rem] text-center"
                                     value={editComplexity}
                                     min="1"
                                     max="5"
@@ -1397,32 +1155,12 @@ export function AdminPage() {
                                   />
                                 </div>
 
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '4px',
-                                    flex: 1,
-                                  }}
-                                >
-                                  <label
-                                    style={{
-                                      fontSize: '0.75rem',
-                                      color: 'var(--text-dim)',
-                                      textAlign: 'left',
-                                    }}
-                                  >
+                                <div className="flex flex-col gap-1 flex-1">
+                                  <label className="text-xs text-dim text-left">
                                     설명
                                   </label>
                                   <textarea
-                                    className="input-glow"
-                                    style={{
-                                      minHeight: '36px',
-                                      height: '36px',
-                                      padding: '6px 10px',
-                                      fontSize: '0.85rem',
-                                      resize: 'none',
-                                    }}
+                                    className="input-glow min-h-[36px] h-9 py-1.5 px-2.5 text-[0.85rem] resize-none"
                                     value={editDescription}
                                     onChange={(e) =>
                                       setEditDescription(e.target.value)
@@ -1432,36 +1170,15 @@ export function AdminPage() {
                                 </div>
                               </div>
 
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'flex-end',
-                                  gap: '8px',
-                                  marginTop: '4px',
-                                }}
-                              >
+                              <div className="flex justify-end gap-2 mt-1">
                                 <button
-                                  className="btn-neon btn-outline"
-                                  style={{
-                                    height: '30px',
-                                    width: 'auto',
-                                    padding: '0 14px',
-                                    fontSize: '0.78rem',
-                                  }}
+                                  className="btn-neon btn-outline h-[30px] w-auto px-3.5 text-[0.78rem]"
                                   onClick={() => setEditingAlgoType(null)}
                                 >
                                   취소
                                 </button>
                                 <button
-                                  className="btn-submit"
-                                  style={{
-                                    height: '30px',
-                                    padding: '0 14px',
-                                    fontSize: '0.78rem',
-                                    background: 'var(--primary-cyan)',
-                                    color: '#0f111a',
-                                    fontWeight: 'bold',
-                                  }}
+                                  className="btn-submit h-[30px] px-3.5 text-[0.78rem] bg-primary-cyan text-white font-bold"
                                   disabled={updatingAlgo === algo.type}
                                   onClick={() =>
                                     handleUpdateAlgorithm(algo.type, {
@@ -1482,79 +1199,24 @@ export function AdminPage() {
                           return (
                             <div
                               key={algo.type}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                background: 'rgba(255, 255, 255, 0.02)',
-                                padding: '12px 16px',
-                                borderRadius: '10px',
-                                border: '1px solid rgba(255,255,255,0.04)',
-                                flexShrink: 0,
-                              }}
+                              className="flex flex-col bg-surface py-3 px-4 rounded-[10px] border border-glass-border shrink-0"
                             >
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-                                    gap: '2px',
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      fontSize: '0.88rem',
-                                      fontWeight: 'bold',
-                                      color: 'var(--text-main)',
-                                    }}
-                                  >
+                              <div className="flex justify-between items-center">
+                                <div className="flex flex-col items-start gap-0.5">
+                                  <span className="text-[0.88rem] font-bold text-main">
                                     {algo.name || parseAlgorithmName(algo.type)}
                                   </span>
-                                  <div
-                                    style={{
-                                      display: 'flex',
-                                      gap: '6px',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    <span
-                                      style={{
-                                        fontSize: '0.68rem',
-                                        color: 'var(--text-dim)',
-                                        fontFamily: 'monospace',
-                                        background: 'rgba(255,255,255,0.04)',
-                                        padding: '1px 4px',
-                                        borderRadius: '3px',
-                                      }}
-                                    >
+                                  <div className="flex gap-1.5 items-center">
+                                    <span className="text-[0.68rem] text-dim font-mono bg-surface-hover py-0.5 px-1 rounded-[3px]">
                                       {algo.type}
                                     </span>
-                                    <span
-                                      style={{
-                                        fontSize: '0.7rem',
-                                        color: 'var(--primary-purple)',
-                                      }}
-                                    >
+                                    <span className="text-[0.7rem] text-primary-purple">
                                       복잡도: {algo.complexity}
                                     </span>
                                   </div>
                                 </div>
                                 <button
-                                  className="btn-submit"
-                                  style={{
-                                    height: '30px',
-                                    padding: '0 12px',
-                                    fontSize: '0.75rem',
-                                    background: 'var(--primary-cyan)',
-                                    color: '#0f111a',
-                                    fontWeight: 'bold',
-                                  }}
+                                  className="btn-submit h-[30px] px-3 text-xs bg-primary-cyan text-white font-bold"
                                   onClick={() => {
                                     setEditingAlgoType(algo.type);
                                     setEditName(algo.name || '');
@@ -1566,18 +1228,7 @@ export function AdminPage() {
                                 </button>
                               </div>
 
-                              <p
-                                style={{
-                                  fontSize: '0.76rem',
-                                  color: 'var(--text-muted)',
-                                  marginTop: '8px',
-                                  textAlign: 'left',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  margin: '8px 0 0 0',
-                                }}
-                              >
+                              <p className="text-[0.76rem] text-muted mt-2 mb-0 mx-0 text-left whitespace-nowrap overflow-hidden text-ellipsis">
                                 {algo.description ||
                                   '설명이 등록되어 있지 않습니다.'}
                               </p>
@@ -1593,73 +1244,29 @@ export function AdminPage() {
               {activeTab === 'system' && (
                 /* System Management Tab */
 
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    overflowY: 'auto',
-                    height: '100%',
-                    paddingRight: '6px',
-                  }}
-                >
+                <div className="flex flex-col gap-4 overflow-y-auto h-full pr-1.5">
                   {/* Sync Winning Numbers */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-cyan)',
-                        margin: '0 0 6px 0',
-                      }}
-                    >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border shrink-0">
+                    <h4 className="text-[0.9rem] text-primary-cyan m-0 mb-1.5">
                       당첨번호 동기화 (Fetch)
                     </h4>
-                    <p
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-dim)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                    <p className="text-xs text-dim m-0 mb-3">
                       동행복권 최신 회차를 긁어와 로컬 데이터베이스를
                       동기화합니다.
                     </p>
-                    <form
-                      onSubmit={handleAdminFetch}
-                      style={{ display: 'flex', gap: '8px' }}
-                    >
+                    <form onSubmit={handleAdminFetch} className="flex gap-2">
                       <input
                         type="text"
-                        className="input-glow"
+                        className="input-glow flex-1 h-9 text-[0.82rem]"
                         placeholder="최신 회차 번호 (예: 1220)"
                         value={fetchEpisodeInput}
                         onChange={(e) => setFetchEpisodeInput(e.target.value)}
                         disabled={fetchingWinningNumbers}
-                        style={{
-                          flex: 1,
-                          height: '36px',
-                          fontSize: '0.82rem',
-                        }}
                       />
                       <button
-                        className="btn-neon btn-outline"
+                        className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
                         type="submit"
                         disabled={fetchingWinningNumbers}
-                        style={{
-                          fontSize: '0.78rem',
-                          padding: '6px 12px',
-                          height: '32px',
-                          whiteSpace: 'nowrap',
-                          width: 'auto',
-                        }}
                       >
                         {fetchingWinningNumbers ? '동기화중' : '실행'}
                       </button>
@@ -1667,89 +1274,35 @@ export function AdminPage() {
                   </div>
 
                   {/* Sync Winning Shops */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-cyan)',
-                        margin: '0 0 6px 0',
-                      }}
-                    >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border shrink-0">
+                    <h4 className="text-[0.9rem] text-primary-cyan m-0 mb-1.5">
                       당첨지점 동기화 (Sync Shops)
                     </h4>
-                    <p
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-dim)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                    <p className="text-xs text-dim m-0 mb-3">
                       1회차부터 최근 회차까지 데이터베이스에 누락된 당첨지점
                       정보를 동행복권에서 가져와 동기화합니다.
                     </p>
                     <button
-                      className="btn-neon btn-outline"
+                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
                       onClick={handleAdminSyncShops}
                       disabled={syncingShops}
-                      style={{
-                        fontSize: '0.78rem',
-                        padding: '6px 12px',
-                        height: '32px',
-                        whiteSpace: 'nowrap',
-                        width: 'auto',
-                      }}
                     >
                       {syncingShops ? '동기화 중...' : '당첨지점 동기화 실행'}
                     </button>
                   </div>
 
                   {/* Batch analysis */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-purple)',
-                        margin: '0 0 6px 0',
-                      }}
-                    >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border shrink-0">
+                    <h4 className="text-[0.9rem] text-primary-purple m-0 mb-1.5">
                       예측번호 분석
                     </h4>
-                    <p
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-dim)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                    <p className="text-xs text-dim m-0 mb-3">
                       예측번호를 알고리즘별로 분석하는 배치를 실행합니다.
                     </p>
                     <button
-                      className="btn-neon btn-outline"
+                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
                       onClick={handleAdminAnalyze}
                       disabled={analyzingReliability}
-                      style={{
-                        fontSize: '0.78rem',
-                        padding: '6px 12px',
-                        height: '32px',
-                        whiteSpace: 'nowrap',
-                        width: 'auto',
-                      }}
                     >
                       {analyzingReliability
                         ? '분석 중...'
@@ -1761,199 +1314,79 @@ export function AdminPage() {
 
               {activeTab === 'notices' && (
                 /* Notice Management Tab */
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    height: '100%',
-                    overflowY: 'auto',
-                    paddingRight: '4px',
-                  }}
-                >
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-cyan)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                <div className="flex flex-col gap-4 h-full overflow-y-auto pr-1">
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border">
+                    <h4 className="text-[0.9rem] text-primary-cyan m-0 mb-3">
                       새 공지사항 등록
                     </h4>
                     <form
                       onSubmit={handleCreateNotice}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '10px',
-                      }}
+                      className="flex flex-col gap-2.5"
                     >
                       <input
                         type="text"
-                        className="input-glow"
+                        className="input-glow h-9 text-[0.82rem]"
                         placeholder="공지 제목"
                         value={newNoticeTitle}
                         onChange={(e) => setNewNoticeTitle(e.target.value)}
-                        style={{ height: '36px', fontSize: '0.82rem' }}
                       />
                       <textarea
-                        className="input-glow"
+                        className="input-glow min-h-[80px] text-[0.82rem] p-2 resize-none"
                         placeholder="공지 내용"
                         value={newNoticeContent}
                         onChange={(e) => setNewNoticeContent(e.target.value)}
-                        style={{
-                          minHeight: '80px',
-                          fontSize: '0.82rem',
-                          padding: '8px',
-                          resize: 'none',
-                        }}
                       />
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                        }}
-                      >
-                        <label
-                          style={{
-                            fontSize: '0.72rem',
-                            color: 'var(--text-dim)',
-                            textAlign: 'left',
-                          }}
-                        >
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[0.72rem] text-dim text-left">
                           공지 노출 종료 시점
                         </label>
                         <input
                           type="datetime-local"
-                          className="input-glow"
+                          className="input-glow h-9 text-[0.82rem]"
                           value={newNoticeEndsAt}
                           onChange={(e) => setNewNoticeEndsAt(e.target.value)}
-                          style={{ height: '36px', fontSize: '0.82rem' }}
                         />
                       </div>
                       <button
                         type="submit"
-                        className="btn-submit"
-                        style={{
-                          height: '36px',
-                          fontSize: '0.82rem',
-                          background: 'var(--primary-cyan)',
-                          color: '#0a0b10',
-                          border: 'none',
-                          fontWeight: 'bold',
-                        }}
+                        className="btn-submit h-9 text-[0.82rem] bg-primary-cyan text-white border-none font-bold"
                       >
                         공지 등록
                       </button>
                     </form>
                   </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--text-main)',
-                        margin: '0 0 4px 0',
-                        textAlign: 'left',
-                      }}
-                    >
+                  <div className="flex flex-col gap-2.5">
+                    <h4 className="text-[0.9rem] text-main m-0 mb-1 text-left">
                       현재 공지사항 목록
                     </h4>
                     {loadingAdminNotices ? (
-                      <p
-                        style={{
-                          fontSize: '0.82rem',
-                          color: 'var(--text-dim)',
-                        }}
-                      >
-                        불러오는 중...
-                      </p>
+                      <p className="text-[0.82rem] text-dim">불러오는 중...</p>
                     ) : adminNotices.length === 0 ? (
-                      <p
-                        style={{
-                          fontSize: '0.82rem',
-                          color: 'var(--text-dim)',
-                          textAlign: 'center',
-                        }}
-                      >
+                      <p className="text-[0.82rem] text-dim text-center">
                         등록된 공지가 없습니다.
                       </p>
                     ) : (
                       adminNotices.map((notice) => (
                         <div
                           key={notice.id}
-                          style={{
-                            background: 'rgba(255,255,255,0.01)',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(255,255,255,0.03)',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
-                            gap: '10px',
-                          }}
+                          className="bg-surface p-3 rounded-lg border border-glass-border flex justify-between items-start gap-2.5"
                         >
-                          <div
-                            style={{
-                              textAlign: 'left',
-                              flex: 1,
-                              overflow: 'hidden',
-                            }}
-                          >
-                            <strong
-                              style={{
-                                display: 'block',
-                                fontSize: '0.85rem',
-                                color: 'var(--text-main)',
-                              }}
-                            >
+                          <div className="text-left flex-1 overflow-hidden">
+                            <strong className="block text-[0.85rem] text-main">
                               {notice.title}
                             </strong>
-                            <p
-                              style={{
-                                fontSize: '0.78rem',
-                                color: 'var(--text-muted)',
-                                margin: '4px 0',
-                              }}
-                            >
+                            <p className="text-[0.78rem] text-muted my-1">
                               {notice.content}
                             </p>
-                            <span
-                              style={{
-                                fontSize: '0.68rem',
-                                color: 'var(--text-dim)',
-                              }}
-                            >
+                            <span className="text-[0.68rem] text-dim">
                               노출 기한:{' '}
                               {new Date(notice.endsAt).toLocaleString()}
                             </span>
                           </div>
                           <button
                             onClick={() => handleDeleteNotice(notice.id)}
-                            style={{
-                              background: 'rgba(255, 75, 75, 0.1)',
-                              border: '1px solid rgba(255, 75, 75, 0.3)',
-                              color: '#ff4b4b',
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                            }}
+                            className="bg-error/10 border border-error/30 text-error text-xs py-0.5 px-2 rounded cursor-pointer"
                           >
                             삭제
                           </button>
@@ -2002,76 +1435,43 @@ export function AdminPage() {
 
                   return (
                     /* Inquiry Answering Tab */
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '10px',
-                        height: '100%',
-                        overflowY: 'auto',
-                        paddingRight: '4px',
-                      }}
-                    >
+                    <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1">
                       {/* Header */}
-                      <h4
-                        style={{
-                          fontSize: '0.9rem',
-                          color: 'var(--text-main)',
-                          margin: 0,
-                          textAlign: 'left',
-                        }}
-                      >
+                      <h4 className="text-[0.9rem] text-main m-0 text-left">
                         사용자 문의 리스트
                       </h4>
 
                       {/* 유형 필터 row */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '0.68rem',
-                            color: 'var(--text-dim)',
-                            flexShrink: 0,
-                          }}
-                        >
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[0.68rem] text-dim shrink-0">
                           유형
                         </span>
                         {[
                           {
                             key: 'ALL' as const,
                             label: `전체 (${adminInquiries.length})`,
-                            border: 'rgba(255,255,255,0.3)',
-                            bg: 'rgba(255,255,255,0.08)',
-                            text: 'var(--text-main)',
+                            activeClass:
+                              'border-glass-border-strong bg-surface-hover text-main',
                           },
                           {
                             key: 'NORMAL' as const,
                             label: `일반 문의 (${normalCount})`,
-                            border: 'rgba(0,240,255,0.5)',
-                            bg: 'rgba(0,240,255,0.08)',
-                            text: 'var(--primary-cyan)',
+                            activeClass:
+                              'border-primary-cyan/50 bg-primary-cyan/10 text-primary-cyan',
                           },
                           {
                             key: 'BLOCK' as const,
                             label: `차단 소명 (${blockCount})`,
-                            border: 'rgba(255,165,0,0.6)',
-                            bg: 'rgba(255,165,0,0.1)',
-                            text: '#ffa500',
+                            activeClass:
+                              'border-amber-500/60 bg-amber-500/10 text-amber-500',
                           },
                           {
                             key: 'REFUND' as const,
                             label: `환불 문의 (${refundCount})`,
-                            border: 'rgba(255,75,75,0.6)',
-                            bg: 'rgba(255,75,75,0.1)',
-                            text: '#ff4b4b',
+                            activeClass:
+                              'border-error/60 bg-error/10 text-error',
                           },
-                        ].map(({ key, label, border, bg, text }) => {
+                        ].map(({ key, label, activeClass }) => {
                           const isActive = inquiryBlockFilter === key;
                           return (
                             <button
@@ -2081,19 +1481,11 @@ export function AdminPage() {
                                 setInquiryFilter('ALL');
                                 fetchAdminInquiries(key);
                               }}
-                              style={{
-                                fontSize: '0.72rem',
-                                padding: '3px 10px',
-                                borderRadius: '20px',
-                                border: isActive
-                                  ? `1px solid ${border}`
-                                  : '1px solid rgba(255,255,255,0.08)',
-                                background: isActive ? bg : 'transparent',
-                                color: isActive ? text : 'var(--text-dim)',
-                                cursor: 'pointer',
-                                fontWeight: isActive ? 'bold' : 'normal',
-                                transition: 'all 0.15s ease',
-                              }}
+                              className={`text-[0.72rem] py-[3px] px-2.5 rounded-[20px] cursor-pointer transition-all duration-150 border ${
+                                isActive
+                                  ? `${activeClass} font-bold`
+                                  : 'border-glass-border bg-transparent text-dim font-normal'
+                              }`}
                             >
                               {label}
                             </button>
@@ -2102,21 +1494,8 @@ export function AdminPage() {
                       </div>
 
                       {/* 답변 필터 row */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '0.68rem',
-                            color: 'var(--text-dim)',
-                            flexShrink: 0,
-                          }}
-                        >
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[0.68rem] text-dim shrink-0">
                           답변
                         </span>
                         {(['ALL', 'PENDING', 'ANSWERED'] as const).map((f) => {
@@ -2131,35 +1510,15 @@ export function AdminPage() {
                             <button
                               key={f}
                               onClick={() => setInquiryFilter(f)}
-                              style={{
-                                fontSize: '0.72rem',
-                                padding: '3px 10px',
-                                borderRadius: '20px',
-                                border: isActive
+                              className={`text-[0.72rem] py-[3px] px-2.5 rounded-[20px] cursor-pointer transition-all duration-150 border ${
+                                isActive
                                   ? f === 'PENDING'
-                                    ? '1px solid rgba(255,75,75,0.6)'
+                                    ? 'border-error/60 bg-error/12 text-error font-bold'
                                     : f === 'ANSWERED'
-                                      ? '1px solid rgba(0,240,255,0.5)'
-                                      : '1px solid rgba(255,255,255,0.3)'
-                                  : '1px solid rgba(255,255,255,0.08)',
-                                background: isActive
-                                  ? f === 'PENDING'
-                                    ? 'rgba(255,75,75,0.12)'
-                                    : f === 'ANSWERED'
-                                      ? 'rgba(0,240,255,0.1)'
-                                      : 'rgba(255,255,255,0.08)'
-                                  : 'transparent',
-                                color: isActive
-                                  ? f === 'PENDING'
-                                    ? '#ff4b4b'
-                                    : f === 'ANSWERED'
-                                      ? 'var(--primary-cyan)'
-                                      : 'var(--text-main)'
-                                  : 'var(--text-dim)',
-                                cursor: 'pointer',
-                                fontWeight: isActive ? 'bold' : 'normal',
-                                transition: 'all 0.15s ease',
-                              }}
+                                      ? 'border-primary-cyan/50 bg-primary-cyan/10 text-primary-cyan font-bold'
+                                      : 'border-glass-border-strong bg-surface-hover text-main font-bold'
+                                  : 'border-glass-border bg-transparent text-dim font-normal'
+                              }`}
                             >
                               {label}
                             </button>
@@ -2168,86 +1527,36 @@ export function AdminPage() {
                       </div>
 
                       {loadingAdminInquiries ? (
-                        <p
-                          style={{
-                            fontSize: '0.82rem',
-                            color: 'var(--text-dim)',
-                          }}
-                        >
+                        <p className="text-[0.82rem] text-dim">
                           불러오는 중...
                         </p>
                       ) : filteredInquiries.length === 0 ? (
-                        <p
-                          style={{
-                            fontSize: '0.82rem',
-                            color: 'var(--text-dim)',
-                            textAlign: 'center',
-                            paddingTop: '20px',
-                          }}
-                        >
+                        <p className="text-[0.82rem] text-dim text-center pt-5">
                           {emptyMsg}
                         </p>
                       ) : (
                         filteredInquiries.map((inq) => (
                           <div
                             key={inq.id}
-                            style={{
-                              background: 'rgba(255,255,255,0.01)',
-                              padding: '14px',
-                              borderRadius: '8px',
-                              border: `1px solid ${inq.status === 'PENDING' ? 'rgba(255,75,75,0.1)' : 'rgba(255,255,255,0.03)'}`,
-                              textAlign: 'left',
-                            }}
+                            className={`bg-surface p-3.5 rounded-lg text-left border ${
+                              inq.status === 'PENDING'
+                                ? 'border-error/20'
+                                : 'border-glass-border'
+                            }`}
                           >
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginBottom: '8px',
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '6px',
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: '0.7rem',
-                                    color: 'var(--text-dim)',
-                                    fontFamily: 'monospace',
-                                  }}
-                                >
+                            <div className="flex justify-between items-center mb-2">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[0.7rem] text-dim font-mono">
                                   ID: {inq.userId}
                                 </span>
                                 <span
-                                  style={{
-                                    fontSize: '0.65rem',
-                                    fontWeight: 'bold',
-                                    padding: '1px 5px',
-                                    borderRadius: '3px',
-                                    background:
-                                      inq.type === 'REFUND'
-                                        ? 'rgba(255, 75, 75, 0.15)'
-                                        : inq.type === 'BLOCK'
-                                          ? 'rgba(255,165,0,0.12)'
-                                          : 'rgba(255,255,255,0.06)',
-                                    color:
-                                      inq.type === 'REFUND'
-                                        ? '#ff4b4b'
-                                        : inq.type === 'BLOCK'
-                                          ? '#ffa500'
-                                          : 'var(--text-dim)',
-                                    border:
-                                      inq.type === 'REFUND'
-                                        ? '1px solid rgba(255,75,75,0.3)'
-                                        : inq.type === 'BLOCK'
-                                          ? '1px solid rgba(255,165,0,0.3)'
-                                          : '1px solid rgba(255,255,255,0.08)',
-                                  }}
+                                  className={`text-[0.65rem] font-bold py-[1px] px-[5px] rounded-[3px] border ${
+                                    inq.type === 'REFUND'
+                                      ? 'bg-error/15 text-error border-error/30'
+                                      : inq.type === 'BLOCK'
+                                        ? 'bg-amber-500/12 text-amber-500 border-amber-500/30'
+                                        : 'bg-surface-hover text-dim border-glass-border'
+                                  }`}
                                 >
                                   {inq.type === 'REFUND'
                                     ? '환불 문의'
@@ -2257,28 +1566,15 @@ export function AdminPage() {
                                 </span>
                               </div>
                               <span
-                                style={{
-                                  fontSize: '0.7rem',
-                                  fontWeight: 'bold',
-                                  padding: '2px 6px',
-                                  borderRadius: '4px',
-                                  background:
-                                    inq.refundStatus === 'CONFIRMED'
-                                      ? 'rgba(0, 240, 255, 0.12)'
-                                      : inq.refundStatus === 'PROPOSED'
-                                        ? 'rgba(255, 165, 0, 0.15)'
-                                        : inq.status === 'ANSWERED'
-                                          ? 'rgba(0, 240, 255, 0.1)'
-                                          : 'rgba(255, 75, 75, 0.1)',
-                                  color:
-                                    inq.refundStatus === 'CONFIRMED'
-                                      ? 'var(--primary-cyan)'
-                                      : inq.refundStatus === 'PROPOSED'
-                                        ? '#ffa500'
-                                        : inq.status === 'ANSWERED'
-                                          ? 'var(--primary-cyan)'
-                                          : '#ff4b4b',
-                                }}
+                                className={`text-[0.7rem] font-bold py-0.5 px-1.5 rounded ${
+                                  inq.refundStatus === 'CONFIRMED'
+                                    ? 'bg-primary-cyan/12 text-primary-cyan'
+                                    : inq.refundStatus === 'PROPOSED'
+                                      ? 'bg-amber-500/15 text-amber-500'
+                                      : inq.status === 'ANSWERED'
+                                        ? 'bg-primary-cyan/10 text-primary-cyan'
+                                        : 'bg-error/10 text-error'
+                                }`}
                               >
                                 {inq.refundStatus === 'CONFIRMED'
                                   ? '환불 완료'
@@ -2293,41 +1589,15 @@ export function AdminPage() {
                                           : '미답변'}
                               </span>
                             </div>
-                            <strong
-                              style={{
-                                fontSize: '0.85rem',
-                                color: 'var(--text-main)',
-                                display: 'block',
-                                marginBottom: '4px',
-                              }}
-                            >
+                            <strong className="text-[0.85rem] text-main block mb-1">
                               {inq.title}
                             </strong>
-                            <p
-                              style={{
-                                fontSize: '0.8rem',
-                                color: 'var(--text-muted)',
-                                margin: '0 0 10px 0',
-                                whiteSpace: 'pre-wrap',
-                              }}
-                            >
+                            <p className="text-[0.8rem] text-muted m-0 mb-2.5 whitespace-pre-wrap">
                               {inq.content}
                             </p>
 
                             {inq.type === 'REFUND' && inq.paymentInfo && (
-                              <div
-                                style={{
-                                  background: 'rgba(255,255,255,0.02)',
-                                  border: '1px solid rgba(255,255,255,0.05)',
-                                  borderRadius: '6px',
-                                  padding: '8px 12px',
-                                  marginBottom: '10px',
-                                  fontSize: '0.75rem',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  gap: '4px',
-                                }}
-                              >
+                              <div className="bg-surface border border-glass-border rounded-md py-2 px-3 mb-2.5 text-xs flex flex-col gap-1">
                                 <div>
                                   <strong>연동 결제 ID:</strong>{' '}
                                   {inq.paymentInfo.paymentId}
@@ -2348,23 +1618,12 @@ export function AdminPage() {
                                   <strong>현재 보유 HON:</strong>{' '}
                                   {inq.paymentInfo.currentBalance} HON
                                 </div>
-                                <div
-                                  style={{
-                                    color: 'var(--primary-cyan)',
-                                    fontWeight: 'bold',
-                                  }}
-                                >
+                                <div className="text-primary-cyan font-bold">
                                   <strong>예상 환불 금액:</strong>{' '}
                                   {inq.paymentInfo.calculatedRefundAmount?.toLocaleString()}
                                   원
                                 </div>
-                                <div
-                                  style={{
-                                    fontSize: '0.68rem',
-                                    color: 'var(--text-dim)',
-                                    marginTop: '2px',
-                                  }}
-                                >
+                                <div className="text-[0.68rem] text-dim mt-0.5">
                                   * 가입 이벤트로 지급된 50 HON은 보유 HON에서
                                   제외된 상태로 계산되었습니다.
                                 </div>
@@ -2373,27 +1632,10 @@ export function AdminPage() {
 
                             {inq.type === 'REFUND' &&
                             inq.refundStatus === 'PENDING' ? (
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  gap: '8px',
-                                  marginTop: '10px',
-                                }}
-                              >
+                              <div className="flex gap-2 mt-2.5">
                                 <button
                                   onClick={() => handleProposeRefund(inq.id)}
-                                  className="btn-submit"
-                                  style={{
-                                    flex: 1,
-                                    height: '32px',
-                                    fontSize: '0.78rem',
-                                    background:
-                                      'linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-purple) 100%)',
-                                    color: '#0f111a',
-                                    border: 'none',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                  }}
+                                  className="btn-submit flex-1 h-8 text-[0.78rem] bg-primary-cyan text-white border-none font-bold cursor-pointer"
                                 >
                                   승인 제안
                                 </button>
@@ -2403,32 +1645,15 @@ export function AdminPage() {
                                     setRejectReason('');
                                     setRejectModalOpen(true);
                                   }}
-                                  style={{
-                                    flex: 1,
-                                    height: '32px',
-                                    fontSize: '0.78rem',
-                                    background: 'rgba(255, 75, 75, 0.15)',
-                                    color: '#ff4b4b',
-                                    border: '1px solid rgba(255, 75, 75, 0.3)',
-                                    fontWeight: 'bold',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                  }}
+                                  className="flex-1 h-8 text-[0.78rem] bg-error/15 text-error border border-error/30 font-bold rounded cursor-pointer"
                                 >
                                   환불 거절
                                 </button>
                               </div>
                             ) : inq.status === 'PENDING' ? (
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  gap: '8px',
-                                  marginTop: '10px',
-                                }}
-                              >
+                              <div className="flex flex-col gap-2 mt-2.5">
                                 <textarea
-                                  className="input-glow"
+                                  className="input-glow min-h-[60px] text-[0.8rem] p-1.5 resize-none"
                                   placeholder="여기에 답변을 작성하세요..."
                                   value={inquiryAnswers[inq.id] || ''}
                                   onChange={(e) =>
@@ -2437,50 +1662,20 @@ export function AdminPage() {
                                       [inq.id]: e.target.value,
                                     }))
                                   }
-                                  style={{
-                                    minHeight: '60px',
-                                    fontSize: '0.8rem',
-                                    padding: '6px',
-                                    resize: 'none',
-                                  }}
                                 />
                                 <button
                                   onClick={() => handleAnswerSubmit(inq.id)}
-                                  className="btn-submit"
-                                  style={{
-                                    height: '30px',
-                                    fontSize: '0.78rem',
-                                    background: 'var(--primary-purple)',
-                                    color: '#ffffff',
-                                    border: 'none',
-                                    fontWeight: 'bold',
-                                  }}
+                                  className="btn-submit h-[30px] text-[0.78rem] bg-primary-purple text-white border-none font-bold"
                                 >
                                   답변 등록
                                 </button>
                               </div>
                             ) : (
-                              <div
-                                style={{
-                                  padding: '8px 12px',
-                                  background: 'rgba(157, 0, 255, 0.05)',
-                                  borderLeft: '2px solid var(--primary-purple)',
-                                  borderRadius: '4px',
-                                  fontSize: '0.8rem',
-                                  color: 'var(--text-main)',
-                                }}
-                              >
-                                <strong
-                                  style={{
-                                    color: 'var(--primary-purple)',
-                                    fontSize: '0.7rem',
-                                    display: 'block',
-                                    marginBottom: '2px',
-                                  }}
-                                >
+                              <div className="py-2 px-3 bg-primary-purple/5 border-l-2 border-primary-purple rounded text-[0.8rem] text-main">
+                                <strong className="text-primary-purple text-[0.7rem] block mb-0.5">
                                   관리자 답변:
                                 </strong>
-                                <div style={{ whiteSpace: 'pre-wrap' }}>
+                                <div className="whitespace-pre-wrap">
                                   {inq.answer}
                                 </div>
                               </div>
@@ -2494,52 +1689,16 @@ export function AdminPage() {
 
               {activeTab === 'users' && (
                 /* User Management Tab */
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    height: '100%',
-                    overflowY: 'auto',
-                    paddingRight: '4px',
-                  }}
-                >
+                <div className="flex flex-col gap-4 h-full overflow-y-auto pr-1">
                   {/* 통계 요약 카드 */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border flex justify-between items-center">
                     <div>
-                      <h4
-                        style={{
-                          fontSize: '0.82rem',
-                          color: 'rgba(255, 255, 255, 0.6)',
-                          margin: '0 0 4px 0',
-                        }}
-                      >
+                      <h4 className="text-[0.82rem] text-muted m-0 mb-1">
                         총 이용자 수
                       </h4>
-                      <div
-                        style={{
-                          fontSize: '1.4rem',
-                          fontWeight: '700',
-                          color: '#ffffff',
-                        }}
-                      >
+                      <div className="text-[1.4rem] font-bold text-main">
                         {loadingStats ? (
-                          <span
-                            style={{
-                              fontSize: '0.9rem',
-                              color: 'var(--text-dim)',
-                            }}
-                          >
+                          <span className="text-[0.9rem] text-dim">
                             불러오는 중...
                           </span>
                         ) : totalUsers !== null ? (
@@ -2551,127 +1710,57 @@ export function AdminPage() {
                     </div>
                     <button
                       onClick={fetchStats}
-                      className="btn-submit"
-                      style={{
-                        height: '28px',
-                        padding: '0 10px',
-                        fontSize: '0.75rem',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        color: 'var(--text-main)',
-                      }}
+                      className="btn-submit h-7 px-2.5 text-xs bg-surface border border-glass-border text-main"
                     >
                       새로고침
                     </button>
                   </div>
 
                   {/* 일괄 HON 관리 카드 */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-purple)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border">
+                    <h4 className="text-[0.9rem] text-primary-purple m-0 mb-3">
                       일괄 HON 추가 / 삭제
                     </h4>
-                    <p
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'rgba(255, 255, 255, 0.4)',
-                        margin: '0 0 12px 0',
-                        lineHeight: '1.4',
-                        textAlign: 'left',
-                      }}
-                    >
+                    <p className="text-xs text-dim m-0 mb-3 leading-[1.4] text-left">
                       모든 가입자에게 일괄적으로 HON을 지급하거나 차감합니다.
                       <br />
                       지급할 경우 양수(예: 50), 차감할 경우 음수(예: -20)를
                       입력하세요.
                     </p>
-                    <form
-                      onSubmit={handleBulkHonSubmit}
-                      style={{ display: 'flex', gap: '8px' }}
-                    >
+                    <form onSubmit={handleBulkHonSubmit} className="flex gap-2">
                       <input
                         type="number"
-                        className="input-glow"
+                        className="input-glow flex-1 h-9 text-[0.82rem]"
                         placeholder="수량 입력 (예: 50 또는 -20)"
                         value={bulkHonAmount}
                         onChange={(e) => setBulkHonAmount(e.target.value)}
-                        style={{
-                          flex: 1,
-                          height: '36px',
-                          fontSize: '0.82rem',
-                        }}
                       />
                       <button
                         type="submit"
-                        className="btn-submit"
+                        className="btn-submit h-9 px-3.5 text-[0.82rem] bg-gradient-to-br from-purple-500 to-primary-cyan text-white"
                         disabled={processingBulkHon}
-                        style={{
-                          height: '36px',
-                          padding: '0 14px',
-                          fontSize: '0.82rem',
-                          backgroundImage:
-                            'linear-gradient(135deg, #a855f7 0%, #00f0ff 100%)',
-                        }}
                       >
                         {processingBulkHon ? '처리 중...' : '일괄 적용'}
                       </button>
                     </form>
                   </div>
 
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      padding: '16px',
-                      borderRadius: '10px',
-                      border: '1px solid rgba(255,255,255,0.04)',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '0.9rem',
-                        color: 'var(--primary-cyan)',
-                        margin: '0 0 12px 0',
-                      }}
-                    >
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border">
+                    <h4 className="text-[0.9rem] text-primary-cyan m-0 mb-3">
                       방문자 조회
                     </h4>
-                    <form
-                      onSubmit={handleSearchUser}
-                      style={{ display: 'flex', gap: '8px' }}
-                    >
+                    <form onSubmit={handleSearchUser} className="flex gap-2">
                       <input
                         type="text"
-                        className="input-glow"
+                        className="input-glow flex-1 h-9 text-[0.82rem]"
                         placeholder="userId 또는 IP 입력"
                         value={searchUserId}
                         onChange={(e) => setSearchUserId(e.target.value)}
-                        style={{
-                          flex: 1,
-                          height: '36px',
-                          fontSize: '0.82rem',
-                        }}
                       />
                       <button
                         type="submit"
-                        className="btn-submit"
+                        className="btn-submit h-9 px-3.5 text-[0.82rem]"
                         disabled={loadingUserDetails}
-                        style={{
-                          height: '36px',
-                          padding: '0 14px',
-                          fontSize: '0.82rem',
-                        }}
                       >
                         조회
                       </button>
@@ -2679,144 +1768,59 @@ export function AdminPage() {
                   </div>
 
                   {loadingUserDetails && (
-                    <p
-                      style={{
-                        fontSize: '0.82rem',
-                        color: 'var(--text-dim)',
-                      }}
-                    >
-                      불러오는 중...
-                    </p>
+                    <p className="text-[0.82rem] text-dim">불러오는 중...</p>
                   )}
 
                   {userDetails && (
-                    <div
-                      style={{
-                        background: 'rgba(255,255,255,0.01)',
-                        padding: '16px',
-                        borderRadius: '10px',
-                        border: '1px solid rgba(255,255,255,0.03)',
-                        textAlign: 'left',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '14px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          borderBottom: '1px solid rgba(255,255,255,0.06)',
-                          paddingBottom: '8px',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '0.7rem',
-                            color: 'var(--text-dim)',
-                          }}
-                        >
+                    <div className="bg-surface p-4 rounded-[10px] border border-glass-border text-left flex flex-col gap-3.5">
+                      <div className="border-b border-glass-border pb-2">
+                        <span className="text-[0.7rem] text-dim">
                           조회 결과
                         </span>
-                        <h4
-                          style={{
-                            fontSize: '0.95rem',
-                            color: 'var(--text-main)',
-                            margin: '2px 0 0 0',
-                            fontFamily: 'monospace',
-                          }}
-                        >
+                        <h4 className="text-[0.95rem] text-main m-0 mt-0.5 font-mono">
                           {userDetails.id}
                           {userDetails.nickname && (
-                            <span
-                              style={{
-                                marginLeft: '8px',
-                                color: 'var(--primary-cyan)',
-                                fontSize: '0.9rem',
-                              }}
-                            >
+                            <span className="ml-2 text-primary-cyan text-[0.9rem]">
                               ({userDetails.nickname})
                             </span>
                           )}
                         </h4>
                       </div>
 
-                      <div
-                        style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
-                          gap: '10px',
-                          fontSize: '0.8rem',
-                        }}
-                      >
+                      <div className="grid grid-cols-2 gap-2.5 text-[0.8rem]">
                         <div>
-                          <span
-                            style={{
-                              color: 'var(--text-dim)',
-                              display: 'block',
-                              fontSize: '0.7rem',
-                            }}
-                          >
+                          <span className="text-dim block text-[0.7rem]">
                             최근 IP
                           </span>
-                          <span style={{ color: 'var(--text-main)' }}>
-                            {userDetails.ip}
-                          </span>
+                          <span className="text-main">{userDetails.ip}</span>
                         </div>
                         <div>
-                          <span
-                            style={{
-                              color: 'var(--text-dim)',
-                              display: 'block',
-                              fontSize: '0.7rem',
-                            }}
-                          >
+                          <span className="text-dim block text-[0.7rem]">
                             차단 상태
                           </span>
                           <span
-                            style={{
-                              color: userDetails.isBlocked
-                                ? '#ff4b4b'
-                                : 'var(--primary-cyan)',
-                              fontWeight: 'bold',
-                            }}
+                            className={`font-bold ${
+                              userDetails.isBlocked
+                                ? 'text-error'
+                                : 'text-primary-cyan'
+                            }`}
                           >
                             {userDetails.isBlocked ? '차단됨' : '정상'}
                           </span>
                         </div>
                         <div>
-                          <span
-                            style={{
-                              color: 'var(--text-dim)',
-                              display: 'block',
-                              fontSize: '0.7rem',
-                            }}
-                          >
+                          <span className="text-dim block text-[0.7rem]">
                             보유 HON
                           </span>
-                          <span
-                            style={{
-                              color: 'var(--primary-cyan)',
-                              fontWeight: 'bold',
-                            }}
-                          >
+                          <span className="text-primary-cyan font-bold">
                             {userDetails.hon.balance} HON
                           </span>
                         </div>
                         <div>
-                          <span
-                            style={{
-                              color: 'var(--text-dim)',
-                              display: 'block',
-                              fontSize: '0.7rem',
-                            }}
-                          >
+                          <span className="text-dim block text-[0.7rem]">
                             구독 등급
                           </span>
-                          <span
-                            style={{
-                              color: 'var(--primary-purple)',
-                              fontWeight: 'bold',
-                            }}
-                          >
+                          <span className="text-primary-purple font-bold">
                             {userDetails.subscription
                               ? userDetails.subscription.plan
                               : '구독 없음'}
@@ -2824,34 +1828,15 @@ export function AdminPage() {
                         </div>
                       </div>
 
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '14px',
-                          borderTop: '1px solid rgba(255,255,255,0.06)',
-                          paddingTop: '14px',
-                        }}
-                      >
+                      <div className="flex flex-col gap-3.5 border-t border-glass-border pt-3.5">
                         <button
                           type="button"
                           onClick={handleToggleBlock}
-                          style={{
-                            width: '100%',
-                            height: '32px',
-                            fontSize: '0.78rem',
-                            background: userDetails.isBlocked
-                              ? 'rgba(0, 240, 255, 0.1)'
-                              : 'rgba(255, 75, 75, 0.1)',
-                            border: userDetails.isBlocked
-                              ? '1px solid rgba(0, 240, 255, 0.3)'
-                              : '1px solid rgba(255, 75, 75, 0.3)',
-                            color: userDetails.isBlocked
-                              ? 'var(--primary-cyan)'
-                              : '#ff4b4b',
-                            cursor: 'pointer',
-                            borderRadius: '4px',
-                          }}
+                          className={`w-full h-8 text-[0.78rem] cursor-pointer rounded border ${
+                            userDetails.isBlocked
+                              ? 'bg-primary-cyan/10 border-primary-cyan/30 text-primary-cyan'
+                              : 'bg-error/10 border-error/30 text-error'
+                          }`}
                         >
                           {userDetails.isBlocked ? '차단 해제' : '사용자 차단'}
                         </button>
@@ -2860,73 +1845,34 @@ export function AdminPage() {
                           type="button"
                           onClick={handleResetNickname}
                           disabled={!userDetails.nickname}
-                          style={{
-                            width: '100%',
-                            height: '32px',
-                            fontSize: '0.78rem',
-                            background: userDetails.nickname
-                              ? 'rgba(255, 165, 0, 0.1)'
-                              : 'rgba(255,255,255,0.05)',
-                            border: userDetails.nickname
-                              ? '1px solid rgba(255, 165, 0, 0.3)'
-                              : '1px solid rgba(255,255,255,0.1)',
-                            color: userDetails.nickname
-                              ? 'orange'
-                              : 'var(--text-dim)',
-                            cursor: userDetails.nickname
-                              ? 'pointer'
-                              : 'not-allowed',
-                            borderRadius: '4px',
-                            marginTop: '6px',
-                          }}
+                          className={`w-full h-8 text-[0.78rem] rounded mt-1.5 border ${
+                            userDetails.nickname
+                              ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 cursor-pointer'
+                              : 'bg-surface border-glass-border text-dim cursor-not-allowed'
+                          }`}
                         >
                           닉네임 초기화
                         </button>
 
                         <form
                           onSubmit={handleGrantUnlimited}
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '6px',
-                            borderTop: '1px solid rgba(255,255,255,0.04)',
-                            paddingTop: '12px',
-                          }}
+                          className="flex flex-col gap-1.5 border-t border-glass-border pt-3"
                         >
-                          <label
-                            style={{
-                              fontSize: '0.72rem',
-                              color: 'var(--text-dim)',
-                              textAlign: 'left',
-                            }}
-                          >
+                          <label className="text-[0.72rem] text-dim text-left">
                             이용권 만료 기한 선택
                           </label>
-                          <div style={{ display: 'flex', gap: '8px' }}>
+                          <div className="flex gap-2">
                             <input
                               type="datetime-local"
-                              className="input-glow"
+                              className="input-glow flex-1 h-8 text-[0.78rem]"
                               value={freePassEndsAt}
                               onChange={(e) =>
                                 setFreePassEndsAt(e.target.value)
                               }
-                              style={{
-                                flex: 1,
-                                height: '32px',
-                                fontSize: '0.78rem',
-                              }}
                             />
                             <button
                               type="submit"
-                              className="btn-submit"
-                              style={{
-                                height: '32px',
-                                padding: '0 12px',
-                                fontSize: '0.78rem',
-                                background: 'var(--primary-purple)',
-                                color: '#ffffff',
-                                border: 'none',
-                              }}
+                              className="btn-submit h-8 px-3 text-[0.78rem] bg-primary-purple text-white border-none"
                             >
                               인증 확인
                             </button>
@@ -2936,33 +1882,18 @@ export function AdminPage() {
 
                       <form
                         onSubmit={handleManageHon}
-                        style={{
-                          display: 'flex',
-                          gap: '8px',
-                          borderTop: '1px solid rgba(255,255,255,0.06)',
-                          paddingTop: '14px',
-                        }}
+                        className="flex gap-2 border-t border-glass-border pt-3.5"
                       >
                         <input
                           type="number"
-                          className="input-glow"
+                          className="input-glow flex-1 h-8 text-[0.78rem]"
                           placeholder="지급/차감량 (예: 50, -50)"
                           value={manageHonAmount}
                           onChange={(e) => setManageHonAmount(e.target.value)}
-                          style={{
-                            flex: 1,
-                            height: '32px',
-                            fontSize: '0.78rem',
-                          }}
                         />
                         <button
                           type="submit"
-                          className="btn-submit"
-                          style={{
-                            height: '32px',
-                            padding: '0 12px',
-                            fontSize: '0.78rem',
-                          }}
+                          className="btn-submit h-8 px-3 text-[0.78rem]"
                         >
                           HON 지급/차감
                         </button>
@@ -2973,52 +1904,25 @@ export function AdminPage() {
               )}
 
               {activeTab === 'NICKNAME_REPORTS' && (
-                <div style={{ padding: '0 8px' }}>
-                  <h3 style={{ marginTop: 0, fontSize: '0.95rem' }}>
+                <div className="px-2">
+                  <h3 className="mt-0 text-[0.95rem] text-main">
                     닉네임 신고 목록
                   </h3>
                   {nicknameReports.length === 0 ? (
-                    <p
-                      style={{
-                        color: 'var(--text-dim)',
-                        fontSize: '0.85rem',
-                      }}
-                    >
+                    <p className="text-dim text-[0.85rem]">
                       접수된 신고가 없습니다.
                     </p>
                   ) : (
                     nicknameReports.map((r) => (
                       <div
                         key={r.id}
-                        style={{
-                          background: 'rgba(255,255,255,0.05)',
-                          padding: '12px',
-                          borderRadius: '8px',
-                          marginBottom: '12px',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                        }}
+                        className="bg-surface p-3 rounded-lg mb-3 border border-glass-border"
                       >
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            marginBottom: '8px',
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: 'bold',
-                              fontSize: '0.85rem',
-                            }}
-                          >
+                        <div className="flex justify-between mb-2">
+                          <span className="font-bold text-[0.85rem] text-main">
                             대상: {r.targetNickname}
                           </span>
-                          <span
-                            style={{
-                              fontSize: '0.75rem',
-                              color: 'var(--text-dim)',
-                            }}
-                          >
+                          <span className="text-xs text-dim">
                             상태:{' '}
                             {r.status === 'PENDING'
                               ? '대기 중'
@@ -3027,40 +1931,19 @@ export function AdminPage() {
                                 : '반려됨'}
                           </span>
                         </div>
-                        <p
-                          style={{
-                            margin: '8px 0',
-                            fontSize: '0.85rem',
-                            color: 'var(--text-main)',
-                          }}
-                        >
+                        <p className="my-2 text-[0.85rem] text-main">
                           사유: {r.reason || '사유 없음'}
                         </p>
                         {r.status === 'PENDING' && (
-                          <div
-                            style={{
-                              display: 'flex',
-                              gap: '8px',
-                              marginTop: '10px',
-                            }}
-                          >
+                          <div className="flex gap-2 mt-2.5">
                             <button
-                              className="btn-submit"
-                              style={{
-                                padding: '6px 10px',
-                                fontSize: '0.75rem',
-                                background: '#ef5350',
-                              }}
+                              className="btn-submit py-1.5 px-2.5 text-xs bg-error text-white border-none"
                               onClick={() => blockNicknameReport(r.id)}
                             >
                               차단
                             </button>
                             <button
-                              className="btn-neon btn-outline"
-                              style={{
-                                padding: '6px 10px',
-                                fontSize: '0.75rem',
-                              }}
+                              className="btn-neon btn-outline py-1.5 px-2.5 text-xs w-auto"
                               onClick={() => rejectNicknameReport(r.id)}
                             >
                               반려
@@ -3074,56 +1957,32 @@ export function AdminPage() {
               )}
 
               {activeTab === 'BANNED_WORDS' && (
-                <div style={{ padding: '0 8px' }}>
-                  <h3 style={{ marginTop: 0, fontSize: '0.95rem' }}>
-                    금지어 관리
-                  </h3>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '8px',
-                      marginBottom: '16px',
-                    }}
-                  >
+                <div className="px-2">
+                  <h3 className="mt-0 text-[0.95rem] text-main">금지어 관리</h3>
+                  <div className="flex gap-2 mb-4">
                     <input
                       type="text"
                       value={newBannedWord}
                       onChange={(e) => setNewBannedWord(e.target.value)}
                       placeholder="추가할 금지어 입력"
-                      className="input-glow"
-                      style={{ flex: 1, height: '36px', fontSize: '0.82rem' }}
+                      className="input-glow flex-1 h-9 text-[0.82rem]"
                     />
                     <button
-                      className="btn-submit"
+                      className="btn-submit h-9 text-[0.82rem]"
                       onClick={addBannedWord}
-                      style={{ height: '36px', fontSize: '0.82rem' }}
                     >
                       추가
                     </button>
                   </div>
-                  <div
-                    style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
-                  >
+                  <div className="flex flex-wrap gap-2">
                     {bannedWords.map((word) => (
                       <div
                         key={word}
-                        style={{
-                          background: 'rgba(255,255,255,0.1)',
-                          padding: '6px 12px',
-                          borderRadius: '16px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          fontSize: '0.8rem',
-                        }}
+                        className="bg-surface-hover py-1.5 px-3 rounded-2xl flex items-center gap-2 text-[0.8rem] text-main border border-glass-border"
                       >
                         <span>{word}</span>
                         <span
-                          style={{
-                            cursor: 'pointer',
-                            color: '#ef5350',
-                            fontWeight: 'bold',
-                          }}
+                          className="cursor-pointer text-error font-bold"
                           onClick={() => removeBannedWord(word)}
                         >
                           ✕
@@ -3131,12 +1990,7 @@ export function AdminPage() {
                       </div>
                     ))}
                     {bannedWords.length === 0 && (
-                      <p
-                        style={{
-                          color: 'var(--text-dim)',
-                          fontSize: '0.85rem',
-                        }}
-                      >
+                      <p className="text-dim text-[0.85rem]">
                         등록된 금지어가 없습니다.
                       </p>
                     )}
@@ -3145,49 +1999,18 @@ export function AdminPage() {
               )}
 
               {activeTab === 'HON_EVENTS' && (
-                <div
-                  style={{
-                    padding: '0 8px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                  }}
-                >
+                <div className="px-2 flex flex-col gap-6">
                   {/* Event Creation Form */}
-                  <div
-                    style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '8px',
-                      padding: '16px',
-                    }}
-                  >
-                    <h3
-                      style={{
-                        marginTop: 0,
-                        fontSize: '0.95rem',
-                        color: 'var(--primary-purple)',
-                      }}
-                    >
+                  <div className="bg-surface border border-glass-border rounded-lg p-4">
+                    <h3 className="mt-0 text-[0.95rem] text-primary-purple">
                       새 이벤트 생성
                     </h3>
                     <form
                       onSubmit={handleCreateHonEvent}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                      }}
+                      className="flex flex-col gap-3"
                     >
-                      <div style={{ display: 'flex', gap: '16px' }}>
-                        <label
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '0.85rem',
-                          }}
-                        >
+                      <div className="flex gap-4">
+                        <label className="flex items-center gap-2 text-[0.85rem] text-main">
                           <input
                             type="radio"
                             name="eventType"
@@ -3196,14 +2019,7 @@ export function AdminPage() {
                           />
                           수량 맞춤 (RESET)
                         </label>
-                        <label
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '0.85rem',
-                          }}
-                        >
+                        <label className="flex items-center gap-2 text-[0.85rem] text-main">
                           <input
                             type="radio"
                             name="eventType"
@@ -3214,86 +2030,41 @@ export function AdminPage() {
                         </label>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <div style={{ flex: 1 }}>
-                          <label
-                            style={{
-                              display: 'block',
-                              fontSize: '0.8rem',
-                              color: 'var(--text-dim)',
-                              marginBottom: '4px',
-                            }}
-                          >
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <label className="block text-[0.8rem] text-dim mb-1">
                             지급/초기화 개수 (HON)
                           </label>
                           <input
                             type="number"
-                            className="input-glow"
+                            className="input-glow w-full h-9 text-[0.85rem]"
                             value={newHonEventAmount}
                             onChange={(e) =>
                               setNewHonEventAmount(Number(e.target.value))
                             }
                             min={1}
-                            style={{
-                              width: '100%',
-                              height: '36px',
-                              fontSize: '0.85rem',
-                            }}
                           />
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <label
-                            style={{
-                              display: 'block',
-                              fontSize: '0.8rem',
-                              color: 'var(--text-dim)',
-                              marginBottom: '4px',
-                            }}
-                          >
+                        <div className="flex-1">
+                          <label className="block text-[0.8rem] text-dim mb-1">
                             시작 일시 (KST)
                           </label>
                           <input
                             type="datetime-local"
-                            className="input-glow"
+                            className="input-glow w-full h-9 text-[0.85rem]"
                             value={newHonEventStartsAt}
                             onChange={(e) =>
                               setNewHonEventStartsAt(e.target.value)
                             }
-                            style={{
-                              width: '100%',
-                              height: '36px',
-                              fontSize: '0.85rem',
-                            }}
                           />
                         </div>
                       </div>
 
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '12px',
-                          alignItems: 'flex-end',
-                        }}
-                      >
-                        <div style={{ flex: 1 }}>
-                          <label
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              fontSize: '0.8rem',
-                              color: 'var(--text-dim)',
-                              marginBottom: '4px',
-                            }}
-                          >
+                      <div className="flex gap-3 items-end">
+                        <div className="flex-1">
+                          <label className="flex justify-between text-[0.8rem] text-dim mb-1">
                             <span>종료 일시 (KST)</span>
-                            <label
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                cursor: 'pointer',
-                              }}
-                            >
+                            <label className="flex items-center gap-1 cursor-pointer">
                               <input
                                 type="checkbox"
                                 checked={newHonEventIsPermanent}
@@ -3306,28 +2077,21 @@ export function AdminPage() {
                           </label>
                           <input
                             type="datetime-local"
-                            className="input-glow"
+                            className={`input-glow w-full h-9 text-[0.85rem] ${
+                              newHonEventIsPermanent
+                                ? 'opacity-50'
+                                : 'opacity-100'
+                            }`}
                             value={newHonEventEndsAt}
                             onChange={(e) =>
                               setNewHonEventEndsAt(e.target.value)
                             }
                             disabled={newHonEventIsPermanent}
-                            style={{
-                              width: '100%',
-                              height: '36px',
-                              fontSize: '0.85rem',
-                              opacity: newHonEventIsPermanent ? 0.5 : 1,
-                            }}
                           />
                         </div>
                         <button
                           type="submit"
-                          className="btn-submit"
-                          style={{
-                            height: '36px',
-                            padding: '0 24px',
-                            fontSize: '0.85rem',
-                          }}
+                          className="btn-submit h-9 px-6 text-[0.85rem]"
                         >
                           이벤트 생성
                         </button>
@@ -3337,131 +2101,67 @@ export function AdminPage() {
 
                   {/* Event List */}
                   <div>
-                    <h3
-                      style={{
-                        marginTop: 0,
-                        fontSize: '0.95rem',
-                        color: 'var(--primary-cyan)',
-                        marginBottom: '12px',
-                      }}
-                    >
+                    <h3 className="mt-0 text-[0.95rem] text-primary-cyan mb-3">
                       등록된 이벤트 목록
                     </h3>
                     {loadingHonEvents ? (
-                      <p
-                        style={{
-                          fontSize: '0.85rem',
-                          color: 'var(--text-dim)',
-                        }}
-                      >
-                        로딩 중...
-                      </p>
+                      <p className="text-[0.85rem] text-dim">로딩 중...</p>
                     ) : honEvents.length === 0 ? (
-                      <p
-                        style={{
-                          fontSize: '0.85rem',
-                          color: 'var(--text-dim)',
-                        }}
-                      >
+                      <p className="text-[0.85rem] text-dim">
                         등록된 이벤트가 없습니다.
                       </p>
                     ) : (
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '8px',
-                        }}
-                      >
+                      <div className="flex flex-col gap-2">
                         {honEvents.map((ev) => {
                           const isExpired =
                             ev.endsAt && new Date(ev.endsAt) <= new Date();
                           const isPending = new Date(ev.startsAt) > new Date();
 
                           let statusText = '진행 중';
-                          let statusColor = '#4caf50';
+                          let statusColorClass = 'text-success';
                           if (!ev.isActive) {
                             statusText = '수동 종료됨';
-                            statusColor = '#ef5350';
+                            statusColorClass = 'text-error';
                           } else if (isExpired) {
                             statusText = '기간 만료됨';
-                            statusColor = 'var(--text-dim)';
+                            statusColorClass = 'text-dim';
                           } else if (isPending) {
                             statusText = '대기 중';
-                            statusColor = 'var(--primary-cyan)';
+                            statusColorClass = 'text-primary-cyan';
                           }
 
                           return (
                             <div
                               key={ev.id}
-                              style={{
-                                background: 'rgba(255,255,255,0.03)',
-                                border: `1px solid ${ev.isActive ? 'rgba(255,255,255,0.1)' : 'rgba(239, 83, 80, 0.2)'}`,
-                                borderRadius: '8px',
-                                padding: '12px 16px',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                              }}
+                              className={`bg-surface rounded-lg py-3 px-4 flex justify-between items-center border ${
+                                ev.isActive
+                                  ? 'border-glass-border'
+                                  : 'border-error/20'
+                              }`}
                             >
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  gap: '4px',
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                  }}
-                                >
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
                                   <span
-                                    style={{
-                                      background:
-                                        ev.type === 'RESET'
-                                          ? 'rgba(0,255,255,0.1)'
-                                          : 'rgba(255,0,255,0.1)',
-                                      color:
-                                        ev.type === 'RESET'
-                                          ? 'var(--primary-cyan)'
-                                          : 'var(--primary-purple)',
-                                      padding: '2px 6px',
-                                      borderRadius: '4px',
-                                      fontSize: '0.7rem',
-                                      fontWeight: 'bold',
-                                    }}
+                                    className={`py-0.5 px-1.5 rounded text-[0.7rem] font-bold ${
+                                      ev.type === 'RESET'
+                                        ? 'bg-primary-cyan/10 text-primary-cyan'
+                                        : 'bg-primary-purple/10 text-primary-purple'
+                                    }`}
                                   >
                                     {ev.type === 'RESET'
                                       ? '맞춤(RESET)'
                                       : '추가(ADD)'}
                                   </span>
-                                  <span
-                                    style={{
-                                      fontWeight: 'bold',
-                                      fontSize: '0.9rem',
-                                    }}
-                                  >
+                                  <span className="font-bold text-[0.9rem] text-main">
                                     {ev.amount} HON
                                   </span>
                                   <span
-                                    style={{
-                                      fontSize: '0.75rem',
-                                      color: statusColor,
-                                      fontWeight: 'bold',
-                                    }}
+                                    className={`text-xs font-bold ${statusColorClass}`}
                                   >
                                     • {statusText}
                                   </span>
                                 </div>
-                                <div
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    color: 'var(--text-dim)',
-                                  }}
-                                >
+                                <div className="text-[0.8rem] text-dim">
                                   시작:{' '}
                                   {new Date(ev.startsAt).toLocaleString(
                                     'ko-KR',
@@ -3471,10 +2171,10 @@ export function AdminPage() {
                                     : ' ~ (영구)'}
                                 </div>
                               </div>
-                              <div style={{ display: 'flex', gap: '8px' }}>
+                              <div className="flex gap-2">
                                 {ev.isActive && (
                                   <button
-                                    className="btn-submit"
+                                    className="btn-submit h-[30px] text-[0.8rem] bg-error border-error text-white"
                                     onClick={() =>
                                       setConfirmConfig({
                                         isOpen: true,
@@ -3484,18 +2184,12 @@ export function AdminPage() {
                                           handleTerminateHonEvent(ev.id),
                                       })
                                     }
-                                    style={{
-                                      height: '30px',
-                                      fontSize: '0.8rem',
-                                      background: '#ef5350',
-                                      borderColor: '#ef5350',
-                                    }}
                                   >
                                     종료
                                   </button>
                                 )}
                                 <button
-                                  className="btn-submit"
+                                  className="btn-submit h-[30px] text-[0.8rem] bg-transparent border border-dim text-main"
                                   onClick={() =>
                                     setConfirmConfig({
                                       isOpen: true,
@@ -3505,12 +2199,6 @@ export function AdminPage() {
                                         handleDeleteHonEvent(ev.id),
                                     })
                                   }
-                                  style={{
-                                    height: '30px',
-                                    fontSize: '0.8rem',
-                                    background: 'transparent',
-                                    border: '1px solid var(--text-dim)',
-                                  }}
                                 >
                                   삭제
                                 </button>
@@ -3525,23 +2213,12 @@ export function AdminPage() {
               )}
               {activeTab === 'NOTIFICATIONS' && (
                 <div>
-                  <h3
-                    style={{
-                      color: 'var(--primary-cyan)',
-                      marginBottom: '16px',
-                    }}
-                  >
-                    개별 알림 발송
-                  </h3>
+                  <h3 className="text-primary-cyan mb-4">개별 알림 발송</h3>
                   <form
                     onSubmit={handleSendNotification}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '16px',
-                    }}
+                    className="flex flex-col gap-4"
                   >
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div className="flex gap-2">
                       <select
                         value={notiTargetType}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -3549,19 +2226,18 @@ export function AdminPage() {
                             e.target.value as 'NICKNAME' | 'USER_ID',
                           )
                         }
-                        className="input-glow"
-                        style={{
-                          padding: '8px',
-                          background: 'transparent',
-                          color: 'white',
-                          width: '130px',
-                          flexShrink: 0,
-                        }}
+                        className="input-glow p-2 bg-input text-main w-[130px] shrink-0"
                       >
-                        <option value="NICKNAME" style={{ color: 'black' }}>
+                        <option
+                          value="NICKNAME"
+                          className="bg-surface-elevated text-main"
+                        >
                           닉네임
                         </option>
-                        <option value="USER_ID" style={{ color: 'black' }}>
+                        <option
+                          value="USER_ID"
+                          className="bg-surface-elevated text-main"
+                        >
                           User ID
                         </option>
                       </select>
@@ -3574,8 +2250,7 @@ export function AdminPage() {
                             ? '대상 닉네임'
                             : '대상 User ID'
                         }
-                        className="input-glow"
-                        style={{ flex: 1 }}
+                        className="input-glow flex-1"
                       />
                     </div>
                     <input
@@ -3589,14 +2264,9 @@ export function AdminPage() {
                       value={notiContent}
                       onChange={(e) => setNotiContent(e.target.value)}
                       placeholder="알림 내용"
-                      className="input-glow"
-                      style={{ height: '100px', resize: 'vertical' }}
+                      className="input-glow h-[100px] resize-y"
                     />
-                    <button
-                      type="submit"
-                      className="btn-submit"
-                      style={{ padding: '12px' }}
-                    >
+                    <button type="submit" className="btn-submit p-3">
                       발송하기
                     </button>
                   </form>
@@ -3611,19 +2281,9 @@ export function AdminPage() {
 
         {/* Modal Footer */}
         {true && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginTop: '16px',
-              paddingTop: '12px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-              flexShrink: 0,
-            }}
-          >
+          <div className="flex justify-end mt-4 pt-3 border-t border-glass-border shrink-0">
             <button
-              className="btn-neon btn-outline"
-              style={{ height: '38px', padding: '0 20px', fontSize: '0.82rem' }}
+              className="btn-neon btn-outline h-[38px] px-5 text-[0.82rem] w-auto"
               onClick={handleClose}
             >
               닫기
@@ -3631,95 +2291,31 @@ export function AdminPage() {
           </div>
         )}
         {rejectModalOpen && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              background: 'rgba(0, 0, 0, 0.6)',
-              backdropFilter: 'blur(4px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9999,
-            }}
-          >
-            <div
-              className="glass-card"
-              style={{
-                maxWidth: '400px',
-                width: '90%',
-                padding: '24px',
-                border: '1px solid rgba(255, 75, 75, 0.2)',
-                background: 'rgba(15, 17, 26, 0.95)',
-                borderRadius: '12px',
-                textAlign: 'left',
-                overflow: 'hidden',
-              }}
-            >
-              <h4
-                style={{
-                  color: '#ff4b4b',
-                  margin: '0 0 12px 0',
-                  fontSize: '1rem',
-                }}
-              >
+          <div className="fixed inset-0 bg-overlay backdrop-blur-xs flex items-center justify-center z-[9999]">
+            <div className="glass-card max-w-[400px] w-[90%] p-6 border border-error/20 bg-modal rounded-xl text-left overflow-hidden">
+              <h4 className="text-error m-0 mb-3 text-base">
                 환불 거절 사유 입력
               </h4>
               <textarea
-                className="input-glow"
+                className="input-glow w-full min-h-[100px] text-[0.82rem] p-2 box-border mb-4 resize-none"
                 placeholder="거절 사유를 작성해 주세요..."
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                style={{
-                  width: '100%',
-                  minHeight: '100px',
-                  fontSize: '0.82rem',
-                  padding: '8px',
-                  boxSizing: 'border-box',
-                  marginBottom: '16px',
-                  resize: 'none',
-                }}
               />
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '8px',
-                  justifyContent: 'flex-end',
-                }}
-              >
+              <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => {
                     setRejectModalOpen(false);
                     setRejectingInqId(null);
                     setRejectReason('');
                   }}
-                  style={{
-                    background: 'none',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    color: 'var(--text-main)',
-                    padding: '6px 12px',
-                    borderRadius: '4px',
-                    fontSize: '0.78rem',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-transparent border border-glass-border text-main py-1.5 px-3 rounded text-[0.78rem] cursor-pointer hover:bg-surface-hover"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleRejectRefundSubmit}
-                  style={{
-                    background: 'var(--primary-purple)',
-                    border: 'none',
-                    color: '#ffffff',
-                    padding: '6px 12px',
-                    borderRadius: '4px',
-                    fontSize: '0.78rem',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-primary-purple border-none text-white py-1.5 px-3 rounded text-[0.78rem] font-bold cursor-pointer"
                 >
                   거절 완료
                 </button>

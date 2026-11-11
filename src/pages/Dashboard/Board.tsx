@@ -54,13 +54,7 @@ const renderContentWithImages = (content: string) => {
           key={index}
           src={match[2]}
           alt={match[1]}
-          style={{
-            maxWidth: '100%',
-            maxHeight: '400px',
-            display: 'block',
-            margin: '8px 0',
-            borderRadius: '8px',
-          }}
+          className="block max-w-full max-h-[400px] my-2 rounded-lg"
         />
       );
     }
@@ -797,60 +791,26 @@ export function Board() {
     : posts;
 
   const uploadUI = (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        textAlign: 'left',
-      }}
-    >
+    <div className="flex flex-col gap-2 text-left">
       {!(category === 'WINNING' && winningImageUrl) && (
-        <label
-          style={{
-            fontSize: '0.78rem',
-            color: 'var(--text-dim)',
-            fontWeight: '600',
-          }}
-        >
+        <label className="text-[0.78rem] text-dim font-semibold">
           {category === 'WINNING'
             ? '인증 사진 첨부 (한 번 첨부 후 수정 불가)'
             : '파일 첨부'}{' '}
-          {category === 'WINNING' && (
-            <span style={{ color: '#ff4b4b' }}>(필수)</span>
-          )}
+          {category === 'WINNING' && <span className="text-error">(필수)</span>}
         </label>
       )}
 
       <div
-        style={{
-          border:
-            category === 'WINNING' && winningImageUrl
-              ? 'none'
-              : '2px dashed rgba(255,255,255,0.1)',
-          borderRadius: '8px',
-          padding:
-            category === 'WINNING' && winningImageUrl
-              ? '0'
-              : category === 'WINNING'
-                ? '20px'
-                : '12px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          background:
-            category === 'WINNING' && winningImageUrl
-              ? 'transparent'
-              : 'rgba(255,255,255,0.01)',
-          minHeight:
-            category === 'WINNING' && winningImageUrl
-              ? 'auto'
-              : category === 'WINNING'
-                ? '100px'
-                : '60px',
-        }}
+        className={`rounded-lg flex flex-col items-center justify-center relative ${
+          category === 'WINNING' && winningImageUrl
+            ? 'border-none p-0 bg-transparent min-h-auto'
+            : `border-2 border-dashed border-glass-border bg-surface ${
+                category === 'WINNING'
+                  ? 'p-5 min-h-[100px]'
+                  : 'p-3 min-h-[60px]'
+              }`
+        }`}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
@@ -926,32 +886,13 @@ export function Board() {
               }
             }
           }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: 'pointer',
-            display:
-              category === 'WINNING' && winningImageUrl ? 'none' : 'block',
-          }}
+          className={`absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer ${
+            category === 'WINNING' && winningImageUrl ? 'hidden' : 'block'
+          }`}
         />
 
         {lottoAnalyzing ? (
-          <div
-            style={{
-              padding: '30px',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
+          <div className="p-[30px] bg-surface rounded-xl flex flex-col items-center relative overflow-hidden">
             <style>{`
                       @keyframes scanline {
                         0% { top: 0%; opacity: 0; }
@@ -961,57 +902,19 @@ export function Board() {
                       }
                     `}</style>
             {previewImageUrl && (
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: '150px',
-                  marginBottom: '20px',
-                }}
-              >
+              <div className="relative w-full max-w-[150px] mb-5">
                 <img
                   src={previewImageUrl}
                   alt="scanning preview"
-                  style={{
-                    width: '100%',
-                    borderRadius: '8px',
-                    opacity: 0.6,
-                  }}
+                  className="w-full rounded-lg opacity-60"
                 />
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'var(--primary-cyan)',
-                    boxShadow: '0 0 12px var(--primary-cyan)',
-                    animation: 'scanline 1.5s linear infinite',
-                  }}
-                />
+                <div className="absolute left-0 right-0 h-[3px] bg-primary-cyan shadow-[0_0_12px_var(--primary-cyan)] animate-[scanline_1.5s_linear_infinite]" />
               </div>
             )}
             {!previewImageUrl && (
-              <div
-                style={{
-                  margin: '0 auto 16px',
-                  width: '36px',
-                  height: '36px',
-                  border: '3px solid rgba(0,240,255,0.2)',
-                  borderTopColor: 'var(--primary-cyan)',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                }}
-              ></div>
+              <div className="mx-auto mb-4 w-9 h-9 border-[3px] border-primary-cyan/20 border-t-primary-cyan rounded-full animate-spin"></div>
             )}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '4px',
-              }}
-            >
+            <div className="flex items-center gap-2 mb-1">
               <svg
                 width="22"
                 height="22"
@@ -1021,9 +924,7 @@ export function Board() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{
-                  filter: 'drop-shadow(0 0 4px var(--primary-cyan))',
-                }}
+                className="drop-shadow-[0_0_4px_var(--primary-cyan)]"
               >
                 <path d="M4 7V4h3" />
                 <path d="M17 4h3v3" />
@@ -1035,80 +936,32 @@ export function Board() {
                   y1="12"
                   x2="22"
                   y2="12"
-                  style={{ animation: 'scanline 1.5s linear infinite' }}
+                  className="animate-[scanline_1.5s_linear_infinite]"
                 />
               </svg>
-              <span
-                style={{
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  color: 'var(--primary-cyan)',
-                  letterSpacing: '0.5px',
-                }}
-              >
+              <span className="text-[0.9rem] font-bold text-primary-cyan tracking-[0.5px]">
                 AI가 로또 이미지를 스캔하고 있습니다
               </span>
             </div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+            <span className="text-xs text-dim">
               안전한 인증을 위해 당첨 번호와 식별자를 분석 중입니다...
             </span>
           </div>
         ) : category === 'WINNING' && winningImageUrl ? (
-          <div
-            style={{
-              textAlign: 'center',
-              position: 'relative',
-              zIndex: 10,
-              pointerEvents: 'auto',
-              display: 'block',
-              width: '100%',
-            }}
-          >
+          <div className="text-center relative z-10 pointer-events-auto block w-full">
             <img
               src={winningImageUrl}
               alt="Uploaded"
-              style={{
-                maxHeight: '150px',
-                borderRadius: '8px',
-                marginBottom: '12px',
-              }}
+              className="max-h-[150px] rounded-lg mb-3 mx-auto"
             />
           </div>
         ) : imageFiles.length > 0 ||
           existingAttachments.length > 0 ||
           (winningImageUrl && category !== 'WINNING') ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-              position: 'relative',
-              zIndex: 10,
-              pointerEvents: 'auto',
-            }}
-          >
+          <div className="flex flex-col gap-1.5 relative z-10 pointer-events-auto w-full">
             {winningImageUrl && category !== 'WINNING' && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 8px',
-                  background: 'rgba(255,255,255,0.05)',
-                  borderRadius: '4px',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '0.82rem',
-                    color: 'var(--primary-cyan)',
-                    fontWeight: 'bold',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '80%',
-                  }}
-                >
+              <div className="flex items-center justify-between py-1 px-2 bg-surface rounded">
+                <span className="text-[0.82rem] text-primary-cyan font-bold overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%]">
                   {uploadedFilename ||
                     (() => {
                       // fallback: decode from URL
@@ -1133,15 +986,7 @@ export function Board() {
                     e.preventDefault();
                     setWinningImageUrl(''); // 기존 파일 삭제 (상태 비우기)
                   }}
-                  style={{
-                    background: 'rgba(255,75,75,0.2)',
-                    border: 'none',
-                    color: '#ff4b4b',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-error/20 border-none text-error py-0.5 px-1.5 rounded text-[0.7rem] cursor-pointer"
                 >
                   삭제
                 </button>
@@ -1150,26 +995,9 @@ export function Board() {
             {existingAttachments.map((att) => (
               <div
                 key={`existing-${att.id}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 8px',
-                  background: 'rgba(255,255,255,0.05)',
-                  borderRadius: '4px',
-                }}
+                className="flex items-center justify-between py-1 px-2 bg-surface rounded"
               >
-                <span
-                  style={{
-                    fontSize: '0.82rem',
-                    color: 'var(--primary-cyan)',
-                    fontWeight: 'bold',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '80%',
-                  }}
-                >
+                <span className="text-[0.82rem] text-primary-cyan font-bold overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%]">
                   {att.originalFileName ||
                     (() => {
                       try {
@@ -1195,15 +1023,7 @@ export function Board() {
                       prev.filter((item) => item.id !== att.id),
                     );
                   }}
-                  style={{
-                    background: 'rgba(255,75,75,0.2)',
-                    border: 'none',
-                    color: '#ff4b4b',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-error/20 border-none text-error py-0.5 px-1.5 rounded text-[0.7rem] cursor-pointer"
                 >
                   삭제
                 </button>
@@ -1212,26 +1032,9 @@ export function Board() {
             {imageFiles.map((file, idx) => (
               <div
                 key={idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '4px 8px',
-                  background: 'rgba(255,255,255,0.05)',
-                  borderRadius: '4px',
-                }}
+                className="flex items-center justify-between py-1 px-2 bg-surface rounded"
               >
-                <span
-                  style={{
-                    fontSize: '0.82rem',
-                    color: 'var(--primary-cyan)',
-                    fontWeight: 'bold',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '80%',
-                  }}
-                >
+                <span className="text-[0.82rem] text-primary-cyan font-bold overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%]">
                   {file.name}
                 </span>
                 <button
@@ -1241,15 +1044,7 @@ export function Board() {
                     e.preventDefault();
                     setImageFiles((prev) => prev.filter((_, i) => i !== idx));
                   }}
-                  style={{
-                    background: 'rgba(255,75,75,0.2)',
-                    border: 'none',
-                    color: '#ff4b4b',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-error/20 border-none text-error py-0.5 px-1.5 rounded text-[0.7rem] cursor-pointer"
                 >
                   삭제
                 </button>
@@ -1258,29 +1053,13 @@ export function Board() {
           </div>
         ) : (
           <div
-            style={{
-              textAlign: 'center',
-              display: 'block',
-              width: '100%',
-              marginTop:
-                category === 'WINNING' && winningImageUrl ? '16px' : '0',
-            }}
+            className={`text-center block w-full ${
+              category === 'WINNING' && winningImageUrl ? 'mt-4' : 'mt-0'
+            }`}
           >
             {category === 'WINNING' && winningImageUrl ? (
-              <div
-                style={{
-                  padding: '20px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                }}
-              >
-                <h3
-                  style={{
-                    margin: '0 0 8px 0',
-                    color: 'var(--primary-cyan)',
-                  }}
-                >
+              <div className="p-5 bg-surface rounded-xl border border-glass-border">
+                <h3 className="m-0 mb-2 text-primary-cyan">
                   {lottoRank === 1
                     ? '🏆'
                     : lottoRank === 2
@@ -1291,34 +1070,15 @@ export function Board() {
                   {lottoRank}등 당첨! 축하합니다!
                 </h3>
                 {lottoRound && (
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: '0.9rem',
-                      color: 'var(--text-dim)',
-                    }}
-                  >
+                  <p className="m-0 text-[0.9rem] text-dim">
                     제 {lottoRound}회차
                   </p>
                 )}
               </div>
             ) : (
               <>
-                <span
-                  style={{
-                    display: 'block',
-                    fontSize: '1.2rem',
-                    marginBottom: '4px',
-                  }}
-                >
-                  📤
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.78rem',
-                    color: 'var(--text-dim)',
-                  }}
-                >
+                <span className="block text-[1.2rem] mb-1">📤</span>
+                <span className="text-[0.78rem] text-dim">
                   클릭하거나 파일을 여기로 드래그하여 업로드하세요
                 </span>
               </>
@@ -1330,30 +1090,13 @@ export function Board() {
   );
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        margin: 0,
-        padding: 0,
-      }}
-    >
+    <div className="flex flex-col gap-5 m-0 p-0">
       <div>
-        <h3
-          className="section-title"
-          style={{ color: 'var(--primary-cyan)', marginBottom: '8px' }}
-        >
-          게시판
-        </h3>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-main tracking-tight m-0 mb-4">
+          커뮤니티 게시판
+        </h1>
+        <div className="flex justify-between items-center flex-wrap gap-3">
+          <div className="flex gap-2 items-center flex-wrap">
             {(['FREE', 'KNOWHOW', 'WINNING'] as const).map((cat) => (
               <button
                 key={cat}
@@ -1371,24 +1114,11 @@ export function Board() {
                   setTitle('');
                   setContent('');
                 }}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border:
-                    category === cat
-                      ? '1px solid var(--primary-cyan)'
-                      : '1px solid rgba(255, 255, 255, 0.15)',
-                  background:
-                    category === cat
-                      ? 'rgba(56, 189, 248, 0.1)'
-                      : 'rgba(255, 255, 255, 0.03)',
-                  color:
-                    category === cat
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-main)',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
+                className={`py-2 px-4 rounded-xl text-sm font-bold cursor-pointer border transition-all duration-150 ${
+                  category === cat
+                    ? 'border-primary-cyan bg-primary-cyan text-white shadow-xs'
+                    : 'border-glass-border bg-card text-muted hover:text-main hover:bg-surface'
+                }`}
               >
                 {cat === 'FREE'
                   ? '자유'
@@ -1404,28 +1134,11 @@ export function Board() {
                   setMyPostsOnly(!myPostsOnly);
                   setSelectedPostIds([]);
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '0.72rem',
-                  background: myPostsOnly
-                    ? 'rgba(0, 240, 255, 0.12)'
-                    : 'rgba(255, 255, 255, 0.04)',
-                  border: myPostsOnly
-                    ? '1px solid var(--primary-cyan)'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  color: myPostsOnly
-                    ? 'var(--primary-cyan)'
-                    : 'var(--text-dim)',
-                  padding: '4px 8px',
-                  borderRadius: '16px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease',
-                  marginLeft: '6px',
-                  userSelect: 'none',
-                }}
+                className={`flex items-center gap-1 text-[0.72rem] py-1 px-2 rounded-2xl cursor-pointer font-semibold transition-all duration-200 ml-1.5 select-none border ${
+                  myPostsOnly
+                    ? 'bg-primary-cyan/12 border-primary-cyan text-primary-cyan'
+                    : 'bg-surface border-glass-border text-dim hover:text-main'
+                }`}
               >
                 <svg
                   width="14"
@@ -1447,50 +1160,20 @@ export function Board() {
             {myPostsOnly && !isWriting && !activePost && (
               <>
                 <label
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.75rem',
-                    color: 'var(--text-main)',
-                    marginLeft: '8px',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    padding: '4px 8px',
-                    borderRadius: '16px',
-                    background:
-                      filteredPosts.length > 0 &&
-                      selectedPostIds.length === filteredPosts.length
-                        ? 'rgba(0, 240, 255, 0.15)'
-                        : 'rgba(255,255,255,0.05)',
-                    border:
-                      filteredPosts.length > 0 &&
-                      selectedPostIds.length === filteredPosts.length
-                        ? '1px solid var(--primary-cyan)'
-                        : '1px solid rgba(255,255,255,0.1)',
-                    transition: 'all 0.2s ease',
-                  }}
+                  className={`flex items-center gap-1.5 text-xs text-main ml-2 cursor-pointer select-none py-1 px-2 rounded-2xl transition-all duration-200 border ${
+                    filteredPosts.length > 0 &&
+                    selectedPostIds.length === filteredPosts.length
+                      ? 'bg-primary-cyan/15 border-primary-cyan'
+                      : 'bg-surface border-glass-border'
+                  }`}
                 >
                   <div
-                    style={{
-                      width: '14px',
-                      height: '14px',
-                      borderRadius: '4px',
-                      border:
-                        filteredPosts.length > 0 &&
-                        selectedPostIds.length === filteredPosts.length
-                          ? 'none'
-                          : '1px solid rgba(255,255,255,0.3)',
-                      background:
-                        filteredPosts.length > 0 &&
-                        selectedPostIds.length === filteredPosts.length
-                          ? 'var(--primary-cyan)'
-                          : 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'all 0.2s ease',
-                    }}
+                    className={`w-3.5 h-3.5 rounded flex items-center justify-center transition-all duration-200 ${
+                      filteredPosts.length > 0 &&
+                      selectedPostIds.length === filteredPosts.length
+                        ? 'border-none bg-primary-cyan'
+                        : 'border border-glass-border-strong bg-transparent'
+                    }`}
                   >
                     {filteredPosts.length > 0 &&
                       selectedPostIds.length === filteredPosts.length && (
@@ -1521,40 +1204,18 @@ export function Board() {
                         setSelectedPostIds([]);
                       }
                     }}
-                    style={{ display: 'none' }}
+                    className="hidden"
                   />
                   전체 선택
                 </label>
                 <button
                   onClick={handleBulkDelete}
                   disabled={selectedPostIds.length === 0}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '0.72rem',
-                    background:
-                      selectedPostIds.length > 0
-                        ? 'rgba(255, 60, 60, 0.15)'
-                        : 'rgba(255, 255, 255, 0.04)',
-                    border:
-                      selectedPostIds.length > 0
-                        ? '1px solid rgba(255, 60, 60, 0.5)'
-                        : '1px solid rgba(255, 255, 255, 0.08)',
-                    color:
-                      selectedPostIds.length > 0
-                        ? '#ff4d4d'
-                        : 'var(--text-dim)',
-                    padding: '4px 8px',
-                    borderRadius: '16px',
-                    cursor:
-                      selectedPostIds.length > 0 ? 'pointer' : 'not-allowed',
-                    fontWeight: '600',
-                    transition: 'all 0.2s ease',
-                    marginLeft: '6px',
-                    userSelect: 'none',
-                    opacity: selectedPostIds.length > 0 ? 1 : 0.5,
-                  }}
+                  className={`flex items-center gap-1 text-[0.72rem] py-1 px-2 rounded-2xl font-semibold transition-all duration-200 ml-1.5 select-none border ${
+                    selectedPostIds.length > 0
+                      ? 'bg-error/15 border-error/50 text-error cursor-pointer opacity-100'
+                      : 'bg-surface border-glass-border text-dim cursor-not-allowed opacity-50'
+                  }`}
                 >
                   <svg
                     width="14"
@@ -1565,7 +1226,7 @@ export function Board() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    style={{ marginRight: '4px' }}
+                    className="mr-1"
                   >
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1593,24 +1254,7 @@ export function Board() {
                 setLottoError(null);
                 setPreviewImageUrl('');
               }}
-              style={{
-                padding: '6px 16px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                background: 'rgba(255, 255, 255, 0.03)',
-                color: 'var(--text-main)',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-              }}
+              className="py-1.5 px-4 rounded-md border border-glass-border-strong bg-surface text-main font-bold cursor-pointer transition-all duration-300 hover:bg-surface-hover hover:border-primary-cyan"
             >
               글쓰기
             </button>
@@ -1618,83 +1262,44 @@ export function Board() {
         </div>
 
         {!isWriting && !activePost && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginTop: '12px',
-              paddingBottom: '4px',
-              borderBottom: '1px solid rgba(255,255,255,0.05)',
-            }}
-          >
-            <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="flex items-center gap-3 mt-3 pb-1 border-b border-glass-border">
+            <div className="flex gap-2">
               <button
                 onClick={() => setSort('latest')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color:
-                    sort === 'latest'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  fontWeight: sort === 'latest' ? 'bold' : 'normal',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                }}
+                className={`bg-transparent border-none text-[0.8rem] cursor-pointer ${
+                  sort === 'latest'
+                    ? 'text-primary-cyan font-bold'
+                    : 'text-dim font-normal'
+                }`}
               >
                 최신순
               </button>
-              <span style={{ color: 'rgba(255,255,255,0.1)' }}>|</span>
+              <span className="text-glass-border-strong">|</span>
               <button
                 onClick={() => setSort('likes')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color:
-                    sort === 'likes'
-                      ? 'var(--primary-cyan)'
-                      : 'var(--text-dim)',
-                  fontWeight: sort === 'likes' ? 'bold' : 'normal',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                }}
+                className={`bg-transparent border-none text-[0.8rem] cursor-pointer ${
+                  sort === 'likes'
+                    ? 'text-primary-cyan font-bold'
+                    : 'text-dim font-normal'
+                }`}
               >
                 좋아요순
               </button>
             </div>
 
             {category === 'WINNING' && (
-              <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
+              <div className="flex gap-2 ml-auto">
                 <input
                   type="number"
                   placeholder="회차 검색"
-                  className="input-glow no-spin"
+                  className="input-glow no-spin py-1 px-2 text-[0.8rem] rounded bg-input border border-glass-border text-main w-[100px]"
                   value={roundFilter}
                   onChange={(e) => setRoundFilter(e.target.value)}
-                  style={{
-                    padding: '4px 8px',
-                    fontSize: '0.8rem',
-                    borderRadius: '4px',
-                    background: 'rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--text-main)',
-                    width: '100px',
-                  }}
                 />
                 <select
-                  className="input-glow"
+                  className="input-glow py-1 px-2 text-[0.8rem] rounded bg-input border border-glass-border text-main w-[90px]"
                   value={rankFilter}
                   onChange={(e) => setRankFilter(e.target.value)}
-                  style={{
-                    padding: '4px 8px',
-                    fontSize: '0.8rem',
-                    borderRadius: '4px',
-                    background: 'rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--text-main)',
-                    width: '90px',
-                  }}
                 >
                   <option value="">등수 전체</option>
                   <option value="1">1등</option>
@@ -1715,66 +1320,34 @@ export function Board() {
               setActiveSearchQuery(searchQuery);
               setActiveSearchTarget(searchTarget);
             }}
-            style={{
-              display: 'flex',
-              gap: '8px',
-              marginTop: '12px',
-            }}
+            className="flex gap-2 mt-3"
           >
-            <div style={{ position: 'relative' }}>
+            <div className="relative">
               <select
                 value={searchTarget}
                 onChange={(e) => setSearchTarget(e.target.value)}
-                style={{
-                  height: '100%',
-                  padding: '8px 32px 8px 12px',
-                  fontSize: '0.9rem',
-                  borderRadius: '6px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'var(--primary-cyan)',
-                  outline: 'none',
-                  cursor: 'pointer',
-                  appearance: 'none',
-                  fontWeight: 'bold',
-                }}
+                className="h-full py-2 pr-8 pl-3 text-[0.9rem] rounded-md bg-surface border border-glass-border text-primary-cyan outline-none cursor-pointer appearance-none font-bold"
               >
-                <option
-                  value="all"
-                  style={{ background: '#0f111a', color: '#fff' }}
-                >
+                <option value="all" className="bg-surface-elevated text-main">
                   전체
                 </option>
-                <option
-                  value="title"
-                  style={{ background: '#0f111a', color: '#fff' }}
-                >
+                <option value="title" className="bg-surface-elevated text-main">
                   제목
                 </option>
                 <option
                   value="content"
-                  style={{ background: '#0f111a', color: '#fff' }}
+                  className="bg-surface-elevated text-main"
                 >
                   내용
                 </option>
                 <option
                   value="author"
-                  style={{ background: '#0f111a', color: '#fff' }}
+                  className="bg-surface-elevated text-main"
                 >
                   작성자
                 </option>
               </select>
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  pointerEvents: 'none',
-                  color: 'var(--primary-cyan)',
-                  fontSize: '0.6rem',
-                }}
-              >
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-primary-cyan text-[0.6rem]">
                 ▼
               </div>
             </div>
@@ -1785,39 +1358,13 @@ export function Board() {
                   ? '검색어를 입력하세요 (제목, 내용, 작성자)'
                   : `${searchTarget === 'title' ? '제목' : searchTarget === 'content' ? '내용' : '작성자'} 검색`
               }
-              className="input-glow"
+              className="input-glow flex-1 py-2 px-3 text-[0.9rem] rounded-md bg-input border border-glass-border text-main"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                flex: 1,
-                padding: '8px 12px',
-                fontSize: '0.9rem',
-                borderRadius: '6px',
-                background: 'rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: 'var(--text-main)',
-              }}
             />
             <button
               type="submit"
-              style={{
-                padding: '0 16px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                background: 'rgba(255, 255, 255, 0.03)',
-                color: 'var(--text-main)',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-              }}
+              className="px-4 rounded-md border border-glass-border-strong bg-surface text-main font-bold cursor-pointer transition-all duration-300 hover:bg-surface-hover hover:border-primary-cyan"
             >
               검색
             </button>
@@ -1826,43 +1373,16 @@ export function Board() {
       </div>
 
       {isWriting ? (
-        <div
-          style={{
-            padding: '20px',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.05)',
-          }}
-        >
-          <h4
-            style={{
-              margin: '0 0 16px 0',
-              color: 'var(--text-main)',
-              textAlign: 'left',
-            }}
-          >
+        <div className="bento-card p-6 sm:p-7">
+          <h4 className="m-0 mb-4 text-main text-left">
             {editingPostId ? '게시글 수정' : '새 글 작성'}
           </h4>
-          <form
-            onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-          >
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             {category === 'WINNING' && uploadUI}
             {category === 'WINNING' && (
-              <div style={{ textAlign: 'center', marginTop: '8px' }}>
+              <div className="text-center mt-2">
                 {lottoError ? (
-                  <div
-                    style={{
-                      display: 'inline-block',
-                      padding: '8px 16px',
-                      background: 'rgba(255,165,0,0.1)',
-                      border: '1px solid orange',
-                      borderRadius: '8px',
-                      color: 'orange',
-                      fontWeight: 'bold',
-                      fontSize: '0.9rem',
-                    }}
-                  >
+                  <div className="inline-block py-2 px-4 bg-amber-500/10 border border-amber-500 rounded-lg text-amber-500 font-bold text-[0.9rem]">
                     <svg
                       width="16"
                       height="16"
@@ -1872,11 +1392,7 @@ export function Board() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      style={{
-                        marginRight: '6px',
-                        verticalAlign: 'middle',
-                        marginTop: '-2px',
-                      }}
+                      className="mr-1.5 align-middle -mt-0.5 inline"
                     >
                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                       <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -1886,17 +1402,7 @@ export function Board() {
                   </div>
                 ) : lottoRank !== null ? (
                   lottoRank <= 5 ? (
-                    <div
-                      style={{
-                        display: 'inline-block',
-                        padding: '8px 16px',
-                        background: 'rgba(0,240,255,0.1)',
-                        border: '1px solid var(--primary-cyan)',
-                        borderRadius: '20px',
-                        color: 'var(--primary-cyan)',
-                        fontWeight: 'bold',
-                      }}
-                    >
+                    <div className="inline-block py-2 px-4 bg-primary-cyan/10 border border-primary-cyan rounded-[20px] text-primary-cyan font-bold">
                       {lottoRank === 1 ? (
                         <svg
                           width="16"
@@ -1907,11 +1413,7 @@ export function Board() {
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          style={{
-                            marginRight: '4px',
-                            verticalAlign: 'middle',
-                            marginTop: '-2px',
-                          }}
+                          className="mr-1 align-middle -mt-0.5 inline"
                         >
                           <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                           <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
@@ -1930,11 +1432,7 @@ export function Board() {
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          style={{
-                            marginRight: '4px',
-                            verticalAlign: 'middle',
-                            marginTop: '-2px',
-                          }}
+                          className="mr-1 align-middle -mt-0.5 inline"
                         >
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                         </svg>
@@ -1942,17 +1440,7 @@ export function Board() {
                       {lottoRank}등 당첨! 축하합니다!
                     </div>
                   ) : (
-                    <div
-                      style={{
-                        display: 'inline-block',
-                        padding: '8px 16px',
-                        background: 'rgba(255,75,75,0.1)',
-                        border: '1px solid #ff4b4b',
-                        borderRadius: '20px',
-                        color: '#ff4b4b',
-                        fontWeight: 'bold',
-                      }}
-                    >
+                    <div className="inline-block py-2 px-4 bg-error/10 border border-error rounded-[20px] text-error font-bold">
                       <svg
                         width="16"
                         height="16"
@@ -1962,11 +1450,7 @@ export function Board() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        style={{
-                          marginRight: '4px',
-                          verticalAlign: 'middle',
-                          marginTop: '-2px',
-                        }}
+                        className="mr-1 align-middle -mt-0.5 inline"
                       >
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
@@ -1987,22 +1471,15 @@ export function Board() {
               <>
                 <input
                   type="text"
-                  className="input-glow"
+                  className="input-glow h-9 text-left"
                   placeholder="제목을 입력하세요 (최대 100자)"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   maxLength={100}
-                  style={{ height: '36px', textAlign: 'left' }}
                 />
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '8px',
-                  }}
-                >
+                <div className="flex flex-col gap-2">
                   <textarea
-                    className="input-glow"
+                    className="input-glow min-h-[150px] p-2.5 text-left"
                     placeholder={
                       category === 'WINNING'
                         ? '당첨 소감을 입력해주세요.'
@@ -2011,35 +1488,13 @@ export function Board() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     onPaste={handlePaste}
-                    style={{
-                      minHeight: '150px',
-                      padding: '10px',
-                      textAlign: 'left',
-                    }}
                   />
                   {content.trim() && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        marginTop: '-4px',
-                      }}
-                    >
+                    <div className="flex justify-end -mt-1">
                       <button
                         type="button"
                         onClick={() => setShowPostPreviewModal(true)}
-                        style={{
-                          background: 'rgba(0, 240, 255, 0.1)',
-                          border: '1px solid rgba(0, 240, 255, 0.3)',
-                          color: 'var(--primary-cyan)',
-                          padding: '6px 12px',
-                          borderRadius: '6px',
-                          fontSize: '0.8rem',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                        }}
+                        className="bg-primary-cyan/10 border border-primary-cyan/30 text-primary-cyan py-1.5 px-3 rounded-md text-[0.8rem] cursor-pointer flex items-center gap-1.5"
                       >
                         <svg
                           width="14"
@@ -2064,7 +1519,7 @@ export function Board() {
 
             {category !== 'WINNING' && uploadUI}
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+            <div className="flex gap-2.5 mt-3">
               <button
                 type="button"
                 onClick={() => {
@@ -2080,15 +1535,7 @@ export function Board() {
                   setLottoError(null);
                   setPreviewImageUrl('');
                 }}
-                style={{
-                  flex: 1,
-                  height: '36px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'var(--text-main)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                }}
+                className="flex-1 h-9 bg-surface border border-glass-border text-main rounded-md cursor-pointer hover:bg-surface-hover"
               >
                 취소
               </button>
@@ -2101,28 +1548,12 @@ export function Board() {
                       lottoRank > 5 ||
                       lottoError !== null))
                 }
-                style={{
-                  flex: 1,
-                  height: '36px',
-                  background:
-                    category === 'WINNING' &&
-                    (lottoRank === null || lottoRank > 5 || lottoError !== null)
-                      ? 'rgba(255,255,255,0.1)'
-                      : 'var(--primary-cyan)',
-                  border: 'none',
-                  color:
-                    category === 'WINNING' &&
-                    (lottoRank === null || lottoRank > 5 || lottoError !== null)
-                      ? 'var(--text-dim)'
-                      : '#0f111a',
-                  fontWeight: 'bold',
-                  borderRadius: '6px',
-                  cursor:
-                    category === 'WINNING' &&
-                    (lottoRank === null || lottoRank > 5 || lottoError !== null)
-                      ? 'not-allowed'
-                      : 'pointer',
-                }}
+                className={`flex-1 h-9 border-none font-bold rounded-md ${
+                  category === 'WINNING' &&
+                  (lottoRank === null || lottoRank > 5 || lottoError !== null)
+                    ? 'bg-surface-hover text-dim cursor-not-allowed'
+                    : 'bg-primary-cyan text-white cursor-pointer'
+                }`}
               >
                 {submitting ? '등록 중...' : '등록'}
               </button>
@@ -2130,34 +1561,10 @@ export function Board() {
           </form>
         </div>
       ) : activePost ? (
-        <div
-          style={{
-            padding: '20px',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.05)',
-            textAlign: 'left',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: '16px',
-            }}
-          >
-            <div style={{ textAlign: 'left' }}>
-              <h4
-                style={{
-                  margin: '0 0 4px 0',
-                  color: 'var(--text-main)',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
+        <div className="bento-card p-6 sm:p-7 text-left">
+          <div className="flex justify-between items-start mb-4">
+            <div className="text-left">
+              <h4 className="m-0 mb-1 text-main text-left flex items-center gap-2">
                 {activePost.category === 'WINNING' &&
                   activePost.lottoRank &&
                   activePost.lottoRank <= 5 && (
@@ -2172,20 +1579,13 @@ export function Board() {
                   )}
                 {activePost.title}
               </h4>
-              <div
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--text-dim)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
+              <div className="text-xs text-dim flex items-center gap-2">
                 <span
-                  style={{
-                    cursor: activePost.isAdmin ? 'default' : 'pointer',
-                    textDecoration: activePost.isAdmin ? 'none' : 'underline',
-                  }}
+                  className={
+                    activePost.isAdmin
+                      ? 'cursor-default no-underline'
+                      : 'cursor-pointer underline'
+                  }
                   onClick={(e) => {
                     e.stopPropagation();
                     if (activePost.isAdmin) return;
@@ -2204,40 +1604,20 @@ export function Board() {
                   }}
                 >
                   {activePost.isAdmin ? (
-                    <span
-                      style={{
-                        background:
-                          'linear-gradient(135deg, #FFD700 0%, #F7931A 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        fontWeight: 'bold',
-                        marginRight: '6px',
-                        fontSize: '0.9em',
-                      }}
-                    >
+                    <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1.5 text-[0.9em]">
                       [M] 관리자
                     </span>
                   ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}
-                    >
+                    <div className="flex items-center gap-1.5">
                       <div
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          background: activePost.user?.avatarUrl
-                            ? `url(${activePost.user.avatarUrl}) center/cover`
-                            : 'linear-gradient(135deg, rgba(0,240,255,0.2), rgba(168,85,247,0.2))',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '12px',
-                        }}
+                        className="w-6 h-6 rounded-full bg-cover bg-center bg-gradient-to-br from-primary-cyan/20 to-primary-purple/20 flex items-center justify-center text-xs"
+                        style={
+                          activePost.user?.avatarUrl
+                            ? {
+                                backgroundImage: `url(${activePost.user.avatarUrl})`,
+                              }
+                            : undefined
+                        }
                       >
                         {!activePost.user?.avatarUrl &&
                           (activePost.user?.nickname?.charAt(0) ||
@@ -2253,14 +1633,7 @@ export function Board() {
                   {new Date(activePost.createdAt).toLocaleDateString()}
                 </span>
                 <span>|</span>
-                <span
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    color: 'var(--primary-cyan)',
-                  }}
-                >
+                <span className="flex items-center gap-1 text-primary-cyan">
                   <svg
                     width="12"
                     height="12"
@@ -2277,27 +1650,13 @@ export function Board() {
                 </span>
                 <span>|</span>
                 <span
-                  style={{
-                    position: 'relative',
-                    cursor:
-                      activePost.imageUrl ||
-                      (activePost.attachments &&
-                        activePost.attachments.length > 0)
-                        ? 'pointer'
-                        : 'default',
-                    textDecoration:
-                      activePost.imageUrl ||
-                      (activePost.attachments &&
-                        activePost.attachments.length > 0)
-                        ? 'underline'
-                        : 'none',
-                    color:
-                      activePost.imageUrl ||
-                      (activePost.attachments &&
-                        activePost.attachments.length > 0)
-                        ? 'var(--primary-cyan)'
-                        : 'inherit',
-                  }}
+                  className={`relative ${
+                    activePost.imageUrl ||
+                    (activePost.attachments &&
+                      activePost.attachments.length > 0)
+                      ? 'cursor-pointer underline text-primary-cyan'
+                      : 'cursor-default no-underline text-inherit'
+                  }`}
                   onClick={() => {
                     if (
                       activePost.imageUrl ||
@@ -2330,23 +1689,7 @@ export function Board() {
 
                       return (
                         <div
-                          style={{
-                            position: 'absolute',
-                            top: '100%',
-                            right: 'auto',
-                            left: 0,
-                            marginTop: '8px',
-                            background: '#1a1d24',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            borderRadius: '6px',
-                            padding: '10px 14px',
-                            boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
-                            zIndex: 10,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '12px',
-                            whiteSpace: 'nowrap',
-                          }}
+                          className="absolute top-full right-auto left-0 mt-2 bg-modal border border-glass-border rounded-md py-2.5 px-3.5 shadow-glass z-10 flex flex-col gap-3 whitespace-nowrap backdrop-blur-xl"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {allAttachments.map((att, index) => {
@@ -2366,7 +1709,7 @@ export function Board() {
                                 strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                style={{ color: 'var(--primary-cyan)' }}
+                                className="text-primary-cyan"
                               >
                                 <rect
                                   x="3"
@@ -2390,7 +1733,7 @@ export function Board() {
                                 strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                style={{ color: 'var(--primary-cyan)' }}
+                                className="text-primary-cyan"
                               >
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -2440,41 +1783,15 @@ export function Board() {
                             return (
                               <div
                                 key={index}
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '20px',
-                                }}
+                                className="flex items-center gap-5"
                               >
-                                <div
-                                  style={{
-                                    fontSize: '0.85rem',
-                                    color: 'var(--text-main)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                  }}
-                                >
+                                <div className="text-[0.85rem] text-main flex items-center gap-2">
                                   {icon}
-                                  <span
-                                    style={{
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis',
-                                      maxWidth: '250px',
-                                    }}
-                                  >
+                                  <span className="overflow-hidden text-ellipsis max-w-[250px]">
                                     {filename}
                                   </span>
                                 </div>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    fontSize: '0.75rem',
-                                    color: 'var(--text-dim)',
-                                  }}
-                                >
+                                <div className="flex items-center gap-1.5 text-xs text-dim">
                                   {(isImage || isPdf) && (
                                     <>
                                       <span
@@ -2484,10 +1801,7 @@ export function Board() {
                                           setShowAttachmentDropdown(false);
                                           setModalPreviewImage(url);
                                         }}
-                                        style={{
-                                          color: 'var(--primary-cyan)',
-                                          cursor: 'pointer',
-                                        }}
+                                        className="text-primary-cyan cursor-pointer"
                                       >
                                         미리보기
                                       </span>
@@ -2496,10 +1810,7 @@ export function Board() {
                                   )}
                                   <span
                                     onClick={handleDownload}
-                                    style={{
-                                      color: 'var(--primary-cyan)',
-                                      cursor: 'pointer',
-                                    }}
+                                    className="text-primary-cyan cursor-pointer"
                                   >
                                     다운로드
                                   </span>
@@ -2518,53 +1829,21 @@ export function Board() {
                 setShowAttachmentDropdown(false);
                 setActivePost(null);
               }}
-              style={{
-                background: 'none',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: 'var(--text-dim)',
-                padding: '4px 10px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
+              className="bg-transparent border border-glass-border text-dim py-1 px-2.5 rounded cursor-pointer hover:text-main hover:bg-surface-hover"
             >
               목록으로
             </button>
           </div>
 
-          <p
-            style={{
-              color: 'var(--text-muted)',
-              whiteSpace: 'pre-wrap',
-              lineHeight: '1.6',
-              fontSize: '0.9rem',
-              textAlign: 'left',
-            }}
-          >
+          <p className="text-muted whitespace-pre-wrap leading-[1.6] text-[0.9rem] text-left">
             {renderContentWithImages(activePost.content)}
           </p>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '8px',
-              borderTop: '1px solid rgba(255,255,255,0.08)',
-              paddingTop: '16px',
-              marginTop: '24px',
-            }}
-          >
+          <div className="flex justify-end gap-2 border-t border-glass-border pt-4 mt-6">
             {!activePost.isAdmin && (
               <button
                 onClick={() => setShowReportModal(true)}
-                style={{
-                  padding: '4px 8px',
-                  background: 'rgba(255,75,75,0.1)',
-                  border: '1px solid rgba(255,75,75,0.2)',
-                  color: '#ff4b4b',
-                  borderRadius: '4px',
-                  fontSize: '0.75rem',
-                  cursor: 'pointer',
-                }}
+                className="py-1 px-2 bg-error/10 border border-error/20 text-error rounded text-xs cursor-pointer"
               >
                 🚨 신고하기
               </button>
@@ -2572,23 +1851,15 @@ export function Board() {
             <button
               onClick={handlePostLike}
               disabled={!isAuthenticated}
-              style={{
-                padding: '4px 8px',
-                background: activePost.isLiked
-                  ? 'rgba(255,105,180,0.1)'
-                  : 'rgba(255,255,255,0.05)',
-                border: activePost.isLiked
-                  ? '1px solid rgba(255,105,180,0.3)'
-                  : '1px solid rgba(255,255,255,0.1)',
-                color: activePost.isLiked ? '#ff69b4' : 'var(--text-dim)',
-                borderRadius: '4px',
-                fontSize: '0.75rem',
-                cursor: isAuthenticated ? 'pointer' : 'not-allowed',
-                opacity: isAuthenticated ? 1 : 0.5,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
+              className={`py-1 px-2 rounded text-xs flex items-center gap-1 border ${
+                activePost.isLiked
+                  ? 'bg-pink-400/10 border-pink-400/30 text-pink-400'
+                  : 'bg-surface border-glass-border text-dim'
+              } ${
+                isAuthenticated
+                  ? 'cursor-pointer opacity-100'
+                  : 'cursor-not-allowed opacity-50'
+              }`}
             >
               <svg
                 width="14"
@@ -2608,7 +1879,7 @@ export function Board() {
               (userId || localStorage.getItem('userId')) &&
               !activePost.isAdmin) ||
               isAdminMode) && (
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="flex gap-2">
                 <button
                   onClick={() => {
                     setEditingPostId(activePost.id);
@@ -2621,29 +1892,13 @@ export function Board() {
                     setUploadedFilename(activePost.originalFileName || '');
                     setIsWriting(true);
                   }}
-                  style={{
-                    padding: '4px 8px',
-                    background: 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    color: 'orange',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                  }}
+                  className="py-1 px-2 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded text-xs cursor-pointer"
                 >
                   수정
                 </button>
                 <button
                   onClick={() => handleDelete(activePost.id)}
-                  style={{
-                    padding: '4px 8px',
-                    background: 'rgba(255,75,75,0.1)',
-                    border: '1px solid rgba(255,75,75,0.3)',
-                    color: '#ff4b4b',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                  }}
+                  className="py-1 px-2 bg-error/10 border border-error/30 text-error rounded text-xs cursor-pointer"
                 >
                   삭제
                 </button>
@@ -2651,33 +1906,20 @@ export function Board() {
             )}
           </div>
 
-          <div
-            style={{
-              marginTop: '24px',
-              paddingTop: '24px',
-              borderTop: '1px solid rgba(255,255,255,0.05)',
-            }}
-          >
-            <h5
-              style={{
-                margin: '0 0 16px 0',
-                color: 'var(--text-main)',
-                fontSize: '1rem',
-              }}
-            >
+          <div className="mt-6 pt-6 border-t border-glass-border">
+            <h5 className="m-0 mb-4 text-main text-base">
               댓글{' '}
-              <span style={{ color: 'var(--primary-cyan)' }}>
+              <span className="text-primary-cyan">
                 {activePost._count?.comments || 0}
               </span>
             </h5>
 
-            <form
-              onSubmit={handleCommentSubmit}
-              style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}
-            >
+            <form onSubmit={handleCommentSubmit} className="flex gap-2 mb-6">
               <input
                 type="text"
-                className="input-glow"
+                className={`input-glow flex-1 p-2.5 ${
+                  isAuthenticated ? 'opacity-100' : 'opacity-50'
+                }`}
                 value={commentContent}
                 onChange={(e) => setCommentContent(e.target.value)}
                 placeholder={
@@ -2686,79 +1928,32 @@ export function Board() {
                     : '로그인 후 댓글을 작성할 수 있습니다.'
                 }
                 disabled={!isAuthenticated}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  opacity: isAuthenticated ? 1 : 0.5,
-                }}
                 maxLength={200}
               />
               <button
                 type="submit"
                 disabled={!commentContent.trim() || !isAuthenticated}
-                style={{
-                  padding: '0 20px',
-                  background:
-                    commentContent.trim() && isAuthenticated
-                      ? 'var(--primary-cyan)'
-                      : 'rgba(255,255,255,0.1)',
-                  color:
-                    commentContent.trim() && isAuthenticated
-                      ? '#0f111a'
-                      : 'var(--text-dim)',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontWeight: 'bold',
-                  cursor:
-                    commentContent.trim() && isAuthenticated
-                      ? 'pointer'
-                      : 'not-allowed',
-                }}
+                className={`px-5 border-none rounded-md font-bold ${
+                  commentContent.trim() && isAuthenticated
+                    ? 'bg-primary-cyan text-white cursor-pointer'
+                    : 'bg-surface-hover text-dim cursor-not-allowed'
+                }`}
               >
                 등록
               </button>
             </form>
 
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-            >
+            <div className="flex flex-col gap-3">
               {activePost.comments?.map((comment) => (
                 <div
                   key={comment.id}
-                  style={{
-                    padding: '12px',
-                    background: 'rgba(255,255,255,0.02)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(255,255,255,0.03)',
-                  }}
+                  className="p-3 bg-surface rounded-lg border border-glass-border"
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-start',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: '0.85rem',
-                          color: 'var(--text-main)',
-                        }}
-                      >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-[0.85rem] text-main">
                         <span
-                          style={{
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                          }}
+                          className="cursor-pointer underline"
                           onClick={(e) => {
                             e.stopPropagation();
                             const name = comment.user?.nickname;
@@ -2775,40 +1970,20 @@ export function Board() {
                           }}
                         >
                           {comment.isAdmin ? (
-                            <span
-                              style={{
-                                background:
-                                  'linear-gradient(135deg, #FFD700 0%, #F7931A 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                fontWeight: 'bold',
-                                marginRight: '6px',
-                                fontSize: '0.9em',
-                              }}
-                            >
+                            <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1.5 text-[0.9em]">
                               [M] 관리자
                             </span>
                           ) : (
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                              }}
-                            >
+                            <div className="flex items-center gap-1">
                               <div
-                                style={{
-                                  width: '20px',
-                                  height: '20px',
-                                  borderRadius: '50%',
-                                  background: comment.user?.avatarUrl
-                                    ? `url(${comment.user.avatarUrl}) center/cover`
-                                    : 'linear-gradient(135deg, rgba(0,240,255,0.2), rgba(168,85,247,0.2))',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: '10px',
-                                }}
+                                className="w-5 h-5 rounded-full bg-cover bg-center bg-gradient-to-br from-primary-cyan/20 to-primary-purple/20 flex items-center justify-center text-[10px]"
+                                style={
+                                  comment.user?.avatarUrl
+                                    ? {
+                                        backgroundImage: `url(${comment.user.avatarUrl})`,
+                                      }
+                                    : undefined
+                                }
                               >
                                 {!comment.user?.avatarUrl &&
                                   (comment.user?.nickname?.charAt(0) ||
@@ -2820,34 +1995,21 @@ export function Board() {
                           )}
                         </span>
                       </span>
-                      <span
-                        style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}
-                      >
+                      {comment.userId === activePost.userId && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.65rem] font-bold bg-primary-cyan/15 text-primary-cyan border border-primary-cyan/25 leading-none select-none">
+                          작성자
+                        </span>
+                      )}
+                      <span className="text-[0.7rem] text-dim">
                         {new Date(comment.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: '8px',
-                        alignItems: 'center',
-                      }}
-                    >
+                    <div className="flex gap-2 items-center">
                       <button
                         onClick={() => handleCommentLike(comment.id)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          color: comment.isLiked
-                            ? '#ff69b4'
-                            : 'var(--text-dim)',
-                          fontSize: '0.75rem',
-                        }}
+                        className={`bg-transparent border-none p-0 cursor-pointer flex items-center gap-1 text-xs ${
+                          comment.isLiked ? 'text-pink-400' : 'text-dim'
+                        }`}
                       >
                         <svg
                           width="12"
@@ -2863,38 +2025,22 @@ export function Board() {
                         </svg>
                         {comment._count?.likes || 0}
                       </button>
-                      <span style={{ color: 'rgba(255,255,255,0.1)' }}>|</span>
+                      <span className="text-glass-border-strong">|</span>
                       <button
                         onClick={() => {
                           setCommentToReport(comment.id);
                         }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#ff4b4b',
-                          fontSize: '0.75rem',
-                          cursor: 'pointer',
-                          padding: 0,
-                        }}
+                        className="bg-transparent border-none text-error text-xs cursor-pointer p-0"
                       >
                         신고
                       </button>
                       {(comment.userId === userId ||
                         localStorage.getItem('mk')) && (
                         <>
-                          <span style={{ color: 'rgba(255,255,255,0.1)' }}>
-                            |
-                          </span>
+                          <span className="text-glass-border-strong">|</span>
                           <button
                             onClick={() => handleCommentDelete(comment.id)}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: 'var(--text-dim)',
-                              fontSize: '0.75rem',
-                              cursor: 'pointer',
-                              padding: 0,
-                            }}
+                            className="bg-transparent border-none text-dim text-xs cursor-pointer p-0"
                           >
                             삭제
                           </button>
@@ -2902,18 +2048,11 @@ export function Board() {
                       )}
                     </div>
                   </div>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: '0.9rem',
-                      color: 'var(--text-main)',
-                      lineHeight: '1.4',
-                    }}
-                  >
+                  <p className="m-0 text-[0.9rem] text-main leading-[1.4]">
                     {comment.content}
                   </p>
 
-                  <div style={{ marginTop: '8px' }}>
+                  <div className="mt-2">
                     <button
                       onClick={() =>
                         setReplyingTo(
@@ -2921,15 +2060,11 @@ export function Board() {
                         )
                       }
                       disabled={!isAuthenticated}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--primary-cyan)',
-                        fontSize: '0.75rem',
-                        cursor: isAuthenticated ? 'pointer' : 'not-allowed',
-                        opacity: isAuthenticated ? 1 : 0.5,
-                        padding: 0,
-                      }}
+                      className={`bg-transparent border-none text-primary-cyan text-xs p-0 ${
+                        isAuthenticated
+                          ? 'cursor-pointer opacity-100'
+                          : 'cursor-not-allowed opacity-50'
+                      }`}
                     >
                       {replyingTo === comment.id ? '취소' : '답글 달기'}
                     </button>
@@ -2937,87 +2072,41 @@ export function Board() {
                   {replyingTo === comment.id && (
                     <form
                       onSubmit={(e) => handleReplySubmit(e, comment.id)}
-                      style={{ display: 'flex', gap: '8px', marginTop: '8px' }}
+                      className="flex gap-2 mt-2"
                     >
                       <input
                         type="text"
-                        className="input-glow"
+                        className="input-glow flex-1 p-2 text-[0.85rem]"
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
                         placeholder="답글을 입력하세요..."
-                        style={{ flex: 1, padding: '8px', fontSize: '0.85rem' }}
                         maxLength={200}
                       />
                       <button
                         type="submit"
                         disabled={!replyContent.trim()}
-                        style={{
-                          padding: '0 16px',
-                          background: replyContent.trim()
-                            ? 'var(--primary-cyan)'
-                            : 'rgba(255,255,255,0.1)',
-                          color: replyContent.trim()
-                            ? '#0f111a'
-                            : 'var(--text-dim)',
-                          border: 'none',
-                          borderRadius: '4px',
-                          fontWeight: 'bold',
-                          cursor: replyContent.trim()
-                            ? 'pointer'
-                            : 'not-allowed',
-                          fontSize: '0.85rem',
-                        }}
+                        className={`px-4 border-none rounded font-bold text-[0.85rem] ${
+                          replyContent.trim()
+                            ? 'bg-primary-cyan text-white cursor-pointer'
+                            : 'bg-surface-hover text-dim cursor-not-allowed'
+                        }`}
                       >
                         등록
                       </button>
                     </form>
                   )}
                   {comment.replies && comment.replies.length > 0 && (
-                    <div
-                      style={{
-                        marginTop: '12px',
-                        paddingLeft: '16px',
-                        borderLeft: '2px solid rgba(255,255,255,0.1)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                      }}
-                    >
+                    <div className="mt-3 pl-4 border-l-2 border-glass-border-strong flex flex-col gap-2">
                       {comment.replies.map((reply) => (
                         <div
                           key={reply.id}
-                          style={{
-                            padding: '8px',
-                            background: 'rgba(255,255,255,0.01)',
-                            borderRadius: '6px',
-                          }}
+                          className="p-2 bg-surface/60 rounded-md"
                         >
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              marginBottom: '4px',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                gap: '8px',
-                                alignItems: 'center',
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontWeight: 'bold',
-                                  fontSize: '0.8rem',
-                                  color: 'var(--text-main)',
-                                }}
-                              >
+                          <div className="flex justify-between mb-1">
+                            <div className="flex gap-2 items-center">
+                              <span className="font-bold text-[0.8rem] text-main">
                                 <span
-                                  style={{
-                                    cursor: 'pointer',
-                                    textDecoration: 'underline',
-                                  }}
+                                  className="cursor-pointer underline"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     const name = reply.user?.nickname;
@@ -3033,40 +2122,20 @@ export function Board() {
                                   }}
                                 >
                                   {reply.isAdmin ? (
-                                    <span
-                                      style={{
-                                        background:
-                                          'linear-gradient(135deg, #FFD700 0%, #F7931A 100%)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        fontWeight: 'bold',
-                                        marginRight: '4px',
-                                        fontSize: '0.9em',
-                                      }}
-                                    >
+                                    <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1 text-[0.9em]">
                                       [M] 관리자
                                     </span>
                                   ) : (
-                                    <div
-                                      style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '4px',
-                                      }}
-                                    >
+                                    <div className="flex items-center gap-1">
                                       <div
-                                        style={{
-                                          width: '16px',
-                                          height: '16px',
-                                          borderRadius: '50%',
-                                          background: reply.user?.avatarUrl
-                                            ? `url(${reply.user.avatarUrl}) center/cover`
-                                            : 'linear-gradient(135deg, rgba(0,240,255,0.2), rgba(168,85,247,0.2))',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          fontSize: '9px',
-                                        }}
+                                        className="w-4 h-4 rounded-full bg-cover bg-center bg-gradient-to-br from-primary-cyan/20 to-primary-purple/20 flex items-center justify-center text-[9px]"
+                                        style={
+                                          reply.user?.avatarUrl
+                                            ? {
+                                                backgroundImage: `url(${reply.user.avatarUrl})`,
+                                              }
+                                            : undefined
+                                        }
                                       >
                                         {!reply.user?.avatarUrl &&
                                           (reply.user?.nickname?.charAt(0) ||
@@ -3078,47 +2147,28 @@ export function Board() {
                                   )}
                                 </span>
                               </span>
-                              <span
-                                style={{
-                                  fontSize: '0.7rem',
-                                  color: 'var(--text-dim)',
-                                }}
-                              >
+                              {reply.userId === activePost.userId && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.65rem] font-bold bg-primary-cyan/15 text-primary-cyan border border-primary-cyan/25 leading-none select-none">
+                                  작성자
+                                </span>
+                              )}
+                              <span className="text-[0.7rem] text-dim">
                                 {new Date(reply.createdAt).toLocaleDateString()}
                               </span>
                             </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                gap: '8px',
-                                alignItems: 'center',
-                              }}
-                            >
+                            <div className="flex gap-2 items-center">
                               {(reply.userId === userId ||
                                 localStorage.getItem('mk')) && (
                                 <button
                                   onClick={() => handleCommentDelete(reply.id)}
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'var(--text-dim)',
-                                    fontSize: '0.7rem',
-                                    cursor: 'pointer',
-                                    padding: 0,
-                                  }}
+                                  className="bg-transparent border-none text-dim text-[0.7rem] cursor-pointer p-0"
                                 >
                                   삭제
                                 </button>
                               )}
                             </div>
                           </div>
-                          <p
-                            style={{
-                              margin: 0,
-                              fontSize: '0.85rem',
-                              color: 'var(--text-main)',
-                            }}
-                          >
+                          <p className="m-0 text-[0.85rem] text-main">
                             {reply.content}
                           </p>
                         </div>
@@ -3131,65 +2181,28 @@ export function Board() {
           </div>
         </div>
       ) : (
-        <div
-          style={{
-            padding: '8px',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.05)',
-          }}
-        >
+        <div className="bento-card p-3 sm:p-4">
           {loading ? (
-            <p style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
-              불러오는 중...
-            </p>
+            <p className="text-center text-dim py-8">불러오는 중...</p>
           ) : filteredPosts.length === 0 ? (
-            <p
-              style={{
-                textAlign: 'center',
-                color: 'var(--text-dim)',
-                padding: '20px 0',
-              }}
-            >
+            <p className="text-center text-dim py-10">
               게시글이 존재하지 않습니다.
             </p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="flex flex-col">
               {filteredPosts.map((post) => (
                 <div
                   key={post.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '12px 16px',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                  }}
+                  className="flex items-center py-3 px-4 border-b border-glass-border"
                 >
                   {myPostsOnly && (
-                    <label
-                      style={{
-                        marginRight: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
+                    <label className="mr-4 flex items-center cursor-pointer">
                       <div
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '6px',
-                          border: selectedPostIds.includes(post.id)
-                            ? 'none'
-                            : '1px solid rgba(255,255,255,0.3)',
-                          background: selectedPostIds.includes(post.id)
-                            ? 'var(--primary-cyan)'
-                            : 'rgba(255,255,255,0.05)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'all 0.2s ease',
-                        }}
+                        className={`w-[18px] h-[18px] rounded-md flex items-center justify-center transition-all duration-200 ${
+                          selectedPostIds.includes(post.id)
+                            ? 'border-none bg-primary-cyan'
+                            : 'border border-glass-border-strong bg-surface'
+                        }`}
                       >
                         {selectedPostIds.includes(post.id) && (
                           <svg
@@ -3218,42 +2231,21 @@ export function Board() {
                             );
                           }
                         }}
-                        style={{ display: 'none' }}
+                        className="hidden"
                       />
                     </label>
                   )}
                   <div
                     onClick={() => fetchPostDetail(post.id)}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flex: 1,
-                      cursor: 'pointer',
-                    }}
+                    className="flex justify-between items-center flex-1 cursor-pointer"
                   >
-                    <div style={{ textAlign: 'left', flex: 1 }}>
-                      <span
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          color: 'var(--text-main)',
-                          fontSize: '0.9rem',
-                          fontWeight: '500',
-                          textAlign: 'left',
-                        }}
-                      >
+                    <div className="text-left flex-1">
+                      <span className="flex items-center gap-1.5 text-main text-[0.9rem] font-medium text-left">
                         {post.category === 'WINNING' &&
                           post.lottoRank &&
                           post.lottoRank <= 5 && (
                             <span
-                              className={`badge badge-rank-${post.lottoRank}`}
-                              style={{
-                                padding: '2px 6px',
-                                fontSize: '0.7rem',
-                                marginRight: '4px',
-                              }}
+                              className={`badge badge-rank-${post.lottoRank} py-0.5 px-1.5 text-[0.7rem] mr-1`}
                             >
                               {post.lottoRound ? `${post.lottoRound}회 ` : ''}
                               {post.lottoRank}등
@@ -3270,14 +2262,7 @@ export function Board() {
                             );
                           if (!hasAttachment && !hasContentImage) return null;
                           return (
-                            <span
-                              className="list-attachment-icon"
-                              style={{
-                                display: 'inline-flex',
-                                gap: '4px',
-                                alignItems: 'center',
-                              }}
-                            >
+                            <span className="list-attachment-icon inline-flex gap-1 items-center">
                               {hasAttachment && (
                                 <svg
                                   width="14"
@@ -3325,52 +2310,23 @@ export function Board() {
                           );
                         })()}
                       </span>
-                      <div
-                        style={{
-                          fontSize: '0.72rem',
-                          color: 'var(--text-dim)',
-                          marginTop: '4px',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                        }}
-                      >
+                      <div className="text-[0.72rem] text-dim mt-1 text-left flex items-center gap-2">
                         <span>
                           {post.isAdmin ? (
-                            <span
-                              style={{
-                                background:
-                                  'linear-gradient(135deg, #FFD700 0%, #F7931A 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                fontWeight: 'bold',
-                                marginRight: '4px',
-                              }}
-                            >
+                            <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1">
                               [M] 관리자
                             </span>
                           ) : (
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                              }}
-                            >
+                            <div className="flex items-center gap-1">
                               <div
-                                style={{
-                                  width: '16px',
-                                  height: '16px',
-                                  borderRadius: '50%',
-                                  background: post.user?.avatarUrl
-                                    ? `url(${post.user.avatarUrl}) center/cover`
-                                    : 'linear-gradient(135deg, rgba(0,240,255,0.2), rgba(168,85,247,0.2))',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: '10px',
-                                }}
+                                className="w-4 h-4 rounded-full bg-cover bg-center bg-gradient-to-br from-primary-cyan/20 to-primary-purple/20 flex items-center justify-center text-[10px]"
+                                style={
+                                  post.user?.avatarUrl
+                                    ? {
+                                        backgroundImage: `url(${post.user.avatarUrl})`,
+                                      }
+                                    : undefined
+                                }
                               >
                                 {!post.user?.avatarUrl &&
                                   (post.user?.nickname?.charAt(0) ||
@@ -3385,15 +2341,7 @@ export function Board() {
                         <span>
                           {new Date(post.createdAt).toLocaleDateString()}
                         </span>
-                        <span
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            marginLeft: 'auto',
-                            color: 'var(--primary-cyan)',
-                          }}
-                        >
+                        <span className="flex items-center gap-0.5 ml-auto text-primary-cyan">
                           <svg
                             width="12"
                             height="12"
@@ -3408,14 +2356,7 @@ export function Board() {
                           </svg>
                           {post._count?.likes || 0}
                         </span>
-                        <span
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            color: 'var(--text-main)',
-                          }}
-                        >
+                        <span className="flex items-center gap-0.5 text-main">
                           <svg
                             width="12"
                             height="12"
@@ -3432,15 +2373,7 @@ export function Board() {
                         </span>
                       </div>
                     </div>
-                    <span
-                      style={{
-                        fontSize: '0.8rem',
-                        color: 'var(--text-dim)',
-                        paddingLeft: '12px',
-                      }}
-                    >
-                      ➔
-                    </span>
+                    <span className="text-[0.8rem] text-dim pl-3">➔</span>
                   </div>
                 </div>
               ))}
@@ -3450,86 +2383,32 @@ export function Board() {
       )}
 
       {showReportModal && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.6)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              padding: '24px',
-              maxWidth: '400px',
-              width: '100%',
-              background: 'var(--bg-card)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255,75,75,0.3)',
-              borderRadius: '16px',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-              animation: 'zoomIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            }}
-          >
-            <h4 style={{ margin: '0 0 12px 0', color: '#ff4b4b' }}>
-              게시글 신고
-            </h4>
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-dim)',
-                marginBottom: '16px',
-              }}
-            >
+        <div className="fixed inset-0 bg-overlay flex justify-center items-center z-[9999]">
+          <div className="p-6 max-w-[400px] w-full bg-card backdrop-blur-2xl border border-error/30 rounded-2xl shadow-glass animate-[zoomIn_0.25s_cubic-bezier(0.34,1.56,0.64,1)]">
+            <h4 className="m-0 mb-3 text-error">게시글 신고</h4>
+            <p className="text-[0.8rem] text-dim mb-4">
               신고 사유를 구체적으로 적어주세요. 허위 신고 시 조치가 취해질 수
               있습니다.
             </p>
-            <form
-              onSubmit={handleReport}
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-            >
+            <form onSubmit={handleReport} className="flex flex-col gap-3">
               <textarea
-                className="input-glow"
+                className="input-glow min-h-[100px] p-2.5"
                 placeholder="신고 사유를 작성해주세요."
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value)}
-                style={{ minHeight: '100px', padding: '10px' }}
                 required
               />
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setShowReportModal(false)}
-                  style={{
-                    flex: 1,
-                    height: '36px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--text-dim)',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
+                  className="flex-1 h-9 bg-surface border border-glass-border text-dim rounded cursor-pointer hover:text-main hover:bg-surface-hover"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    flex: 1,
-                    height: '36px',
-                    background: '#ff4b4b',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
+                  className="flex-1 h-9 bg-error text-white border-none rounded cursor-pointer"
                 >
                   신고 접수
                 </button>
@@ -3540,89 +2419,38 @@ export function Board() {
       )}
 
       {commentToReport && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.6)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              padding: '24px',
-              maxWidth: '400px',
-              width: '100%',
-              background: 'var(--bg-card)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255,75,75,0.3)',
-              borderRadius: '16px',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-              animation: 'zoomIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            }}
-          >
-            <h4 style={{ margin: '0 0 12px 0', color: '#ff4b4b' }}>
-              댓글 신고
-            </h4>
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-dim)',
-                marginBottom: '16px',
-              }}
-            >
+        <div className="fixed inset-0 bg-overlay flex justify-center items-center z-[9999]">
+          <div className="p-6 max-w-[400px] w-full bg-card backdrop-blur-2xl border border-error/30 rounded-2xl shadow-glass animate-[zoomIn_0.25s_cubic-bezier(0.34,1.56,0.64,1)]">
+            <h4 className="m-0 mb-3 text-error">댓글 신고</h4>
+            <p className="text-[0.8rem] text-dim mb-4">
               신고 사유를 구체적으로 적어주세요. 허위 신고 시 조치가 취해질 수
               있습니다.
             </p>
             <form
               onSubmit={handleCommentReportSubmit}
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+              className="flex flex-col gap-3"
             >
               <textarea
-                className="input-glow"
+                className="input-glow min-h-[100px] p-2.5"
                 placeholder="신고 사유를 작성해주세요."
                 value={commentReportReason}
                 onChange={(e) => setCommentReportReason(e.target.value)}
-                style={{ minHeight: '100px', padding: '10px' }}
                 required
               />
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     setCommentToReport(null);
                     setCommentReportReason('');
                   }}
-                  style={{
-                    flex: 1,
-                    height: '36px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--text-dim)',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
+                  className="flex-1 h-9 bg-surface border border-glass-border text-dim rounded cursor-pointer hover:text-main hover:bg-surface-hover"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    flex: 1,
-                    height: '36px',
-                    background: '#ff4b4b',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
+                  className="flex-1 h-9 bg-error text-white border-none rounded cursor-pointer"
                 >
                   신고 접수
                 </button>
@@ -3652,49 +2480,18 @@ export function Board() {
         createPortal(
           <>
             <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 999999,
-              }}
+              className="fixed inset-0 z-[999999]"
               onClick={() => setNicknameMenuTarget(null)}
             />
             <div
+              className="fixed bg-modal border border-glass-border rounded-lg p-2 flex flex-col gap-1 z-[1000000] min-w-[120px] shadow-glass backdrop-blur-xl"
               style={{
-                position: 'fixed',
                 top: nicknameMenuTarget.y,
                 left: nicknameMenuTarget.x,
-                background: '#1a1a1a',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                padding: '8px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-                zIndex: 1000000,
-                minWidth: '120px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
               }}
             >
               <button
-                style={{
-                  padding: '8px 12px',
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'var(--text-main)',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = 'transparent')
-                }
+                className="py-2 px-3 bg-transparent border-none text-main text-left cursor-pointer rounded hover:bg-surface-hover"
                 onClick={() => {
                   setUserProfileUserId(nicknameMenuTarget.userId);
                   setNicknameMenuTarget(null);
@@ -3703,21 +2500,7 @@ export function Board() {
                 정보보기
               </button>
               <button
-                style={{
-                  padding: '8px 12px',
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#ef5350',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = 'transparent')
-                }
+                className="py-2 px-3 bg-transparent border-none text-error text-left cursor-pointer rounded hover:bg-surface-hover"
                 onClick={() => {
                   setNicknameToReport({
                     nickname: nicknameMenuTarget.nickname,
@@ -3736,88 +2519,35 @@ export function Board() {
 
       {nicknameToReport && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-          }}
+          className="fixed inset-0 bg-overlay backdrop-blur-xs flex items-center justify-center z-[1000]"
           onClick={() => setNicknameToReport(null)}
         >
           <div
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '16px',
-              padding: '24px',
-              width: '90%',
-              maxWidth: '400px',
-            }}
+            className="bg-modal border border-glass-border rounded-2xl p-6 w-[90%] max-w-[400px] shadow-glass"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3
-              style={{
-                margin: '0 0 16px 0',
-                fontSize: '1.25rem',
-                fontWeight: 600,
-              }}
-            >
+            <h3 className="m-0 mb-4 text-xl font-semibold text-main">
               닉네임 신고하기
             </h3>
-            <p
-              style={{
-                margin: '0 0 16px 0',
-                fontSize: '0.85rem',
-                color: 'var(--text-dim)',
-              }}
-            >
+            <p className="m-0 mb-4 text-[0.85rem] text-dim">
               신고 대상:{' '}
-              <strong style={{ color: '#fff' }}>
-                {nicknameToReport.nickname}
-              </strong>
+              <strong className="text-main">{nicknameToReport.nickname}</strong>
             </p>
             <textarea
               placeholder="불건전 닉네임 신고 사유를 입력해주세요. (선택사항)"
               value={nicknameReportReason}
               onChange={(e) => setNicknameReportReason(e.target.value)}
-              style={{
-                width: '100%',
-                height: '80px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                padding: '12px',
-                color: '#fff',
-                marginBottom: '16px',
-                resize: 'none',
-              }}
+              className="w-full h-20 bg-input border border-glass-border rounded-lg p-3 text-main mb-4 resize-none"
             />
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="flex gap-3">
               <button
-                className="btn-secondary"
-                style={{ flex: 1, padding: '10px', cursor: 'pointer' }}
+                className="btn-secondary flex-1 p-2.5 cursor-pointer bg-surface border border-glass-border text-main rounded"
                 onClick={() => setNicknameToReport(null)}
               >
                 취소
               </button>
               <button
-                className="btn-primary"
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: '#ef5350',
-                  border: 'none',
-                  color: '#fff',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
+                className="btn-primary flex-1 p-2.5 bg-error border-none text-white rounded cursor-pointer"
                 onClick={submitNicknameReport}
               >
                 신고하기
@@ -3834,58 +2564,20 @@ export function Board() {
             );
             return (
               <div
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: 'rgba(0,0,0,0.8)',
-                  zIndex: 999999,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backdropFilter: 'blur(4px)',
-                }}
+                className="fixed inset-0 bg-overlay z-[999999] flex items-center justify-center backdrop-blur-xs"
                 onClick={() => setModalPreviewImage(null)}
               >
                 <div
-                  style={
+                  className={
                     isPdfPreview
-                      ? {
-                          position: 'relative',
-                          width: '100vw',
-                          height: '100vh',
-                          display: 'flex',
-                          flexDirection: 'column',
-                        }
-                      : {
-                          position: 'relative',
-                          maxWidth: '90%',
-                          maxHeight: '90%',
-                        }
+                      ? 'relative w-screen h-screen flex flex-col'
+                      : 'relative max-w-[90%] max-h-[90%]'
                   }
                   onClick={(e) => e.stopPropagation()}
                 >
                   {!isPdfPreview && (
                     <button
-                      style={{
-                        position: 'absolute',
-                        top: '-40px',
-                        right: '0',
-                        background: 'rgba(255,255,255,0.2)',
-                        border: 'none',
-                        color: '#fff',
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        fontSize: '18px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 10,
-                      }}
+                      className="absolute -top-10 right-0 bg-surface-hover border border-glass-border text-main w-8 h-8 rounded-full text-lg cursor-pointer flex items-center justify-center z-10"
                       onClick={() => setModalPreviewImage(null)}
                     >
                       ×
@@ -3894,48 +2586,21 @@ export function Board() {
                   {isPdfPreview ? (
                     <>
                       {showPdfNotice && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '16px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            background: 'rgba(0,0,0,0.6)',
-                            color: 'rgba(255,255,255,0.9)',
-                            padding: '8px 16px',
-                            borderRadius: '20px',
-                            fontSize: '0.9rem',
-                            pointerEvents: 'none',
-                            zIndex: 10,
-                            backdropFilter: 'blur(4px)',
-                            animation: 'fadeInOut 2s ease-in-out forwards',
-                          }}
-                        >
+                        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-modal text-main py-2 px-4 rounded-[20px] text-[0.9rem] pointer-events-none z-10 backdrop-blur-xs shadow-glass animate-[fadeInOut_2s_ease-in-out_forwards]">
                           ESC 키를 눌러 닫을 수 있습니다
                         </div>
                       )}
                       <iframe
                         src={modalPreviewImage}
                         title="PDF Preview"
-                        style={{
-                          width: '100%',
-                          flex: 1,
-                          border: 'none',
-                          backgroundColor: '#fff',
-                        }}
+                        className="w-full flex-1 border-none bg-white"
                       />
                     </>
                   ) : (
                     <img
                       src={modalPreviewImage}
                       alt="Preview"
-                      style={{
-                        maxWidth: '100%',
-                        maxHeight: '80vh',
-                        objectFit: 'contain',
-                        borderRadius: '8px',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                      }}
+                      className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-glass"
                     />
                   )}
                 </div>
@@ -3947,79 +2612,23 @@ export function Board() {
       {showPostPreviewModal &&
         createPortal(
           <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0,0,0,0.8)',
-              zIndex: 999999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backdropFilter: 'blur(4px)',
-            }}
+            className="fixed inset-0 bg-overlay z-[999999] flex items-center justify-center backdrop-blur-xs"
             onClick={() => setShowPostPreviewModal(false)}
           >
             <div
-              style={{
-                position: 'relative',
-                width: '90%',
-                maxWidth: '800px',
-                maxHeight: '85vh',
-                background: '#1a1a2e',
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-              }}
+              className="relative w-[90%] max-w-[800px] max-h-[85vh] bg-modal rounded-xl border border-glass-border flex flex-col shadow-glass backdrop-blur-xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '16px 20px',
-                  borderBottom: '1px solid rgba(255,255,255,0.1)',
-                }}
-              >
-                <h3
-                  style={{
-                    margin: 0,
-                    color: 'var(--text-main)',
-                    fontSize: '1.1rem',
-                  }}
-                >
-                  글 미리보기
-                </h3>
+              <div className="flex justify-between items-center py-4 px-5 border-b border-glass-border">
+                <h3 className="m-0 text-main text-[1.1rem]">글 미리보기</h3>
                 <button
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--text-dim)',
-                    fontSize: '24px',
-                    lineHeight: 1,
-                    cursor: 'pointer',
-                  }}
+                  className="bg-transparent border-none text-dim text-2xl leading-none cursor-pointer hover:text-main"
                   onClick={() => setShowPostPreviewModal(false)}
                 >
                   ×
                 </button>
               </div>
-              <div
-                style={{
-                  padding: '20px',
-                  overflowY: 'auto',
-                  color: 'var(--text-main)',
-                  fontSize: '0.95rem',
-                  lineHeight: '1.6',
-                  textAlign: 'left',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
+              <div className="p-5 overflow-y-auto text-main text-[0.95rem] leading-[1.6] text-left whitespace-pre-wrap">
                 {renderContentWithImages(content)}
               </div>
             </div>

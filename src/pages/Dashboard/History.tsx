@@ -37,7 +37,6 @@ export function History() {
   const [historyList, setHistoryList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Prevent body scroll when modal is open and add ESC key support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -69,7 +68,6 @@ export function History() {
             ? `${API_BASE_URL}/algorithms/history`
             : `${API_BASE_URL}/personal-predictions/history`;
 
-        // Use authFetch to automatically include the JWT token
         const res = await authFetch(endpoint);
         if (!res.ok) throw new Error('당첨 이력을 가져오지 못했습니다.');
         const data = await res.json();
@@ -85,300 +83,159 @@ export function History() {
     fetchHistoryList();
   }, [isAuthenticated, showAlert, activeSubTab]);
 
-  const renderSubTabs = () => {
-    const tabs = [
-      { id: 'algorithm', label: '알고리즘 분석' },
-      { id: 'personal', label: '개인 예측번호' },
-    ] as const;
-
-    return (
-      <div
-        style={{
-          display: 'inline-flex',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
-          padding: '4px',
-          borderRadius: '10px',
-          marginBottom: '24px',
-          gap: '2px',
-        }}
-      >
-        {tabs.map((tab) => {
-          const isActive = activeSubTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveSubTab(tab.id)}
-              style={{
-                background: isActive
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'transparent',
-                border: 'none',
-                color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
-                fontFamily: 'var(--font-family)',
-                fontWeight: isActive ? '600' : '500',
-                fontSize: '0.85rem',
-                padding: '8px 14px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'var(--transition-fast)',
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '16px',
-        }}
-      >
-        <h2 className="access-title" style={{ fontSize: '1.3rem', margin: 0 }}>
-          내 예측 당첨이력 확인
-        </h2>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h1 className="font-display text-2xl font-extrabold tracking-tight text-main sm:text-3xl">
+            내 예측 당첨이력
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            생성하거나 저장한 모든 예측 조합의 실제 회차 추첨 대조 결과입니다.
+          </p>
+        </div>
+
+        {/* Segmented Control Tabs */}
+        <div className="inline-flex rounded-2xl border border-glass-border bg-card p-1 shadow-xs">
+          {(
+            [
+              { id: 'algorithm', label: '알고리즘 생성 번호' },
+              { id: 'personal', label: '개인 지정 번호' },
+            ] as const
+          ).map((tab) => {
+            const isActive = activeSubTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveSubTab(tab.id)}
+                className={`cursor-pointer rounded-xl border-none px-4 py-2 text-xs font-bold transition-all ${
+                  isActive
+                    ? 'bg-primary-cyan text-white shadow-xs'
+                    : 'bg-transparent text-muted hover:text-main'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <p
-        className="access-desc"
-        style={{ fontSize: '0.88rem', marginBottom: '24px' }}
-      >
-        회원님의 계정에서 생성된 모든 예측 조합의 추첨 대조 내역입니다. 추첨이
-        완료되면 매칭된 등수(1~5등)가 표시됩니다.
-      </p>
 
-      {renderSubTabs()}
-
-      <div className="scroll-y-container">
-        {loading ? (
-          <p
-            style={{
-              color: 'var(--text-dim)',
-              textAlign: 'center',
-              padding: '40px 0',
-            }}
-          >
-            이력을 로드하는 중...
-          </p>
-        ) : historyList.length === 0 ? (
-          <p
-            style={{
-              color: 'var(--text-dim)',
-              textAlign: 'center',
-              padding: '40px 0',
-            }}
-          >
+      {loading ? (
+        <div className="bento-card py-20 text-center text-sm text-dim">
+          당첨 이력을 불러오고 있어요...
+        </div>
+      ) : historyList.length === 0 ? (
+        <div className="bento-card flex flex-col items-center justify-center gap-3 py-20 text-center">
+          <p className="text-sm text-muted">
             {activeSubTab === 'algorithm'
-              ? '생성된 이력이 없습니다. 예측 번호를 먼저 생성해주세요.'
-              : '저장된 개인 예측번호가 없습니다. 예측번호 분석기에서 번호를 저장해주세요.'}
+              ? '생성된 알고리즘 예측 이력이 없습니다.'
+              : '저장된 개인 예측번호가 없습니다.'}
           </p>
-        ) : (
-          historyList.map((hist) => {
+          <button
+            type="button"
+            onClick={() => navigate('/generate')}
+            className="btn-submit px-5 py-2.5 text-xs"
+          >
+            예측번호 분석기로 이동 →
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {historyList.map((hist) => {
             const hasResult = hist.matchResult !== null;
             return (
               <div key={hist.id} className="history-card">
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '12px',
-                  }}
-                >
-                  <div>
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        color: 'var(--primary-cyan)',
-                        fontSize: '0.95rem',
-                      }}
-                    >
-                      {hist.episode}회차 예측
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-xl bg-primary-cyan/10 px-3 py-1 font-display text-sm font-extrabold text-primary-cyan">
+                      제 {hist.episode}회차
                     </span>
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-dim)',
-                        marginLeft: '10px',
-                      }}
-                    >
+                    <span className="rounded-lg bg-surface px-2.5 py-1 text-xs font-semibold text-muted">
                       {activeSubTab === 'algorithm'
-                        ? `[${parseAlgorithmName(hist.algorithm)}]`
-                        : '[개인 지정]'}
+                        ? parseAlgorithmName(hist.algorithm)
+                        : '개인 지정 조합'}
                     </span>
                   </div>
-                  <div>
+                  <div className="flex items-center gap-2">
                     {hasResult && hist.matchResult ? (
                       hist.matchResult.rank > 0 ? (
                         <span
                           className={`badge badge-rank-${hist.matchResult.rank}`}
                         >
-                          {hist.matchResult.rank}등 당첨!!
+                          🎉 {hist.matchResult.rank}등 당첨
                         </span>
                       ) : (
-                        <span className="badge badge-no-prize">낙첨</span>
+                        <span className="badge badge-no-prize">미당첨</span>
                       )
                     ) : (
                       <span className="badge badge-pending">추첨 대기중</span>
                     )}
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '12px' }}>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: 'var(--text-muted)',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    예측 조합:
-                  </div>
-                  <LottoBalls
-                    numbers={hist.numbers}
-                    matchResult={hist.matchResult}
-                  />
-                  <div style={{ marginTop: '8px', textAlign: 'right' }}>
                     <button
-                      onClick={() => {
+                      type="button"
+                      onClick={() =>
                         setSelectedAnalysis({
                           numbers: hist.numbers,
                           analysis: hist.analysis,
                           episode: hist.episode,
                           type: activeSubTab,
-                        });
-                      }}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'var(--primary-cyan)',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        padding: '4px 0',
-                        fontWeight: 600,
-                      }}
+                        })
+                      }
+                      className="cursor-pointer rounded-lg border border-glass-border bg-surface px-3 py-1 text-xs font-semibold text-primary-cyan transition-colors hover:bg-surface-hover"
                     >
-                      상세 분석 보기 →
+                      패턴 분석 →
                     </button>
                   </div>
                 </div>
 
-                {hasResult && hist.matchResult && (
-                  <div
-                    style={{
-                      borderTop: '1px solid rgba(255,255,255,0.04)',
-                      paddingTop: '10px',
-                      marginTop: '10px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--text-muted)',
-                        marginBottom: '4px',
-                      }}
-                    >
-                      실제 당첨: (일치 개수:{' '}
-                      <span
-                        style={{
-                          color: 'var(--primary-cyan)',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {hist.matchResult.matchCount}개
-                      </span>
-                      {hist.matchResult.bonusMatch ? ' + 보너스 일치' : ''})
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="rounded-2xl border border-glass-border bg-surface p-4">
+                    <div className="mb-2.5 text-xs font-semibold text-muted">
+                      내 예측 번호
                     </div>
-                    <LottoBalls numbers={hist.matchResult.winningNumbers} />
+                    <LottoBalls
+                      numbers={hist.numbers}
+                      matchResult={hist.matchResult}
+                    />
                   </div>
-                )}
+
+                  {hasResult && hist.matchResult && (
+                    <div className="rounded-2xl border border-glass-border bg-surface p-4">
+                      <div className="mb-2.5 flex items-center justify-between text-xs font-semibold text-muted">
+                        <span>실제 당첨 번호</span>
+                        <span className="text-primary-cyan">
+                          {hist.matchResult.matchCount}개 일치
+                          {hist.matchResult.bonusMatch ? ' + 보너스' : ''}
+                        </span>
+                      </div>
+                      <LottoBalls numbers={hist.matchResult.winningNumbers} />
+                    </div>
+                  )}
+                </div>
               </div>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
 
       {selectedAnalysis &&
         createPortal(
           <div
-            className="admin-modal-overlay"
-            style={{
-              overflowY: 'auto',
-              padding: '40px 20px',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
+            className="admin-modal-overlay overflow-y-auto px-4 py-8"
             onClick={() => setSelectedAnalysis(null)}
           >
             <div
-              style={{
-                maxWidth: '680px',
-                width: '90%',
-                maxHeight: '90vh',
-                position: 'relative',
-                margin: '0 auto',
-                zIndex: 1005,
-                paddingTop: '24px',
-              }}
+              className="relative mx-auto w-full max-w-[680px]"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header Row: Contains Close Button (Right) */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'center',
-                  position: 'relative',
-                  marginBottom: '16px',
-                  width: '100%',
-                }}
-              >
+              <div className="mb-3 flex justify-end">
                 <button
+                  type="button"
                   onClick={() => setSelectedAnalysis(null)}
-                  style={{
-                    position: 'absolute',
-                    right: '0px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'rgba(255, 255, 255, 0.6)',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'color 0.2s ease',
-                    zIndex: 110,
-                    fontSize: '0.9rem',
-                    fontWeight: 'bold',
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = 'var(--text-main)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)')
-                  }
+                  className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-glass-border bg-modal px-3 py-1.5 text-xs font-bold text-main shadow-md hover:bg-surface-hover"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                  <span>닫기</span>
+                  ✕ 닫기
                 </button>
               </div>
 
@@ -391,6 +248,7 @@ export function History() {
                 <LottoAnalysisCard
                   numbers={selectedAnalysis.numbers}
                   analysis={selectedAnalysis.analysis}
+                  title={`제 ${selectedAnalysis.episode}회 예측 조합 분석`}
                 />
               )}
             </div>

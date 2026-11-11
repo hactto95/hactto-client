@@ -43,20 +43,9 @@ export function UnsavedChangesModal({
 
   return (
     <div className="admin-modal-overlay">
-      <div
-        className="glass-card admin-modal-content"
-        style={{ maxWidth: '440px', overflow: 'hidden' }}
-      >
+      <div className="glass-card admin-modal-content max-w-[440px] overflow-hidden">
         {/* Warning Icon */}
-        <div
-          className="status-icon"
-          style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid #ef4444',
-            color: '#ef4444',
-            marginBottom: '20px',
-          }}
-        >
+        <div className="status-icon bg-error/10 border border-error text-error mb-5">
           <svg
             width="32"
             height="32"
@@ -73,58 +62,28 @@ export function UnsavedChangesModal({
           </svg>
         </div>
 
-        <h2
-          className="access-title"
-          style={{ fontSize: '1.35rem', marginBottom: '8px' }}
-        >
+        <h2 className="access-title text-[1.35rem] mb-2">
           저장되지 않은 변경 사항
         </h2>
 
-        <p
-          className="access-desc"
-          style={{
-            fontSize: '0.88rem',
-            marginBottom: '24px',
-            lineHeight: '1.6',
-          }}
-        >
+        <p className="access-desc text-[0.88rem] mb-6 leading-[1.6]">
           가중치 설정이 변경되었으나 아직 저장되지 않았습니다. 이동할 경우
           변경된 설정이 모두 초기화되며 유실됩니다. 저장하지 않고
           이동하시겠습니까?
         </p>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+        <div className="flex gap-2.5 w-full">
           <button
             type="button"
-            className="btn-submit"
-            style={{
-              flex: 1,
-              height: '42px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
-              color: '#ffffff',
-              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)',
-              fontWeight: 600,
-            }}
+            className="btn-submit flex-1 h-[42px] flex items-center justify-center bg-linear-to-br from-red-500 to-red-700 text-white shadow-[0_4px_15px_var(--error-glow)] font-semibold border-none"
             onClick={handleLeave}
           >
             이동하기 (저장 안 함)
           </button>
           <button
             type="button"
-            className="btn-neon btn-outline"
-            style={{
-              flex: 1,
-              padding: 0,
-              height: '42px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 0,
-            }}
+            className="btn-neon btn-outline flex-1 p-0 h-[42px] flex items-center justify-center m-0"
             onClick={handleStay}
           >
             머무르기

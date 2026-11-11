@@ -49,42 +49,15 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
 
   return createPortal(
     <div
-      className="admin-modal-overlay"
+      className="admin-modal-overlay z-[1200]" // Ensure it shows on top of PaymentModal (zIndex 1000)
       onClick={onClose}
-      style={{ zIndex: 1200 }} // Ensure it shows on top of PaymentModal (zIndex 1000)
     >
       <div
-        className="glass-card admin-modal-content"
+        className="glass-card admin-modal-content max-w-[440px] w-[90%] flex flex-col items-center pt-[30px] px-6 pb-6 text-center overflow-hidden animate-[fadeIn_0.3s_ease-out]"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: '440px',
-          width: '90%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: '30px 24px 24px 24px',
-          textAlign: 'center',
-          overflow: 'hidden',
-          animation: 'fadeIn 0.3s ease-out',
-        }}
       >
         {/* Info Icon with Premium Purple/Yellow Glow */}
-        <div
-          className="status-icon"
-          style={{
-            background: 'rgba(234, 179, 8, 0.1)',
-            border: '1px solid #eab308',
-            color: '#eab308',
-            marginBottom: '20px',
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(234, 179, 8, 0.2)',
-          }}
-        >
+        <div className="status-icon bg-yellow-500/10 border border-yellow-500 text-yellow-500 mb-5 w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-lg shadow-yellow-500/20">
           <svg
             width="30"
             height="30"
@@ -101,74 +74,28 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
           </svg>
         </div>
 
-        <h2
-          className="logo-glow"
-          style={{
-            fontSize: '1.3rem',
-            fontWeight: 'bold',
-            marginBottom: '12px',
-            color: '#eab308',
-          }}
-        >
+        <h2 className="logo-glow text-[1.3rem] font-bold mb-3 text-yellow-500">
           구독 변경 및 연장 안내
         </h2>
 
-        <p
-          style={{
-            fontSize: '0.88rem',
-            color: 'var(--text-dim)',
-            lineHeight: '1.65',
-            margin: '0 0 20px 0',
-            textAlign: 'center',
-          }}
-        >
+        <p className="text-[0.88rem] text-dim leading-[1.65] m-0 mb-5 text-center">
           현재 <strong>월간 무제한 구독</strong>을 이용 중입니다. <br />
           연간 구독으로 변경 시, 기존 남은 이용 기간에{' '}
-          <strong style={{ color: '#ffffff' }}>1년이 추가로 연장</strong>됩니다.
-          계속 진행하시겠습니까?
+          <strong className="text-main">1년이 추가로 연장</strong>됩니다. 계속
+          진행하시겠습니까?
         </p>
 
         {currentEndsAt && expectedEndsAt && (
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              padding: '14px 16px',
-              borderRadius: '8px',
-              width: '100%',
-              boxSizing: 'border-box',
-              marginBottom: '24px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              fontSize: '0.82rem',
-              color: 'var(--text-dim)',
-              textAlign: 'left',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+          <div className="bg-surface border border-glass-border px-4 py-3.5 rounded-lg w-full box-border mb-6 flex flex-col gap-2 text-[0.82rem] text-dim text-left">
+            <div className="flex justify-between items-center">
               <span>현재 구독 만료일</span>
-              <span style={{ color: '#ffffff', fontWeight: '500' }}>
+              <span className="text-main font-medium">
                 {formatDate(currentEndsAt)}
               </span>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+            <div className="flex justify-between items-center">
               <span>연장 후 만료 예정일</span>
-              <span
-                style={{ color: 'var(--primary-cyan)', fontWeight: 'bold' }}
-              >
+              <span className="text-primary-cyan font-bold">
                 {formatDate(expectedEndsAt)}
               </span>
             </div>
@@ -176,47 +103,17 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
         )}
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+        <div className="flex gap-2.5 w-full">
           <button
             type="button"
-            className="secondary-btn"
-            style={{
-              flex: 1,
-              height: '42px',
-              borderRadius: '20px',
-              fontSize: '0.88rem',
-              fontWeight: '600',
-              padding: 0,
-            }}
+            className="secondary-btn flex-1 h-[42px] rounded-[20px] text-[0.88rem] font-semibold p-0 bg-surface hover:bg-surface-hover border border-glass-border text-main cursor-pointer transition-colors"
             onClick={onClose}
           >
             취소
           </button>
           <button
             type="button"
-            style={{
-              flex: 1,
-              height: '42px',
-              background: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)',
-              color: '#090a0f',
-              boxShadow: '0 4px 15px rgba(234, 179, 8, 0.35)',
-              fontWeight: '700',
-              fontSize: '0.88rem',
-              border: 'none',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow =
-                '0 6px 20px rgba(234, 179, 8, 0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow =
-                '0 4px 15px rgba(234, 179, 8, 0.35)';
-            }}
+            className="flex-1 h-[42px] bg-linear-to-br from-yellow-500 to-yellow-600 text-slate-950 shadow-lg shadow-yellow-500/35 hover:-translate-y-px hover:shadow-xl hover:shadow-yellow-500/50 font-bold text-[0.88rem] border-none rounded-[20px] cursor-pointer transition-all duration-200"
             onClick={onConfirm}
           >
             연장 및 결제하기 🚀

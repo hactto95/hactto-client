@@ -114,56 +114,23 @@ export function PersonalAnalysisCard({
   const pairsList = parsePairs(analysis.pair).sort((a, b) => b.count - a.count);
 
   return (
-    <div
-      style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '20px',
-        padding: '24px',
-        marginTop: '0px',
-        boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-        backdropFilter: 'blur(8px)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          paddingBottom: '16px',
-        }}
-      >
-        <h3
-          style={{
-            margin: 0,
-            fontSize: '1.2rem',
-            color: 'var(--text-main)',
-            fontWeight: 600,
-          }}
-        >
-          분석 결과
-        </h3>
+    <div className="bento-card p-6 sm:p-7">
+      <div className="flex justify-between items-center mb-5 border-b border-glass-border pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="w-2 h-5 rounded-full bg-primary-cyan inline-block" />
+          <h3 className="m-0 text-lg text-main font-bold tracking-tight">
+            선택 번호 심층 분석 결과
+          </h3>
+        </div>
         {onSave && (
           <button
             onClick={onSave}
             disabled={isSaving || isSaved}
-            className="action-btn"
-            style={{
-              background: isSaved
-                ? 'rgba(102, 187, 106, 0.15)'
-                : 'linear-gradient(135deg, var(--primary-cyan) 0%, #00acc1 100%)',
-              color: isSaved ? '#66bb6a' : '#000000',
-              border: isSaved ? '1px solid rgba(102, 187, 106, 0.3)' : 'none',
-              padding: '8px 18px',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              cursor: isSaved ? 'default' : 'pointer',
-              boxShadow: isSaved ? 'none' : '0 0 15px rgba(0, 240, 255, 0.3)',
-              transition: 'all 0.2s ease',
-              opacity: isSaving ? 0.7 : 1,
-            }}
+            className={`action-btn px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
+              isSaved
+                ? 'bg-success/15 text-success border border-success/30 cursor-default shadow-none'
+                : 'bg-primary-cyan hover:bg-primary-cyan/90 text-white border-none cursor-pointer shadow-sm'
+            } ${isSaving ? 'opacity-70' : 'opacity-100'}`}
           >
             {isSaved
               ? '✓ 저장 완료'
@@ -175,38 +142,18 @@ export function PersonalAnalysisCard({
       </div>
 
       {/* Lotto Balls Display */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '12px',
-          flexWrap: 'wrap',
-          marginBottom: '24px',
-          background: 'rgba(0, 0, 0, 0.25)',
-          padding: '20px',
-          borderRadius: '16px',
-          border: '1px solid rgba(255,255,255,0.04)',
-        }}
-      >
+      <div className="flex justify-center items-center gap-3 flex-wrap mb-6 bg-surface p-5 rounded-2xl border border-glass-border">
         {mainNumbers.map((num, i) => {
           const active = isHighlighted(num);
-          const scale = active ? '1.12' : '0.88';
-          const opacity = active ? '1' : '0.25';
-          const borderStyle = active
-            ? '2px solid #ffffff'
-            : '1px solid rgba(255, 255, 255, 0.08)';
           return (
             <BallHoverTooltip key={i} ball={num}>
               <div
-                className="lotto-ball"
-                style={{
-                  ...getBallStyle(num),
-                  border: borderStyle,
-                  transform: `scale(${scale})`,
-                  opacity: opacity,
-                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
+                className={`lotto-ball transition-all duration-200 ease-out ${
+                  active
+                    ? 'ring-2 ring-primary-cyan/60 scale-110 opacity-100'
+                    : 'scale-90 opacity-25 grayscale-[30%]'
+                }`}
+                style={getBallStyle(num)}
               >
                 {num}
               </div>
@@ -216,225 +163,87 @@ export function PersonalAnalysisCard({
       </div>
 
       {/* Grid of Interactive Metrics */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-          gap: '12px',
-          marginBottom: '24px',
-        }}
-      >
-        <div
-          className="feature-item"
-          style={{
-            padding: '12px 16px',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-            background: 'rgba(255,255,255,0.01)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            총합
-          </div>
-          <div
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginTop: '4px',
-            }}
-          >
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+        <div className="px-4 py-3.5 border border-glass-border bg-surface rounded-2xl">
+          <div className="text-xs font-semibold text-dim">총합 (Sum)</div>
+          <div className="font-display text-xl font-extrabold text-primary-cyan mt-1 tabular-nums">
             {analysis.sum}
           </div>
         </div>
 
-        <div
-          className="feature-item"
-          style={{
-            padding: '12px 16px',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-            background: 'rgba(255,255,255,0.01)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            AC값
-          </div>
-          <div
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginTop: '4px',
-            }}
-          >
+        <div className="px-4 py-3.5 border border-glass-border bg-surface rounded-2xl">
+          <div className="text-xs font-semibold text-dim">AC값 (복잡도)</div>
+          <div className="font-display text-xl font-extrabold text-primary-cyan mt-1 tabular-nums">
             {analysis.ac}
           </div>
         </div>
 
-        <div
-          className="feature-item"
-          style={{
-            padding: '12px 16px',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-            background: 'rgba(255,255,255,0.01)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            끝자리 합
-          </div>
-          <div
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginTop: '4px',
-            }}
-          >
+        <div className="px-4 py-3.5 border border-glass-border bg-surface rounded-2xl">
+          <div className="text-xs font-semibold text-dim">끝자리 합</div>
+          <div className="font-display text-xl font-extrabold text-primary-cyan mt-1 tabular-nums">
             {analysis.sumLastDigits}
           </div>
         </div>
 
-        <div
-          className="feature-item"
-          style={{
-            padding: '12px 16px',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-            background: 'rgba(255,255,255,0.01)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            홀 : 짝
-          </div>
-          <div
-            style={{
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginTop: '4px',
-            }}
-          >
+        <div className="px-4 py-3.5 border border-glass-border bg-surface rounded-2xl">
+          <div className="text-xs font-semibold text-dim">홀 : 짝</div>
+          <div className="font-display text-lg font-extrabold text-main mt-1 tabular-nums">
             {analysis.odd} : {analysis.even}
           </div>
         </div>
 
-        <div
-          className="feature-item"
-          style={{
-            padding: '12px 16px',
-            border: '1px solid rgba(255, 255, 255, 0.04)',
-            background: 'rgba(255,255,255,0.01)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            저 : 고 (1~22/23~45)
-          </div>
-          <div
-            style={{
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginTop: '4px',
-            }}
-          >
+        <div className="px-4 py-3.5 border border-glass-border bg-surface rounded-2xl col-span-2 sm:col-span-1">
+          <div className="text-xs font-semibold text-dim">저 : 고</div>
+          <div className="font-display text-lg font-extrabold text-main mt-1 tabular-nums">
             {analysis.low} : {analysis.high}
           </div>
         </div>
       </div>
 
       {/* Main Analysis Sections */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '14px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-          paddingTop: '20px',
-        }}
-      >
+      <div className="flex flex-col gap-3.5 border-t border-glass-border pt-5">
         {/* Temperatures */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             번호 온도 분포
           </span>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(getTempNumbers('HOT')))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(239, 68, 68, 0.05)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
-                color: '#ff6b6b',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 dark:text-red-400 cursor-pointer"
             >
-              열번호 🔥 : {analysis.hot}개
+              열번호 🔥 {analysis.hot}개
             </span>
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(getTempNumbers('WARM')))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(249, 115, 22, 0.05)',
-                border: '1px solid rgba(249, 115, 22, 0.2)',
-                color: '#ff9233',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/25 text-orange-600 dark:text-orange-400 cursor-pointer"
             >
-              온번호 🟠 : {analysis.warm}개
+              온번호 🟠 {analysis.warm}개
             </span>
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(getTempNumbers('COLD')))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(59, 130, 246, 0.05)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                color: '#5fa4ff',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-600 dark:text-blue-400 cursor-pointer"
             >
-              냉번호 ❄️ : {analysis.cold}개
+              냉번호 ❄️ {analysis.cold}개
             </span>
           </div>
         </div>
 
         {/* Decades */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             번대수 분포
           </span>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             {[
               { label: '단번대', val: analysis.cnt0s, idx: 0 },
               { label: '10번대', val: analysis.cnt10s, idx: 1 },
@@ -448,22 +257,11 @@ export function PersonalAnalysisCard({
                   setHoveredNumbers(new Set(getDecadeNumbers(d.idx)))
                 }
                 onMouseLeave={() => setHoveredNumbers(null)}
-                style={{
-                  fontSize: '0.78rem',
-                  padding: '5px 12px',
-                  borderRadius: '6px',
-                  background:
-                    d.val > 0
-                      ? 'rgba(0, 240, 255, 0.04)'
-                      : 'rgba(255, 255, 255, 0.01)',
-                  border:
-                    d.val > 0
-                      ? '1px solid rgba(0, 240, 255, 0.15)'
-                      : '1px solid rgba(255, 255, 255, 0.04)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  color: d.val > 0 ? 'var(--text-main)' : 'var(--text-dim)',
-                }}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-xl cursor-pointer transition-all duration-200 ${
+                  d.val > 0
+                    ? 'bg-primary-cyan/10 border border-primary-cyan/30 text-primary-cyan'
+                    : 'bg-surface border border-glass-border text-dim'
+                }`}
               >
                 {d.label}: {d.val}개
               </span>
@@ -472,101 +270,54 @@ export function PersonalAnalysisCard({
         </div>
 
         {/* Prime, Composite, Multi3 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             수 속성 분포
           </span>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(mainNumbers.filter(isPrimeNum)))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                color: 'var(--text-main)',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
             >
-              소수: {analysis.prime}개
+              소수: <b>{analysis.prime}개</b>
             </span>
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(mainNumbers.filter(isCompositeNum)))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                color: 'var(--text-main)',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
             >
-              합성수: {analysis.composite}개
+              합성수: <b>{analysis.composite}개</b>
             </span>
             <span
               onMouseEnter={() =>
                 setHoveredNumbers(new Set(mainNumbers.filter(isMul3Num)))
               }
               onMouseLeave={() => setHoveredNumbers(null)}
-              style={{
-                fontSize: '0.78rem',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                color: 'var(--text-main)',
-                cursor: 'pointer',
-              }}
+              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
             >
-              3의 배수: {analysis.mul3}개
+              3의 배수: <b>{analysis.mul3}개</b>
             </span>
           </div>
         </div>
 
         {/* Last Digits */}
         {lastDigits.length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span
-              style={{
-                fontSize: '0.82rem',
-                color: 'var(--text-muted)',
-                width: '100px',
-                flexShrink: 0,
-              }}
-            >
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
               끝자리 그룹
             </span>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div className="flex gap-2 flex-wrap">
               {lastDigits.map((item) => (
                 <span
                   key={item.digit}
                   onMouseEnter={() => setHoveredNumbers(new Set(item.nums))}
                   onMouseLeave={() => setHoveredNumbers(null)}
-                  style={{
-                    fontSize: '0.78rem',
-                    padding: '5px 12px',
-                    borderRadius: '6px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    color: 'var(--text-main)',
-                  }}
+                  className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border cursor-pointer transition-all duration-200 text-main hover:border-primary-cyan/40"
                 >
                   끝자리 {item.digit}: {item.nums.join(',')} ({item.nums.length}
                   개)
@@ -577,68 +328,34 @@ export function PersonalAnalysisCard({
         )}
 
         {/* Consecutive numbers */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             연속수 그룹
           </span>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             {consecutiveGroups.length > 0 ? (
               consecutiveGroups.map((group, idx) => (
                 <span
                   key={idx}
                   onMouseEnter={() => setHoveredNumbers(new Set(group))}
                   onMouseLeave={() => setHoveredNumbers(null)}
-                  style={{
-                    fontSize: '0.78rem',
-                    padding: '5px 12px',
-                    borderRadius: '6px',
-                    background: 'rgba(0, 240, 255, 0.04)',
-                    border: '1px solid rgba(0, 240, 255, 0.15)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    color: 'var(--text-main)',
-                  }}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-primary-cyan/10 border border-primary-cyan/30 cursor-pointer transition-all duration-200 text-primary-cyan"
                 >
                   {group.join('-')}
                 </span>
               ))
             ) : (
-              <span
-                style={{
-                  fontSize: '0.78rem',
-                  color: 'var(--text-dim)',
-                  padding: '5px 0',
-                }}
-              >
-                연속수 없음
-              </span>
+              <span className="text-xs text-dim py-1">연속수 없음</span>
             )}
           </div>
         </div>
 
         {/* Pairs list */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-              marginTop: '6px',
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0 sm:mt-1.5">
             동반 출현 페어
           </span>
-          <div
-            style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', flex: 1 }}
-          >
+          <div className="flex gap-2 flex-wrap flex-1">
             {pairsList.length > 0 ? (
               pairsList.map((item, idx) => {
                 const pairArr = Array.isArray(item.pair) ? item.pair : [];
@@ -647,48 +364,24 @@ export function PersonalAnalysisCard({
                     key={idx}
                     onMouseEnter={() => setHoveredNumbers(new Set(pairArr))}
                     onMouseLeave={() => setHoveredNumbers(null)}
-                    style={{
-                      fontSize: '0.78rem',
-                      padding: '5px 12px',
-                      borderRadius: '6px',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(255, 255, 255, 0.06)',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      color: 'var(--text-main)',
-                    }}
+                    className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border cursor-pointer transition-all duration-200 text-main hover:border-primary-cyan/40"
                   >
-                    ({pairArr.join(', ')}): {item.count}회
+                    ({pairArr.join(', ')}): <b>{item.count}회</b>
                   </span>
                 );
               })
             ) : (
-              <span
-                style={{
-                  fontSize: '0.78rem',
-                  color: 'var(--text-dim)',
-                  padding: '5px 0',
-                }}
-              >
-                이력 페어 없음
-              </span>
+              <span className="text-xs text-dim py-1">이력 페어 없음</span>
             )}
           </div>
         </div>
 
         {/* Winning History Pattern */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span
-            style={{
-              fontSize: '0.82rem',
-              color: 'var(--text-muted)',
-              width: '100px',
-              flexShrink: 0,
-            }}
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             패턴 당첨 이력
           </span>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             {[
               { label: '1등', val: analysis.win1 },
               { label: '2등', val: analysis.win2 },
@@ -698,20 +391,11 @@ export function PersonalAnalysisCard({
             ].map((w, idx) => (
               <span
                 key={idx}
-                style={{
-                  fontSize: '0.78rem',
-                  padding: '5px 12px',
-                  borderRadius: '6px',
-                  background:
-                    w.val > 0
-                      ? 'rgba(251, 192, 45, 0.05)'
-                      : 'rgba(255, 255, 255, 0.01)',
-                  border:
-                    w.val > 0
-                      ? '1px solid rgba(251, 192, 45, 0.2)'
-                      : '1px solid rgba(255, 255, 255, 0.04)',
-                  color: w.val > 0 ? '#ffca28' : 'var(--text-dim)',
-                }}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-xl ${
+                  w.val > 0
+                    ? 'bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400'
+                    : 'bg-surface border border-glass-border text-dim'
+                }`}
               >
                 {w.label}: {w.val}회
               </span>

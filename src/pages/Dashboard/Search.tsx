@@ -21,12 +21,7 @@ export function Search() {
     null,
   );
 
-  // Prevent body scroll when modal is open and add ESC key support
   useEffect(() => {
-    const scrollContainer = document.querySelector(
-      '.scroll-y-container',
-    ) as HTMLElement;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelectedEpisode(null);
@@ -35,15 +30,12 @@ export function Search() {
 
     if (selectedEpisode) {
       document.body.style.overflow = 'hidden';
-      if (scrollContainer) scrollContainer.style.overflowY = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
     } else {
       document.body.style.overflow = '';
-      if (scrollContainer) scrollContainer.style.overflowY = 'auto';
     }
     return () => {
       document.body.style.overflow = '';
-      if (scrollContainer) scrollContainer.style.overflowY = 'auto';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedEpisode]);
@@ -121,258 +113,153 @@ export function Search() {
   };
 
   return (
-    <div>
-      <h2
-        className="access-title"
-        style={{ fontSize: '1.3rem', marginBottom: '16px' }}
-      >
-        역대 로또 당첨번호 조회
-      </h2>
-      {/* Search Form */}
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight text-main sm:text-3xl">
+          역대 당첨번호 조회
+        </h1>
+        <p className="mt-1 text-sm text-muted">
+          원하는 회차를 검색하거나 최근 회차를 클릭해 상세 패턴 분석을
+          확인하세요.
+        </p>
+      </div>
+
+      {/* Search Bar Bento Card */}
       <form
         onSubmit={handleSearchEpisode}
-        style={{
-          display: 'flex',
-          gap: '10px',
-          marginBottom: '24px',
-          background: 'rgba(255,255,255,0.01)',
-          padding: '16px',
-          borderRadius: '12px',
-          border: 'var(--border-glass)',
-        }}
+        className="bento-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:p-5"
       >
         <input
           type="text"
-          className="input-glow"
-          placeholder="검색할 회차 번호 입력 (예: 1000)"
+          className="input-glow flex-1"
+          placeholder="검색할 회차 번호 입력 (예: 1100)"
           value={searchEpisode}
           onChange={(e) => setSearchEpisode(e.target.value)}
           disabled={submitting}
-          style={{ flex: 1 }}
         />
         <button
-          className="btn-submit"
+          className="btn-submit shrink-0 px-6 py-3"
           type="submit"
           disabled={submitting}
-          style={{ whiteSpace: 'nowrap' }}
         >
-          {submitting ? '검색 중...' : '회차 검색'}
+          {submitting ? '검색 중...' : '회차 조회'}
         </button>
       </form>
+
       {searchError && (
-        <div className="alert alert-error" style={{ marginBottom: '20px' }}>
-          <span>⚠</span>
-          <div>{searchError}</div>
+        <div className="rounded-2xl border border-error/30 bg-error/10 px-4 py-3 text-sm font-semibold text-error">
+          ⚠ {searchError}
         </div>
       )}
+
       {searchResult && (
         <div
           onClick={() => handleSelectEpisode(searchResult.episode)}
-          style={{
-            background: 'rgba(0, 240, 255, 0.03)',
-            border: '1px solid rgba(0, 240, 255, 0.15)',
-            padding: '20px',
-            borderRadius: '16px',
-            marginBottom: '24px',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.background = 'rgba(0, 240, 255, 0.06)')
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.background = 'rgba(0, 240, 255, 0.03)')
-          }
+          className="bento-card-interactive cursor-pointer border-primary-cyan/30 bg-primary-cyan/5 p-6"
         >
-          <div
-            style={{
-              fontSize: '1.05rem',
-              fontWeight: 'bold',
-              color: 'var(--primary-cyan)',
-              marginBottom: '14px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <span>제 {searchResult.episode}회 당첨번호 결과</span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              상세 분석 보기 🔍
+          <div className="mb-4 flex items-center justify-between">
+            <span className="rounded-lg bg-primary-cyan px-3 py-1 text-xs font-extrabold text-white">
+              제 {searchResult.episode}회 검색 결과
+            </span>
+            <span className="text-xs font-semibold text-primary-cyan">
+              상세 분석 리포트 보기 →
             </span>
           </div>
           <LottoBalls numbers={searchResult.numbers} />
         </div>
       )}
-      {/* Previous list */}
-      <h3
-        style={{
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          marginBottom: '12px',
-          color: 'var(--text-muted)',
-        }}
-      >
-        최근 당첨 번호 내역 (회차 클릭 시 상세 분석)
-      </h3>
-      <div className="scroll-y-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th style={{ width: '110px' }}>회차</th>
-              <th>당첨 번호</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={2}
-                  style={{ textAlign: 'center', color: 'var(--text-dim)' }}
-                >
-                  불러오는 중...
-                </td>
-              </tr>
-            ) : allWinningNumbers.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={2}
-                  style={{ textAlign: 'center', color: 'var(--text-dim)' }}
-                >
-                  불러온 내역이 없습니다.
-                </td>
-              </tr>
-            ) : (
-              allWinningNumbers.slice(0, 20).map((wn) => (
-                <tr
-                  key={wn.episode}
-                  onClick={() => handleSelectEpisode(wn.episode)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td
-                    style={{ fontWeight: 'bold', color: 'var(--primary-cyan)' }}
-                  >
-                    {wn.episode}회 🔍
-                  </td>
-                  <td>
-                    <LottoBalls numbers={wn.numbers} />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>{' '}
+
+      {/* Episode List Bento Card */}
+      <div className="bento-card overflow-hidden p-0">
+        <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
+          <h2 className="text-base font-bold text-main">
+            최근 20개 회차 당첨 내역
+          </h2>
+          <span className="text-xs text-dim">
+            회차를 클릭하면 심층 분석 모달이 열립니다
+          </span>
+        </div>
+
+        <div className="divide-y divide-glass-border">
+          {loading ? (
+            <div className="py-16 text-center text-sm text-dim">
+              당첨 내역을 불러오고 있어요...
+            </div>
+          ) : allWinningNumbers.length === 0 ? (
+            <div className="py-16 text-center text-sm text-dim">
+              불러온 내역이 없습니다.
+            </div>
+          ) : (
+            allWinningNumbers.slice(0, 20).map((wn) => (
+              <div
+                key={wn.episode}
+                onClick={() => handleSelectEpisode(wn.episode)}
+                className="flex cursor-pointer flex-col justify-between gap-3 px-6 py-4 transition-colors hover:bg-surface sm:flex-row sm:items-center"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex min-w-[84px] items-center justify-center rounded-xl bg-primary-cyan/10 px-3 py-1.5 font-display text-sm font-extrabold text-primary-cyan">
+                    제 {wn.episode}회
+                  </span>
+                  {wn.analysis && (
+                    <span className="text-xs text-dim">
+                      합계 {wn.analysis.sum} · 홀짝 {wn.analysis.odd}:
+                      {wn.analysis.even}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between gap-4 sm:justify-end">
+                  <LottoBalls numbers={wn.numbers} />
+                  <span className="hidden text-xs font-semibold text-muted sm:inline-block">
+                    상세 →
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
       {selectedEpisode &&
         createPortal(
-          <div className="admin-modal-overlay">
+          <div
+            className="admin-modal-overlay"
+            onClick={() => setSelectedEpisode(null)}
+          >
             <div
-              className="glass-card admin-modal-content"
-              style={{
-                maxWidth: '600px',
-                padding: '0',
-                textAlign: 'left',
-                position: 'relative',
-                border: '1px solid rgba(0, 240, 255, 0.25)',
-                boxShadow:
-                  '0 20px 40px rgba(0, 0, 0, 0.85), 0 0 30px rgba(0, 240, 255, 0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex max-h-[88vh] w-full max-w-[640px] flex-col overflow-hidden rounded-3xl border border-glass-border bg-modal shadow-2xl"
             >
-              <div
-                style={{
-                  padding: '30px 30px 0 30px',
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  flex: 1,
-                }}
-              >
+              <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
+                <div>
+                  <h2 className="font-display text-lg font-extrabold text-main">
+                    제 {selectedEpisode.episode}회 당첨 결과 상세 분석
+                  </h2>
+                  <p className="text-xs text-muted">
+                    당첨 번호 조합 및 통계 데이터를 바탕으로 분석한
+                    리포트입니다.
+                  </p>
+                </div>
                 <button
+                  type="button"
                   onClick={() => setSelectedEpisode(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '20px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--text-dim)',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'color 0.2s',
-                    zIndex: 10,
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = 'var(--text-main)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = 'var(--text-dim)')
-                  }
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-none bg-surface text-dim transition-colors hover:bg-surface-hover hover:text-main"
                 >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
+                  ✕
                 </button>
+              </div>
 
-                <h2
-                  className="access-title"
-                  style={{
-                    fontSize: '1.25rem',
-                    color: 'var(--text-main)',
-                    marginBottom: '4px',
-                    paddingRight: '24px',
-                  }}
-                >
-                  제 {selectedEpisode.episode}회 당첨 결과 상세 분석
-                </h2>
-                <p
-                  style={{
-                    fontSize: '0.82rem',
-                    color: 'var(--text-dim)',
-                    marginBottom: '20px',
-                  }}
-                >
-                  당첨 번호 조합 및 통계 데이터를 바탕으로 분석 정보를
-                  제공합니다.
-                </p>
-
+              <div className="flex-1 overflow-y-auto p-6">
                 <LottoAnalysisCard
                   numbers={selectedEpisode.numbers}
                   analysis={selectedEpisode.analysis}
                 />
               </div>
 
-              <div style={{ padding: '20px 30px 30px 30px', flexShrink: 0 }}>
+              <div className="border-t border-glass-border bg-surface/50 px-6 py-4">
                 <button
                   type="button"
-                  className="btn-submit"
-                  style={{
-                    width: '100%',
-                    height: '42px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background:
-                      'linear-gradient(135deg, var(--primary-cyan) 0%, #00b0ff 100%)',
-                    boxShadow: '0 4px 15px rgba(0, 240, 255, 0.25)',
-                    color: '#030712',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                  }}
+                  className="btn-submit w-full py-2.5"
                   onClick={() => setSelectedEpisode(null)}
                 >
                   확인
