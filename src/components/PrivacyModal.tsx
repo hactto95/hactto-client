@@ -78,19 +78,36 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({
               개인정보처리방침
             </h2>
             {versions.length > 0 && (
-              <select
-                value={selectedVersionId}
-                onChange={handleVersionChange}
-                className="bg-surface text-main border border-glass-border px-2 py-1 rounded text-[0.85rem]"
-              >
-                {versions.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.version
-                      ? v.version
-                      : `v${v.id} (${new Date(v.createdAt).toLocaleDateString()})`}
-                  </option>
-                ))}
-              </select>
+              <div className="relative inline-flex items-center">
+                <select
+                  value={selectedVersionId}
+                  onChange={handleVersionChange}
+                  className="appearance-none bg-surface hover:bg-surface-hover text-main border border-glass-border hover:border-glass-border-strong pl-2.5 pr-7 py-1 rounded-lg text-xs font-semibold cursor-pointer outline-none"
+                >
+                  {versions.map((v) => (
+                    <option
+                      key={v.id}
+                      value={v.id}
+                      className="bg-card text-main"
+                    >
+                      {v.version
+                        ? v.version
+                        : `v${v.id} (${new Date(v.createdAt).toLocaleDateString()})`}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-dim"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
             )}
           </div>
           <button

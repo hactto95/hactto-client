@@ -23,6 +23,8 @@ export function Generate() {
     setShowUnsavedModal,
     setUnsavedActionTarget,
     checkIpStatus,
+    freeHon,
+    paidHon,
   } = useApp();
   const { user } = useAuth();
   const userId = user?.id;
@@ -38,6 +40,8 @@ export function Generate() {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showGenerateConfirmModal, setShowGenerateConfirmModal] =
+    useState(false);
 
   // New states for personal prediction analysis
   const [activeSubTab, setActiveSubTab] = useState<'generate' | 'analyze'>(
@@ -61,6 +65,7 @@ export function Generate() {
   const [isSaving, setIsSaving] = useState(false);
   const [latestEpisode, setLatestEpisode] = useState<number>(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const totalHon = (freeHon || 0) + (paidHon || 0);
 
   // Prevent body scroll when modal is open and add ESC key support
   useEffect(() => {
@@ -74,6 +79,8 @@ export function Generate() {
           setShowWarningModal(false);
         } else if (showConfirmModal) {
           setShowConfirmModal(false);
+        } else if (showGenerateConfirmModal) {
+          setShowGenerateConfirmModal(false);
         } else if (analyzedResults.length > 0) {
           if (
             Object.keys(savedPredictionIds).length === analyzedResults.length
@@ -92,7 +99,8 @@ export function Generate() {
       generatedNumbers ||
       analyzedResults.length > 0 ||
       showWarningModal ||
-      showConfirmModal
+      showConfirmModal ||
+      showGenerateConfirmModal
     ) {
       document.body.style.overflow = 'hidden';
       if (scrollContainer) scrollContainer.style.overflowY = 'hidden';
@@ -111,6 +119,7 @@ export function Generate() {
     analyzedResults.length,
     showWarningModal,
     showConfirmModal,
+    showGenerateConfirmModal,
     savedPredictionIds,
   ]);
 
@@ -702,12 +711,55 @@ export function Generate() {
                   예측 번호 분석
                 </h2>
 
-                <p className="access-desc text-[0.88rem]! mb-6! leading-[1.6] text-muted">
-                  {selectedGames.filter((game) => game.length === 6).length}개
-                  선택하여 총{' '}
-                  {selectedGames.filter((game) => game.length === 6).length * 5}{' '}
-                  개의 혼이 사용됩니다. 분석하시겠습니까?
+                <p className="access-desc text-[0.88rem]! mb-4! leading-[1.6] text-muted">
+                  선택하신{' '}
+                  <strong className="text-main font-bold">
+                    {selectedGames.filter((game) => game.length === 6).length}개
+                  </strong>{' '}
+                  게임의 번호를 심층 분석하시겠습니까?
                 </p>
+
+                {/* HON Status Card */}
+                {(() => {
+                  const validGamesCount = selectedGames.filter(
+                    (game) => game.length === 6,
+                  ).length;
+                  const requiredHon = validGamesCount * 5;
+                  const remainingHon = totalHon - requiredHon;
+                  const isInsufficient = totalHon < requiredHon;
+
+                  return (
+                    <div className="bg-surface/80 rounded-xl p-3.5 mb-6 border border-glass-border flex flex-col gap-2 text-left">
+                      <div className="flex justify-between items-center text-[0.85rem]">
+                        <span className="text-muted">현재 보유 HON</span>
+                        <span className="font-semibold text-main">
+                          {totalHon.toLocaleString()} HON
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[0.85rem]">
+                        <span className="text-muted">차감 예정 HON</span>
+                        <span className="font-bold text-primary-purple">
+                          -{requiredHon} HON
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[0.85rem] border-t border-glass-border/40 pt-2">
+                        <span className="text-muted">차감 후 잔여 HON</span>
+                        <span
+                          className={`font-bold ${
+                            isInsufficient ? 'text-error' : 'text-main'
+                          }`}
+                        >
+                          {Math.max(0, remainingHon).toLocaleString()} HON
+                        </span>
+                      </div>
+                      {isInsufficient && (
+                        <p className="text-[0.75rem] text-error font-medium mt-1 mb-0 text-center">
+                          ※ 보유 HON이 부족합니다.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 <div className="flex gap-2.5 w-full">
                   <button
@@ -874,6 +926,16 @@ export function Generate() {
       </div>
     );
   };
+
+  const selectedAlgoObj = algorithmTypes.find(
+    (a) => (typeof a === 'object' ? a.type : a) === generatingAlgo,
+  );
+  const currentAlgoComplexity = selectedAlgoObj?.complexity || 0;
+  const currentAlgoName =
+    selectedAlgoObj?.name ||
+    (typeof selectedAlgoObj === 'object'
+      ? parseAlgorithmName(selectedAlgoObj.type)
+      : parseAlgorithmName(generatingAlgo));
 
   return (
     <div className="flex flex-col">
@@ -1205,26 +1267,21 @@ export function Generate() {
                 </>
               )}
 
-              {(() => {
-                const selectedAlgoObj = algorithmTypes.find(
-                  (a) =>
-                    (typeof a === 'object' ? a.type : a) === generatingAlgo,
-                );
-                const complexity = selectedAlgoObj?.complexity || 0;
-                return (
-                  <p className="text-[0.8rem] text-dim text-center mb-3 mt-2">
-                    번호 생성 시{' '}
-                    <span className="text-primary-cyan font-bold">
-                      {complexity} HON
-                    </span>
-                    이 차감됩니다.
-                  </p>
-                );
-              })()}
+              <p className="text-[0.8rem] text-dim text-center mb-3 mt-2">
+                번호 생성 시{' '}
+                <span className="text-primary-cyan font-bold">
+                  {currentAlgoComplexity} HON
+                </span>
+                이 차감됩니다.
+              </p>
 
               <button
                 className="btn-neon btn-cyan h-12"
-                onClick={handleGeneratePrediction}
+                onClick={() => {
+                  requireAuthAction(() => {
+                    setShowGenerateConfirmModal(true);
+                  });
+                }}
                 disabled={generating || algorithmTypes.length === 0}
               >
                 {generating ? '최적 조합 연산 중...' : '예측번호 생성하기'}
@@ -1233,6 +1290,99 @@ export function Generate() {
           )}
         </>
       )}
+
+      {showGenerateConfirmModal &&
+        createPortal(
+          <div className="admin-modal-overlay z-[1100]!">
+            <div className="glass-card admin-modal-content max-w-[440px]! text-center overflow-hidden">
+              <div className="status-icon bg-primary-cyan/10! border! border-primary-cyan/40! text-primary-cyan! mb-5! inline-flex! w-14! h-14! rounded-full items-center justify-center">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </div>
+
+              <h2 className="access-title text-[1.35rem]! mb-2! text-main font-bold">
+                예측 번호 생성
+              </h2>
+
+              <p className="access-desc text-[0.88rem]! mb-4! leading-[1.6] text-muted">
+                선택하신{' '}
+                <strong className="text-main font-bold">
+                  [{currentAlgoName}]
+                </strong>{' '}
+                알고리즘으로
+                <br />
+                새로운 당첨 예측 번호를 생성하시겠습니까?
+              </p>
+
+              <div className="bg-surface/80 rounded-xl p-3.5 mb-6 border border-glass-border flex flex-col gap-2 text-left">
+                <div className="flex justify-between items-center text-[0.85rem]">
+                  <span className="text-muted">현재 보유 HON</span>
+                  <span className="font-semibold text-main">
+                    {totalHon.toLocaleString()} HON
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-[0.85rem]">
+                  <span className="text-muted">차감 예정 HON</span>
+                  <span className="font-bold text-primary-cyan">
+                    -{currentAlgoComplexity} HON
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-[0.85rem] border-t border-glass-border/40 pt-2">
+                  <span className="text-muted">차감 후 잔여 HON</span>
+                  <span
+                    className={`font-bold ${
+                      totalHon < currentAlgoComplexity
+                        ? 'text-error'
+                        : 'text-main'
+                    }`}
+                  >
+                    {Math.max(
+                      0,
+                      totalHon - currentAlgoComplexity,
+                    ).toLocaleString()}{' '}
+                    HON
+                  </span>
+                </div>
+                {totalHon < currentAlgoComplexity && (
+                  <p className="text-[0.75rem] text-error font-medium mt-1 mb-0 text-center">
+                    ※ 보유 HON이 부족합니다.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex gap-2.5 w-full">
+                <button
+                  type="button"
+                  className="btn-neon btn-outline flex-1 p-0! h-[42px] flex items-center justify-center m-0 rounded-lg! cursor-pointer"
+                  onClick={() => setShowGenerateConfirmModal(false)}
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  className="flex-1 h-[42px] flex items-center justify-center bg-linear-to-br from-primary-cyan to-[#0284c7] text-white shadow-[0_4px_15px_var(--primary-cyan-glow)] font-semibold border-none rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
+                  onClick={() => {
+                    setShowGenerateConfirmModal(false);
+                    handleGeneratePrediction();
+                  }}
+                >
+                  생성하기
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
 
       {activeSubTab === 'analyze' && (
         <>

@@ -41,6 +41,17 @@ export function AvatarUpload({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      const MAX_AVATAR_SIZE = 10 * 1024 * 1024; // 10MB
+      if (file.size > MAX_AVATAR_SIZE) {
+        showAlert(
+          'error',
+          `이미지 용량이 너무 큽니다. (${(file.size / (1024 * 1024)).toFixed(1)}MB)\n10MB 이하의 이미지만 업로드 가능합니다.`,
+        );
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      }
       const reader = new FileReader();
       reader.addEventListener('load', () =>
         setImageSrc(reader.result as string),
@@ -113,7 +124,17 @@ export function AvatarUpload({
         body: formData,
       });
 
-      if (!uploadRes.ok) throw new Error('Failed to upload image');
+      if (!uploadRes.ok) {
+        if (uploadRes.status === 413) {
+          throw new Error(
+            '파일 크기가 서버 허용 한도(10MB)를 초과했습니다. 더 작은 이미지를 선택해 주세요.',
+          );
+        }
+        const errData = await uploadRes.json().catch(() => ({}));
+        throw new Error(
+          errData?.message || '아바타 이미지 업로드에 실패했습니다.',
+        );
+      }
       const uploadData = await uploadRes.json();
       const { imageUrl } = uploadData.data;
 
@@ -126,14 +147,18 @@ export function AvatarUpload({
         body: JSON.stringify({ avatarUrl: imageUrl }),
       });
 
-      if (!updateRes.ok) throw new Error('Failed to update avatar URL');
+      if (!updateRes.ok)
+        throw new Error('아바타 정보 업데이트에 실패했습니다.');
 
       showAlert('success', '아바타가 성공적으로 변경되었습니다.');
       onUploadSuccess(imageUrl);
       setImageSrc(null);
     } catch (err) {
       console.error(err);
-      showAlert('error', '아바타 업로드에 실패했습니다.');
+      showAlert(
+        'error',
+        (err as Error)?.message || '아바타 업로드에 실패했습니다.',
+      );
     } finally {
       setIsUploading(false);
     }
