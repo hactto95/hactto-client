@@ -228,7 +228,7 @@ export function Search() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="flex max-h-[88vh] w-full max-w-[640px] flex-col overflow-hidden rounded-3xl border border-glass-border bg-modal shadow-2xl"
+              className="flex max-h-[90vh] w-[95%] sm:w-[90%] max-w-[800px] flex-col overflow-hidden rounded-3xl border border-glass-border bg-modal shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-glass-border px-6 py-4">
                 <div>

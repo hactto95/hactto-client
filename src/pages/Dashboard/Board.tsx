@@ -276,6 +276,13 @@ export function Board() {
   const handleImageUpload = async (
     file: File,
   ): Promise<{ imageUrl: string; originalFilename: string }> => {
+    const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_UPLOAD_SIZE) {
+      throw new Error(
+        `"${file.name}" 파일 용량이 너무 큽니다. (${(file.size / (1024 * 1024)).toFixed(1)}MB)\n10MB 이하의 이미지만 업로드할 수 있습니다.`,
+      );
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('filename', file.name);
@@ -286,6 +293,11 @@ export function Board() {
     });
 
     if (!res.ok) {
+      if (res.status === 413) {
+        throw new Error(
+          '파일 용량이 서버 허용 한도(10MB)를 초과했습니다. 더 작은 이미지를 업로드해 주세요.',
+        );
+      }
       const err = await res.json().catch(() => ({}));
       throw new Error(err?.message || '이미지 업로드에 실패했습니다.');
     }
@@ -347,6 +359,14 @@ export function Board() {
   };
 
   const handleWinningImageSelect = async (file: File) => {
+    const MAX_UPLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_UPLOAD_SIZE) {
+      showAlert(
+        'error',
+        `당첨 인증 사진 용량이 너무 큽니다. (${(file.size / (1024 * 1024)).toFixed(1)}MB)\n10MB 이하의 이미지만 업로드 가능합니다.`,
+      );
+      return;
+    }
     setLottoAnalyzing(true);
     setLottoRank(null);
     setLottoRound(null);
@@ -828,6 +848,13 @@ export function Board() {
                 );
                 return;
               }
+              if (file.size > 10 * 1024 * 1024) {
+                showAlert(
+                  'error',
+                  `당첨 인증 사진 용량이 너무 큽니다. (${(file.size / (1024 * 1024)).toFixed(1)}MB)\n10MB 이하의 이미지만 업로드 가능합니다.`,
+                );
+                return;
+              }
               handleWinningImageSelect(file);
             } else {
               const invalid = files.some(
@@ -837,6 +864,14 @@ export function Board() {
                 showAlert(
                   'error',
                   '허용되지 않는 파일 형식입니다. (이미지, PDF, 오피스 문서 및 텍스트 파일만 업로드 가능)',
+                );
+                return;
+              }
+              const oversized = files.filter((f) => f.size > 10 * 1024 * 1024);
+              if (oversized.length > 0) {
+                showAlert(
+                  'error',
+                  `10MB를 초과하는 파일은 업로드할 수 없습니다:\n${oversized.map((f) => f.name).join(', ')}`,
                 );
                 return;
               }
@@ -869,6 +904,14 @@ export function Board() {
                   e.target.value = '';
                   return;
                 }
+                if (file.size > 10 * 1024 * 1024) {
+                  showAlert(
+                    'error',
+                    `당첨 인증 사진 용량이 너무 큽니다. (${(file.size / (1024 * 1024)).toFixed(1)}MB)\n10MB 이하의 이미지만 업로드 가능합니다.`,
+                  );
+                  e.target.value = '';
+                  return;
+                }
                 handleWinningImageSelect(file);
               } else {
                 const invalid = files.some(
@@ -878,6 +921,17 @@ export function Board() {
                   showAlert(
                     'error',
                     '허용되지 않는 파일 형식입니다. (이미지, PDF, 오피스 문서 및 텍스트 파일만 업로드 가능)',
+                  );
+                  e.target.value = '';
+                  return;
+                }
+                const oversized = files.filter(
+                  (f) => f.size > 10 * 1024 * 1024,
+                );
+                if (oversized.length > 0) {
+                  showAlert(
+                    'error',
+                    `10MB를 초과하는 파일은 업로드할 수 없습니다:\n${oversized.map((f) => f.name).join(', ')}`,
                   );
                   e.target.value = '';
                   return;
@@ -1296,18 +1350,43 @@ export function Board() {
                   value={roundFilter}
                   onChange={(e) => setRoundFilter(e.target.value)}
                 />
-                <select
-                  className="input-glow py-1 px-2 text-[0.8rem] rounded bg-input border border-glass-border text-main w-[90px]"
-                  value={rankFilter}
-                  onChange={(e) => setRankFilter(e.target.value)}
-                >
-                  <option value="">등수 전체</option>
-                  <option value="1">1등</option>
-                  <option value="2">2등</option>
-                  <option value="3">3등</option>
-                  <option value="4">4등</option>
-                  <option value="5">5등</option>
-                </select>
+                <div className="relative">
+                  <select
+                    className="input-glow py-1 pl-2.5 pr-6 text-[0.8rem] rounded bg-input border border-glass-border text-main appearance-none cursor-pointer outline-none"
+                    value={rankFilter}
+                    onChange={(e) => setRankFilter(e.target.value)}
+                  >
+                    <option value="" className="bg-card text-main">
+                      등수 전체
+                    </option>
+                    <option value="1" className="bg-card text-main">
+                      1등
+                    </option>
+                    <option value="2" className="bg-card text-main">
+                      2등
+                    </option>
+                    <option value="3" className="bg-card text-main">
+                      3등
+                    </option>
+                    <option value="4" className="bg-card text-main">
+                      4등
+                    </option>
+                    <option value="5" className="bg-card text-main">
+                      5등
+                    </option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 text-dim"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
               </div>
             )}
           </div>
@@ -1347,9 +1426,17 @@ export function Board() {
                   작성자
                 </option>
               </select>
-              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-primary-cyan text-[0.6rem]">
-                ▼
-              </div>
+              <svg
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-primary-cyan"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </div>
             <input
               type="text"

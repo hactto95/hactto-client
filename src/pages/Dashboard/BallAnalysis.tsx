@@ -249,10 +249,10 @@ export function BallAnalysis() {
             onClick={() => setSelectedBall(null)}
           >
             <div
-              className="glass-card admin-modal-content max-w-[680px] w-[94%] !p-0 text-left relative border border-glass-border-strong shadow-glass flex flex-col overflow-hidden !max-h-[88vh]"
+              className="glass-card admin-modal-content-wide max-w-[820px]! w-[94%] sm:w-[90%] !p-0 text-left relative border border-glass-border-strong shadow-glass flex flex-col overflow-hidden max-h-[90vh]!"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="pt-7 px-6 sm:px-7 pb-2 overflow-y-auto flex flex-col flex-1">
+              <div className="pt-7 px-6 sm:px-8 pb-3 overflow-y-auto flex flex-col flex-1">
                 {/* Close Button */}
                 <button
                   type="button"
@@ -268,21 +268,21 @@ export function BallAnalysis() {
                   return (
                     <div className="flex items-center gap-4 mb-6 pr-8">
                       <div
-                        className="lotto-ball !w-[54px] !h-[54px] !text-[1.3rem] shrink-0"
+                        className="lotto-ball !w-[56px] !h-[56px] !text-[1.35rem] shrink-0"
                         style={getBallStyle(selectedStat.ball)}
                       >
                         {selectedStat.ball}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <h2 className="font-display text-xl font-extrabold text-main m-0">
+                          <h2 className="font-display text-xl sm:text-2xl font-extrabold text-main m-0 whitespace-nowrap">
                             {selectedStat.ball}번 추첨 번호 상세 분석
                           </h2>
-                          <span className="text-xs font-bold text-primary-cyan bg-primary-cyan/10 border border-primary-cyan/30 py-0.5 px-2.5 rounded-full">
+                          <span className="text-xs font-bold text-primary-cyan bg-primary-cyan/10 border border-primary-cyan/30 py-0.5 px-2.5 rounded-full whitespace-nowrap">
                             전체 출현 {selectedStat.rank}위 / 45개
                           </span>
                           <span
-                            className="text-xs font-bold py-0.5 px-2.5 rounded-full"
+                            className="text-xs font-bold py-0.5 px-2.5 rounded-full whitespace-nowrap"
                             style={{
                               color: tempMeta.color,
                               background: tempMeta.bg,
@@ -302,37 +302,37 @@ export function BallAnalysis() {
                 })()}
 
                 {/* Core 4-Metric Summary Cards */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
-                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
-                    <div className="text-[0.68rem] font-semibold text-dim">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+                    <div className="text-xs font-semibold text-dim whitespace-nowrap">
                       총 등장 횟수
                     </div>
-                    <div className="font-display text-lg font-extrabold text-main mt-1 tabular-nums">
+                    <div className="font-display text-xl sm:text-2xl font-extrabold text-main my-1 tabular-nums whitespace-nowrap">
                       {selectedStat.totalCount}회
                     </div>
-                    <div className="text-[0.68rem] text-primary-purple font-medium mt-0.5">
+                    <div className="text-[0.72rem] text-primary-purple font-medium whitespace-nowrap">
                       보너스 +{selectedStat.bonusCount}회 별도
                     </div>
                   </div>
 
-                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
-                    <div className="text-[0.68rem] font-semibold text-dim">
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+                    <div className="text-xs font-semibold text-dim whitespace-nowrap">
                       등장 확률
                     </div>
-                    <div className="font-display text-lg font-extrabold text-primary-cyan mt-1 tabular-nums">
+                    <div className="font-display text-xl sm:text-2xl font-extrabold text-primary-cyan my-1 tabular-nums whitespace-nowrap">
                       {selectedStat.appearanceRate.toFixed(2)}%
                     </div>
-                    <div className="text-[0.68rem] text-muted mt-0.5">
+                    <div className="text-[0.72rem] text-muted whitespace-nowrap">
                       전체 회차 대비
                     </div>
                   </div>
 
-                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
-                    <div className="text-[0.68rem] font-semibold text-dim">
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+                    <div className="text-xs font-semibold text-dim whitespace-nowrap">
                       미출현 간격
                     </div>
                     <div
-                      className="font-display text-base font-extrabold mt-1"
+                      className="font-display text-base sm:text-lg font-extrabold my-1 whitespace-nowrap"
                       style={{
                         color: getTemperatureMeta(selectedStat.status).color,
                       }}
@@ -341,19 +341,19 @@ export function BallAnalysis() {
                         ? '최근 회차 당첨!'
                         : `${selectedStat.skip}주 연속 미출현`}
                     </div>
-                    <div className="text-[0.68rem] text-muted mt-0.5">
+                    <div className="text-[0.72rem] text-muted whitespace-nowrap">
                       최근: 제 {selectedStat.latestEpisode}회
                     </div>
                   </div>
 
-                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5">
-                    <div className="text-[0.68rem] font-semibold text-dim">
+                  <div className="bg-surface border border-glass-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+                    <div className="text-xs font-semibold text-dim whitespace-nowrap">
                       최근 단기 흐름
                     </div>
-                    <div className="font-display text-base font-extrabold text-main mt-1 tabular-nums">
+                    <div className="font-display text-base sm:text-lg font-extrabold text-main my-1 tabular-nums whitespace-nowrap">
                       10회 중 {selectedStat.recentTen}회
                     </div>
-                    <div className="text-[0.68rem] text-muted mt-0.5">
+                    <div className="text-[0.72rem] text-muted whitespace-nowrap">
                       최근 30회 중 {selectedStat.recentThirty}회 등장
                     </div>
                   </div>
@@ -361,11 +361,11 @@ export function BallAnalysis() {
 
                 {/* Section 1: Position-by-Position Counts (1st ~ 6th) */}
                 <div className="bg-surface border border-glass-border rounded-2xl py-4 px-5 mb-4">
-                  <div className="flex justify-between items-center mb-3.5">
-                    <span className="text-sm font-bold text-main">
+                  <div className="flex justify-between items-center mb-3.5 flex-wrap gap-2">
+                    <span className="text-sm font-bold text-main whitespace-nowrap">
                       자리별 등장 횟수 (첫번째 ~ 여섯번째 자리)
                     </span>
-                    <span className="text-xs text-muted font-semibold tabular-nums">
+                    <span className="text-xs text-muted font-semibold tabular-nums whitespace-nowrap">
                       총 {selectedStat.totalCount}회 (
                       {selectedStat.appearanceRate.toFixed(2)}%)
                     </span>
@@ -386,9 +386,9 @@ export function BallAnalysis() {
                       return (
                         <div
                           key={label}
-                          className="grid grid-cols-[92px_1fr_115px] items-center gap-3 text-xs"
+                          className="grid grid-cols-[85px_1fr_125px] items-center gap-3 text-xs"
                         >
-                          <span className="text-dim font-semibold">
+                          <span className="text-dim font-semibold whitespace-nowrap">
                             {label}
                           </span>
 
@@ -404,7 +404,7 @@ export function BallAnalysis() {
                           </div>
 
                           <div
-                            className={`text-right font-bold tabular-nums ${
+                            className={`text-right font-bold tabular-nums whitespace-nowrap ${
                               count > 0 ? 'text-main' : 'text-muted'
                             }`}
                           >
@@ -421,18 +421,18 @@ export function BallAnalysis() {
 
                 {/* Section 2: Best Friendly Numbers Top 3 */}
                 <div className="bg-surface border border-glass-border rounded-2xl py-4 px-5">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-bold text-main">
+                  <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
+                    <span className="text-sm font-bold text-main whitespace-nowrap">
                       베스트 궁합 번호 Top 3 (최다 동반 출현 번호)
                     </span>
-                    <span className="text-xs text-muted">
-                      번호 클릭 시 해당 공 분석으로 이동
+                    <span className="text-xs text-muted whitespace-nowrap">
+                      번호 클릭 시 해당 번호 분석으로 이동
                     </span>
                   </div>
 
                   {selectedStat.friendlyNumbers &&
                   selectedStat.friendlyNumbers.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {selectedStat.friendlyNumbers.map((friendNum, i) => {
                         const friendStat = ballStatsMap[friendNum];
                         const friendTemp = getTemperatureMeta(
@@ -497,7 +497,7 @@ export function BallAnalysis() {
               </div>
 
               {/* Modal Footer */}
-              <div className="pt-4 px-6 sm:px-7 pb-6 shrink-0">
+              <div className="pt-4 px-6 sm:px-8 pb-6 shrink-0">
                 <button
                   type="button"
                   className="btn-submit w-full h-11 flex items-center justify-center"

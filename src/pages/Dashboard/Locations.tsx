@@ -36,6 +36,22 @@ const regionNameMap: Record<string, string> = {
   Jeju: '제주',
 };
 
+const RANK_OPTIONS: { value: 'all' | 1 | 2; label: string }[] = [
+  { value: 'all', label: '전체 등수' },
+  { value: 1, label: '1등 배출점' },
+  { value: 2, label: '2등 배출점' },
+];
+
+const TYPE_OPTIONS: {
+  value: 'all' | '자동' | '수동' | '반자동';
+  label: string;
+}[] = [
+  { value: 'all', label: '전체 구매방식' },
+  { value: '자동', label: '자동' },
+  { value: '수동', label: '수동' },
+  { value: '반자동', label: '반자동' },
+];
+
 export function Locations() {
   const { appendAuth } = useApp();
   const [selectedRegion, setSelectedRegion] = useState<{
@@ -51,6 +67,8 @@ export function Locations() {
   const [typeFilter, setTypeFilter] = useState<
     'all' | '자동' | '수동' | '반자동'
   >('all');
+  const [rankDropdownOpen, setRankDropdownOpen] = useState(false);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
 
   const [latestEpisode, setLatestEpisode] = useState<number | null>(null);
   const [episode, setEpisode] = useState<number | null>(null);
@@ -218,37 +236,189 @@ export function Locations() {
                   </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <select
-                    value={rankFilter}
-                    onChange={(e) =>
-                      setRankFilter(
-                        e.target.value === 'all'
-                          ? 'all'
-                          : (Number(e.target.value) as 1 | 2),
-                      )
-                    }
-                    className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main outline-none hover:border-glass-border-strong"
-                  >
-                    <option value="all">전체 등수</option>
-                    <option value="1">1등 배출점</option>
-                    <option value="2">2등 배출점</option>
-                  </select>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {/* Rank Filter Dropdown */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRankDropdownOpen((prev) => !prev);
+                        setTypeDropdownOpen(false);
+                      }}
+                      className={`inline-flex items-center gap-1.5 cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-bold transition-all outline-none ${
+                        rankFilter !== 'all'
+                          ? 'bg-primary-cyan/15 text-primary-cyan border-primary-cyan/40 shadow-xs'
+                          : 'bg-surface hover:bg-surface-hover text-main border-glass-border hover:border-glass-border-strong'
+                      }`}
+                    >
+                      <span>
+                        {
+                          RANK_OPTIONS.find((opt) => opt.value === rankFilter)
+                            ?.label
+                        }
+                      </span>
+                      <svg
+                        className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                          rankDropdownOpen
+                            ? 'rotate-180 text-primary-cyan'
+                            : rankFilter !== 'all'
+                              ? 'text-primary-cyan'
+                              : 'text-dim'
+                        }`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
 
-                  <select
-                    value={typeFilter}
-                    onChange={(e) =>
-                      setTypeFilter(
-                        e.target.value as 'all' | '자동' | '수동' | '반자동',
-                      )
-                    }
-                    className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main outline-none hover:border-glass-border-strong"
-                  >
-                    <option value="all">전체 구매방식</option>
-                    <option value="자동">자동</option>
-                    <option value="수동">수동</option>
-                    <option value="반자동">반자동</option>
-                  </select>
+                    {rankDropdownOpen && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-[90]"
+                          onClick={() => setRankDropdownOpen(false)}
+                        />
+                        <div className="absolute top-full left-0 z-[100] mt-1.5 min-w-[120px] rounded-xl border border-glass-border-strong bg-modal p-1 shadow-2xl animate-[fadeIn_0.15s_ease-out]">
+                          {RANK_OPTIONS.map((opt) => {
+                            const isSelected = rankFilter === opt.value;
+                            return (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                onClick={() => {
+                                  setRankFilter(opt.value);
+                                  setRankDropdownOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors text-left border-none ${
+                                  isSelected
+                                    ? 'bg-primary-cyan/15 text-primary-cyan font-bold'
+                                    : 'text-main hover:bg-surface-hover'
+                                }`}
+                              >
+                                <span>{opt.label}</span>
+                                {isSelected && (
+                                  <svg
+                                    className="w-3.5 h-3.5 text-primary-cyan shrink-0"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Purchase Type Filter Dropdown */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTypeDropdownOpen((prev) => !prev);
+                        setRankDropdownOpen(false);
+                      }}
+                      className={`inline-flex items-center gap-1.5 cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-bold transition-all outline-none ${
+                        typeFilter !== 'all'
+                          ? 'bg-primary-cyan/15 text-primary-cyan border-primary-cyan/40 shadow-xs'
+                          : 'bg-surface hover:bg-surface-hover text-main border-glass-border hover:border-glass-border-strong'
+                      }`}
+                    >
+                      <span>
+                        {
+                          TYPE_OPTIONS.find((opt) => opt.value === typeFilter)
+                            ?.label
+                        }
+                      </span>
+                      <svg
+                        className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                          typeDropdownOpen
+                            ? 'rotate-180 text-primary-cyan'
+                            : typeFilter !== 'all'
+                              ? 'text-primary-cyan'
+                              : 'text-dim'
+                        }`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {typeDropdownOpen && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-[90]"
+                          onClick={() => setTypeDropdownOpen(false)}
+                        />
+                        <div className="absolute top-full left-0 z-[100] mt-1.5 min-w-[125px] rounded-xl border border-glass-border-strong bg-modal p-1 shadow-2xl animate-[fadeIn_0.15s_ease-out]">
+                          {TYPE_OPTIONS.map((opt) => {
+                            const isSelected = typeFilter === opt.value;
+                            return (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                onClick={() => {
+                                  setTypeFilter(opt.value);
+                                  setTypeDropdownOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors text-left border-none ${
+                                  isSelected
+                                    ? 'bg-primary-cyan/15 text-primary-cyan font-bold'
+                                    : 'text-main hover:bg-surface-hover'
+                                }`}
+                              >
+                                <span>{opt.label}</span>
+                                {isSelected && (
+                                  <svg
+                                    className="w-3.5 h-3.5 text-primary-cyan shrink-0"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Reset Filters button if either filter is active */}
+                  {(rankFilter !== 'all' || typeFilter !== 'all') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRankFilter('all');
+                        setTypeFilter('all');
+                      }}
+                      className="cursor-pointer border-none bg-transparent p-1 text-xs font-semibold text-dim hover:text-primary-cyan transition-colors"
+                      title="필터 초기화"
+                    >
+                      초기화 ↺
+                    </button>
+                  )}
                 </div>
               </div>
 

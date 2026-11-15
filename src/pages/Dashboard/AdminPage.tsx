@@ -1091,7 +1091,7 @@ export function AdminPage() {
                     <button
                       onClick={handleFetchAlgorithms}
                       disabled={syncingAlgos || loadingAlgos}
-                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
+                      className="btn-neon btn-outline text-[0.78rem] px-3.5 h-8 whitespace-nowrap w-auto font-medium"
                     >
                       {syncingAlgos ? '동기화 중...' : '알고리즘 가져오기'}
                     </button>
@@ -1264,7 +1264,7 @@ export function AdminPage() {
                         disabled={fetchingWinningNumbers}
                       />
                       <button
-                        className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
+                        className="btn-neon btn-outline text-[0.78rem] px-3.5 h-8 whitespace-nowrap w-auto font-medium"
                         type="submit"
                         disabled={fetchingWinningNumbers}
                       >
@@ -1283,7 +1283,7 @@ export function AdminPage() {
                       정보를 동행복권에서 가져와 동기화합니다.
                     </p>
                     <button
-                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
+                      className="btn-neon btn-outline text-[0.78rem] px-3.5 h-8 whitespace-nowrap w-auto font-medium"
                       onClick={handleAdminSyncShops}
                       disabled={syncingShops}
                     >
@@ -1300,7 +1300,7 @@ export function AdminPage() {
                       예측번호를 알고리즘별로 분석하는 배치를 실행합니다.
                     </p>
                     <button
-                      className="btn-neon btn-outline text-[0.78rem] py-1.5 px-3 h-8 whitespace-nowrap w-auto"
+                      className="btn-neon btn-outline text-[0.78rem] px-3.5 h-8 whitespace-nowrap w-auto font-medium"
                       onClick={handleAdminAnalyze}
                       disabled={analyzingReliability}
                     >
@@ -1349,7 +1349,7 @@ export function AdminPage() {
                       </div>
                       <button
                         type="submit"
-                        className="btn-submit h-9 text-[0.82rem] bg-primary-cyan text-white border-none font-bold"
+                        className="btn-submit h-9 px-4 text-[0.82rem] bg-primary-cyan text-white border-none font-medium"
                       >
                         공지 등록
                       </button>
@@ -1710,7 +1710,7 @@ export function AdminPage() {
                     </div>
                     <button
                       onClick={fetchStats}
-                      className="btn-submit h-7 px-2.5 text-xs bg-surface border border-glass-border text-main"
+                      className="btn-submit h-7 px-3 text-xs bg-surface border border-glass-border text-main hover:bg-surface-hover"
                     >
                       새로고침
                     </button>
@@ -1737,7 +1737,7 @@ export function AdminPage() {
                       />
                       <button
                         type="submit"
-                        className="btn-submit h-9 px-3.5 text-[0.82rem] bg-gradient-to-br from-purple-500 to-primary-cyan text-white"
+                        className="btn-submit h-9 px-3.5 text-[0.82rem] bg-gradient-to-br from-purple-500 to-primary-cyan text-white font-medium"
                         disabled={processingBulkHon}
                       >
                         {processingBulkHon ? '처리 중...' : '일괄 적용'}
@@ -1759,7 +1759,7 @@ export function AdminPage() {
                       />
                       <button
                         type="submit"
-                        className="btn-submit h-9 px-3.5 text-[0.82rem]"
+                        className="btn-submit h-9 px-3.5 text-[0.82rem] font-medium"
                         disabled={loadingUserDetails}
                       >
                         조회
@@ -1832,7 +1832,7 @@ export function AdminPage() {
                         <button
                           type="button"
                           onClick={handleToggleBlock}
-                          className={`w-full h-8 text-[0.78rem] cursor-pointer rounded border ${
+                          className={`w-full h-8 text-[0.78rem] cursor-pointer rounded border inline-flex items-center justify-center leading-none font-medium ${
                             userDetails.isBlocked
                               ? 'bg-primary-cyan/10 border-primary-cyan/30 text-primary-cyan'
                               : 'bg-error/10 border-error/30 text-error'
@@ -1845,7 +1845,7 @@ export function AdminPage() {
                           type="button"
                           onClick={handleResetNickname}
                           disabled={!userDetails.nickname}
-                          className={`w-full h-8 text-[0.78rem] rounded mt-1.5 border ${
+                          className={`w-full h-8 text-[0.78rem] rounded mt-1.5 border inline-flex items-center justify-center leading-none font-medium ${
                             userDetails.nickname
                               ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 cursor-pointer'
                               : 'bg-surface border-glass-border text-dim cursor-not-allowed'
@@ -1872,7 +1872,7 @@ export function AdminPage() {
                             />
                             <button
                               type="submit"
-                              className="btn-submit h-8 px-3 text-[0.78rem] bg-primary-purple text-white border-none"
+                              className="btn-submit h-8 px-3 text-[0.78rem] bg-primary-purple text-white border-none font-medium"
                             >
                               인증 확인
                             </button>
@@ -1893,7 +1893,7 @@ export function AdminPage() {
                         />
                         <button
                           type="submit"
-                          className="btn-submit h-8 px-3 text-[0.78rem]"
+                          className="btn-submit h-8 px-3 text-[0.78rem] font-medium"
                         >
                           HON 지급/차감
                         </button>
@@ -1937,13 +1937,13 @@ export function AdminPage() {
                         {r.status === 'PENDING' && (
                           <div className="flex gap-2 mt-2.5">
                             <button
-                              className="btn-submit py-1.5 px-2.5 text-xs bg-error text-white border-none"
+                              className="btn-submit h-7 px-2.5 text-xs bg-error text-white border-none font-medium"
                               onClick={() => blockNicknameReport(r.id)}
                             >
                               차단
                             </button>
                             <button
-                              className="btn-neon btn-outline py-1.5 px-2.5 text-xs w-auto"
+                              className="btn-neon btn-outline h-7 px-2.5 text-xs w-auto font-medium"
                               onClick={() => rejectNicknameReport(r.id)}
                             >
                               반려
@@ -1968,7 +1968,7 @@ export function AdminPage() {
                       className="input-glow flex-1 h-9 text-[0.82rem]"
                     />
                     <button
-                      className="btn-submit h-9 text-[0.82rem]"
+                      className="btn-submit h-9 px-3.5 text-[0.82rem] font-medium"
                       onClick={addBannedWord}
                     >
                       추가
@@ -2091,7 +2091,7 @@ export function AdminPage() {
                         </div>
                         <button
                           type="submit"
-                          className="btn-submit h-9 px-6 text-[0.85rem]"
+                          className="btn-submit h-9 px-6 text-[0.85rem] font-medium"
                         >
                           이벤트 생성
                         </button>
@@ -2174,7 +2174,7 @@ export function AdminPage() {
                               <div className="flex gap-2">
                                 {ev.isActive && (
                                   <button
-                                    className="btn-submit h-[30px] text-[0.8rem] bg-error border-error text-white"
+                                    className="btn-submit h-[30px] px-3 text-[0.8rem] bg-error border-error text-white font-medium"
                                     onClick={() =>
                                       setConfirmConfig({
                                         isOpen: true,
@@ -2189,7 +2189,7 @@ export function AdminPage() {
                                   </button>
                                 )}
                                 <button
-                                  className="btn-submit h-[30px] text-[0.8rem] bg-transparent border border-dim text-main"
+                                  className="btn-submit h-[30px] px-3 text-[0.8rem] bg-transparent border border-dim text-main font-medium"
                                   onClick={() =>
                                     setConfirmConfig({
                                       isOpen: true,
@@ -2219,28 +2219,41 @@ export function AdminPage() {
                     className="flex flex-col gap-4"
                   >
                     <div className="flex gap-2">
-                      <select
-                        value={notiTargetType}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                          setNotiTargetType(
-                            e.target.value as 'NICKNAME' | 'USER_ID',
-                          )
-                        }
-                        className="input-glow p-2 bg-input text-main w-[130px] shrink-0"
-                      >
-                        <option
-                          value="NICKNAME"
-                          className="bg-surface-elevated text-main"
+                      <div className="relative shrink-0 w-[130px]">
+                        <select
+                          value={notiTargetType}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                            setNotiTargetType(
+                              e.target.value as 'NICKNAME' | 'USER_ID',
+                            )
+                          }
+                          className="input-glow py-2 pl-3 pr-7 bg-input text-main w-full appearance-none cursor-pointer outline-none rounded-xl"
                         >
-                          닉네임
-                        </option>
-                        <option
-                          value="USER_ID"
-                          className="bg-surface-elevated text-main"
+                          <option
+                            value="NICKNAME"
+                            className="bg-surface-elevated text-main"
+                          >
+                            닉네임
+                          </option>
+                          <option
+                            value="USER_ID"
+                            className="bg-surface-elevated text-main"
+                          >
+                            User ID
+                          </option>
+                        </select>
+                        <svg
+                          className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-dim"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          User ID
-                        </option>
-                      </select>
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </div>
                       <input
                         type="text"
                         value={notiTarget}
@@ -2266,7 +2279,10 @@ export function AdminPage() {
                       placeholder="알림 내용"
                       className="input-glow h-[100px] resize-y"
                     />
-                    <button type="submit" className="btn-submit p-3">
+                    <button
+                      type="submit"
+                      className="btn-submit p-3 font-medium"
+                    >
                       발송하기
                     </button>
                   </form>
@@ -2283,7 +2299,7 @@ export function AdminPage() {
         {true && (
           <div className="flex justify-end mt-4 pt-3 border-t border-glass-border shrink-0">
             <button
-              className="btn-neon btn-outline h-[38px] px-5 text-[0.82rem] w-auto"
+              className="btn-neon btn-outline h-[38px] px-5 text-[0.82rem] w-auto font-medium"
               onClick={handleClose}
             >
               닫기
@@ -2309,13 +2325,13 @@ export function AdminPage() {
                     setRejectingInqId(null);
                     setRejectReason('');
                   }}
-                  className="bg-transparent border border-glass-border text-main py-1.5 px-3 rounded text-[0.78rem] cursor-pointer hover:bg-surface-hover"
+                  className="bg-transparent border border-glass-border text-main h-8 px-3 rounded text-[0.78rem] cursor-pointer hover:bg-surface-hover inline-flex items-center justify-center leading-none"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleRejectRefundSubmit}
-                  className="bg-primary-purple border-none text-white py-1.5 px-3 rounded text-[0.78rem] font-bold cursor-pointer"
+                  className="bg-primary-purple border-none text-white h-8 px-3 rounded text-[0.78rem] font-bold cursor-pointer inline-flex items-center justify-center leading-none"
                 >
                   거절 완료
                 </button>
