@@ -731,33 +731,46 @@ export function Stats() {
           <span className="text-[0.9rem] text-main font-bold">
             상세 분석 알고리즘 선택
           </span>
-          <select
-            value={selectedAlgorithm}
-            onChange={(e) => setSelectedAlgorithm(e.target.value)}
-            className="bg-modal border border-glass-border px-3 py-2 rounded-lg text-main font-sans outline-none cursor-pointer"
-          >
-            {Object.entries(groupedLeaderboard).map(([groupName, items]) => (
-              <optgroup
-                key={groupName}
-                label={
-                  groupName === 'WEIGHTS'
-                    ? '가중치 분석형'
-                    : groupName === 'FREQUENCY'
-                      ? '빈도 분석형'
-                      : '균형 분석형'
-                }
-              >
-                {items.map((item) => (
-                  <option key={item.algorithm} value={item.algorithm}>
-                    {parseAlgorithmName(
-                      algorithmTypes.find((a) => a.type === item.algorithm) ||
-                        item.algorithm,
-                    )}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+          <div className="relative inline-flex items-center">
+            <select
+              value={selectedAlgorithm}
+              onChange={(e) => setSelectedAlgorithm(e.target.value)}
+              className="appearance-none bg-modal border border-glass-border hover:border-primary-cyan/40 pl-3.5 pr-8 py-2 rounded-xl text-main font-sans text-xs sm:text-sm font-semibold outline-none cursor-pointer transition-colors shadow-xs"
+            >
+              {Object.entries(groupedLeaderboard).map(([groupName, items]) => (
+                <optgroup
+                  key={groupName}
+                  label={
+                    groupName === 'WEIGHTS'
+                      ? '가중치 분석형'
+                      : groupName === 'FREQUENCY'
+                        ? '빈도 분석형'
+                        : '균형 분석형'
+                  }
+                >
+                  {items.map((item) => (
+                    <option key={item.algorithm} value={item.algorithm}>
+                      {parseAlgorithmName(
+                        algorithmTypes.find((a) => a.type === item.algorithm) ||
+                          item.algorithm,
+                      )}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <svg
+              className="pointer-events-none absolute right-2.5 h-3.5 w-3.5 text-dim"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
         </div>
 
         {/* Custom SVG Line Chart Container */}

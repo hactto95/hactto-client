@@ -202,16 +202,33 @@ export function Support() {
               <label className="text-xs font-bold text-muted text-left">
                 문의 유형
               </label>
-              <select
-                className="input-glow text-sm h-11"
-                value={type}
-                onChange={(e) =>
-                  setType(e.target.value as 'GENERAL' | 'REFUND')
-                }
-              >
-                <option value="GENERAL">일반 문의</option>
-                <option value="REFUND">환불 문의 (전체 환불만 가능)</option>
-              </select>
+              <div className="relative">
+                <select
+                  className="input-glow text-sm h-11 w-full appearance-none pr-9 cursor-pointer"
+                  value={type}
+                  onChange={(e) =>
+                    setType(e.target.value as 'GENERAL' | 'REFUND')
+                  }
+                >
+                  <option value="GENERAL" className="bg-card text-main">
+                    일반 문의
+                  </option>
+                  <option value="REFUND" className="bg-card text-main">
+                    환불 문의 (전체 환불만 가능)
+                  </option>
+                </select>
+                <svg
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-dim"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
             </div>
 
             {type === 'REFUND' && hasPendingRefund && (
