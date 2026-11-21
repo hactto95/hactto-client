@@ -1318,78 +1318,56 @@ export function Board() {
         </div>
 
         {!isWriting && !activePost && (
-          <div className="flex items-center gap-3 mt-3 pb-1 border-b border-glass-border">
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between gap-3 mt-3 pb-2 border-b border-glass-border">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setSort('latest')}
-                className={`bg-transparent border-none text-[0.8rem] cursor-pointer ${
+                className={`bg-transparent border-none text-[0.82rem] cursor-pointer transition-colors ${
                   sort === 'latest'
                     ? 'text-primary-cyan font-bold'
-                    : 'text-dim font-normal'
+                    : 'text-dim font-normal hover:text-main'
                 }`}
               >
                 최신순
               </button>
-              <span className="text-glass-border-strong">|</span>
+              <span className="text-glass-border-strong text-xs">|</span>
               <button
                 onClick={() => setSort('likes')}
-                className={`bg-transparent border-none text-[0.8rem] cursor-pointer ${
+                className={`bg-transparent border-none text-[0.82rem] cursor-pointer transition-colors ${
                   sort === 'likes'
                     ? 'text-primary-cyan font-bold'
-                    : 'text-dim font-normal'
+                    : 'text-dim font-normal hover:text-main'
                 }`}
               >
                 좋아요순
               </button>
             </div>
 
-            {category === 'WINNING' && (
-              <div className="flex gap-2 ml-auto">
-                <input
-                  type="number"
-                  placeholder="회차 검색"
-                  className="input-glow no-spin py-1 px-2 text-[0.8rem] rounded bg-input border border-glass-border text-main w-[100px]"
-                  value={roundFilter}
-                  onChange={(e) => setRoundFilter(e.target.value)}
-                />
-                <div className="relative">
-                  <select
-                    className="input-glow py-1 pl-2.5 pr-6 text-[0.8rem] rounded bg-input border border-glass-border text-main appearance-none cursor-pointer outline-none"
-                    value={rankFilter}
-                    onChange={(e) => setRankFilter(e.target.value)}
-                  >
-                    <option value="" className="bg-card text-main">
-                      등수 전체
-                    </option>
-                    <option value="1" className="bg-card text-main">
-                      1등
-                    </option>
-                    <option value="2" className="bg-card text-main">
-                      2등
-                    </option>
-                    <option value="3" className="bg-card text-main">
-                      3등
-                    </option>
-                    <option value="4" className="bg-card text-main">
-                      4등
-                    </option>
-                    <option value="5" className="bg-card text-main">
-                      5등
-                    </option>
-                  </select>
-                  <svg
-                    className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 text-dim"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </div>
+            {(roundFilter || rankFilter || activeSearchQuery) && (
+              <button
+                onClick={() => {
+                  setRoundFilter('');
+                  setRankFilter('');
+                  setSearchQuery('');
+                  setActiveSearchQuery('');
+                }}
+                className="text-xs text-dim hover:text-primary-cyan flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+                필터 초기화
+              </button>
             )}
           </div>
         )}
@@ -1401,13 +1379,65 @@ export function Board() {
               setActiveSearchQuery(searchQuery);
               setActiveSearchTarget(searchTarget);
             }}
-            className="flex gap-2 mt-3"
+            className="flex flex-wrap sm:flex-nowrap items-center gap-2 mt-3"
           >
-            <div className="relative">
+            {category === 'WINNING' && (
+              <>
+                <div className="relative shrink-0">
+                  <select
+                    className="h-10 py-2 pr-8 pl-3 text-[0.88rem] rounded-xl bg-surface border border-glass-border text-main appearance-none cursor-pointer outline-none font-medium hover:border-primary-cyan transition-all"
+                    value={rankFilter}
+                    onChange={(e) => setRankFilter(e.target.value)}
+                  >
+                    <option value="" className="bg-surface-elevated text-main">
+                      등수 전체
+                    </option>
+                    <option value="1" className="bg-surface-elevated text-main">
+                      1등
+                    </option>
+                    <option value="2" className="bg-surface-elevated text-main">
+                      2등
+                    </option>
+                    <option value="3" className="bg-surface-elevated text-main">
+                      3등
+                    </option>
+                    <option value="4" className="bg-surface-elevated text-main">
+                      4등
+                    </option>
+                    <option value="5" className="bg-surface-elevated text-main">
+                      5등
+                    </option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-dim"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+
+                <div className="relative shrink-0 w-28 sm:w-32">
+                  <input
+                    type="number"
+                    placeholder="회차 (예: 1150)"
+                    className="input-glow no-spin h-10 w-full py-2 px-3 text-[0.88rem] rounded-xl bg-input border border-glass-border text-main placeholder:text-dim/60"
+                    value={roundFilter}
+                    onChange={(e) => setRoundFilter(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="relative shrink-0">
               <select
                 value={searchTarget}
                 onChange={(e) => setSearchTarget(e.target.value)}
-                className="h-full py-2 pr-8 pl-3 text-[0.9rem] rounded-md bg-surface border border-glass-border text-primary-cyan outline-none cursor-pointer appearance-none font-bold"
+                className="h-10 py-2 pr-8 pl-3 text-[0.88rem] rounded-xl bg-surface border border-glass-border text-primary-cyan outline-none cursor-pointer appearance-none font-bold hover:border-primary-cyan transition-all"
               >
                 <option value="all" className="bg-surface-elevated text-main">
                   전체
@@ -1415,16 +1445,10 @@ export function Board() {
                 <option value="title" className="bg-surface-elevated text-main">
                   제목
                 </option>
-                <option
-                  value="content"
-                  className="bg-surface-elevated text-main"
-                >
+                <option value="content" className="bg-surface-elevated text-main">
                   내용
                 </option>
-                <option
-                  value="author"
-                  className="bg-surface-elevated text-main"
-                >
+                <option value="author" className="bg-surface-elevated text-main">
                   작성자
                 </option>
               </select>
@@ -1440,6 +1464,7 @@ export function Board() {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </div>
+
             <input
               type="text"
               placeholder={
@@ -1447,13 +1472,14 @@ export function Board() {
                   ? '검색어를 입력하세요 (제목, 내용, 작성자)'
                   : `${searchTarget === 'title' ? '제목' : searchTarget === 'content' ? '내용' : '작성자'} 검색`
               }
-              className="input-glow flex-1 py-2 px-3 text-[0.9rem] rounded-md bg-input border border-glass-border text-main"
+              className="input-glow flex-1 min-w-[140px] h-10 py-2 px-3.5 text-[0.88rem] rounded-xl bg-input border border-glass-border text-main placeholder:text-dim/60"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+
             <button
               type="submit"
-              className="px-4 rounded-md border border-glass-border-strong bg-surface text-main font-bold cursor-pointer transition-all duration-300 hover:bg-surface-hover hover:border-primary-cyan"
+              className="h-10 px-5 rounded-xl border border-primary-cyan/40 bg-primary-cyan/15 text-primary-cyan font-bold cursor-pointer transition-all duration-200 hover:bg-primary-cyan hover:text-white shrink-0 text-sm shadow-xs"
             >
               검색
             </button>
