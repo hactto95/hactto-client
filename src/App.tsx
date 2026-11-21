@@ -19,6 +19,7 @@ import { BallAnalysis } from './pages/Dashboard/BallAnalysis';
 import { Stats } from './pages/Dashboard/Stats';
 import { AnalysisCharts } from './pages/Dashboard/AnalysisCharts';
 import { Generate } from './pages/Dashboard/Generate';
+import { LotteryDraw } from './pages/Dashboard/LotteryDraw';
 import { History } from './pages/Dashboard/History';
 import { Board } from './pages/Dashboard/Board';
 import { Support } from './pages/Dashboard/Support';
@@ -136,6 +137,7 @@ function AppContent() {
           <Route path="/stats" element={<Stats />} />
           <Route path="/analysis-charts" element={<AnalysisCharts />} />
           <Route path="/generate" element={<Generate />} />
+          <Route path="/draw" element={<LotteryDraw />} />
           <Route path="/history" element={<History />} />
           <Route path="/board" element={<Board />} />
           <Route path="/support" element={<Support />} />

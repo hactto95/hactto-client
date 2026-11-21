@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { API_BASE_URL } from '../../utils';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeToggle } from '../../components/ThemeToggle';
@@ -11,6 +11,7 @@ export const LoginPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,12 +32,27 @@ export const LoginPage: React.FC = () => {
 
       const resData = await res.json();
       const payload = resData.data || resData;
-      login(payload.accessToken, payload.refreshToken, payload.user);
+      const userObj = payload.user || {
+        id: payload.id || '',
+        email: payload.email || email,
+        nickname: payload.nickname ?? null,
+        avatarUrl: payload.avatarUrl ?? null,
+      };
+      login(payload.accessToken, payload.refreshToken, userObj);
 
-      if (window.history.length > 2) {
-        navigate(-1);
+      const stateFrom = (location.state as { from?: string } | null)?.from;
+      const isSafeFrom =
+        stateFrom &&
+        stateFrom.startsWith('/') &&
+        !stateFrom.startsWith('/login') &&
+        !stateFrom.startsWith('/signup') &&
+        !stateFrom.startsWith('/reset-password') &&
+        !stateFrom.startsWith('/auth/');
+
+      if (isSafeFrom) {
+        navigate(stateFrom, { replace: true });
       } else {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

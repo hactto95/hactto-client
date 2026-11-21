@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, authFetch } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils';
@@ -26,14 +26,15 @@ export function Support() {
   const { showAlert, checkIpStatus } = useApp();
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login', { replace: true });
+      navigate('/login', { replace: true, state: { from: location.pathname } });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 

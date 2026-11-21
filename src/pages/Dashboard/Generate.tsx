@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -43,17 +44,26 @@ export function Generate() {
   const [showGenerateConfirmModal, setShowGenerateConfirmModal] =
     useState(false);
 
+  const location = useLocation();
+  const navState = location.state as {
+    tab?: string;
+    prefillGameA?: number[];
+  } | null;
+
   // New states for personal prediction analysis
   const [activeSubTab, setActiveSubTab] = useState<'generate' | 'analyze'>(
-    'generate',
+    () => (navState?.tab === 'analyze' ? 'analyze' : 'generate'),
   );
-  const [selectedGames, setSelectedGames] = useState<number[][]>([
-    [],
-    [],
-    [],
-    [],
-    [],
-  ]);
+  const [selectedGames, setSelectedGames] = useState<number[][]>(() => {
+    if (
+      navState?.tab === 'analyze' &&
+      Array.isArray(navState.prefillGameA) &&
+      navState.prefillGameA.length === 6
+    ) {
+      return [[...navState.prefillGameA], [], [], [], []];
+    }
+    return [[], [], [], [], []];
+  });
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [analyzedResults, setAnalyzedResults] = useState<any[]>([]);
@@ -66,6 +76,17 @@ export function Generate() {
   const [latestEpisode, setLatestEpisode] = useState<number>(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const totalHon = (freeHon || 0) + (paidHon || 0);
+
+  // 3D 추첨기에서 넘어온 경우 피드백 토스트 알림
+  useEffect(() => {
+    if (
+      navState?.tab === 'analyze' &&
+      Array.isArray(navState.prefillGameA) &&
+      navState.prefillGameA.length === 6
+    ) {
+      showAlert('success', '추첨된 번호가 GAME A에 입력되었습니다.');
+    }
+  }, [navState, showAlert]);
 
   // Prevent body scroll when modal is open and add ESC key support
   useEffect(() => {

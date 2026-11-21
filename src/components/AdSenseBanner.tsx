@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface AdSenseBannerProps {
   client?: string;
@@ -17,11 +16,11 @@ declare global {
 
 const AdFallback: React.FC<{ format: string }> = ({ format }) => {
   const isVertical = format === 'vertical' || format === 'rectangle';
-  const navigate = useNavigate();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate('/generate');
+    e.stopPropagation();
+    window.open('/generate', '_blank', 'noopener,noreferrer');
   };
 
   if (isVertical) {

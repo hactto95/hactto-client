@@ -16,9 +16,9 @@ export function History() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login', { replace: true });
+      navigate('/login', { replace: true, state: { from: location.pathname } });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
 
   const [selectedAnalysis, setSelectedAnalysis] = useState<{
     numbers: number[];

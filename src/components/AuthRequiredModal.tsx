@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const AuthRequiredModal: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -11,6 +11,7 @@ export const AuthRequiredModal: React.FC = () => {
     desc: '해당 기능은 회원 전용입니다.\n로그인 후 다시 이용해주세요.',
   });
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleAuthRequired = (e?: Event) => {
@@ -77,7 +78,7 @@ export const AuthRequiredModal: React.FC = () => {
           <button
             onClick={() => {
               setShowAuthModal(false);
-              navigate('/login');
+              navigate('/login', { state: { from: location.pathname } });
             }}
             className="flex-1 p-3 bg-primary-cyan hover:bg-primary-cyan/90 text-white border-none rounded-xl cursor-pointer font-semibold transition-all"
           >
