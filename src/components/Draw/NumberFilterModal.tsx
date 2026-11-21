@@ -238,9 +238,9 @@ export const NumberFilterModal: React.FC<NumberFilterModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="glass-card admin-modal-content max-w-[640px]! w-[94%]! text-left relative border! border-primary-cyan/25! shadow-glass overflow-hidden p-5! sm:p-7!">
+      <div className="glass-card admin-modal-content max-w-[640px]! w-[94%]! text-left relative border! border-primary-cyan/25! shadow-glass overflow-hidden p-5! sm:p-7! max-h-[92vh]! flex flex-col">
         {/* 헤더 */}
-        <div className="flex items-start justify-between gap-4 border-b border-glass-border pb-4 mb-5">
+        <div className="flex items-start justify-between gap-4 border-b border-glass-border pb-4 mb-4 shrink-0">
           <div>
             <div className="flex items-center gap-2">
               <span className="inline-block text-[0.7rem] font-bold uppercase tracking-wider text-primary-cyan px-2.5 py-0.5 rounded-full bg-primary-cyan/10 border border-primary-cyan/25">
@@ -276,253 +276,261 @@ export const NumberFilterModal: React.FC<NumberFilterModalProps> = ({
           </button>
         </div>
 
-        {/* 1. 상단 모드 전환 탭 (고정수 선택 모드 vs 제외수 선택 모드) */}
-        <div className="grid grid-cols-2 gap-2.5 p-1.5 rounded-2xl bg-surface border border-glass-border mb-5">
-          <button
-            type="button"
-            onClick={() => setSelectMode('FIXED')}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all border ${
-              selectMode === 'FIXED'
-                ? 'bg-emerald-500/15 border-emerald-400/50 text-emerald-400 shadow-xs'
-                : 'bg-transparent border-transparent text-muted hover:text-main'
-            }`}
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shrink-0" />
-            <span>고정수 선택 모드</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[0.72rem] tabular-nums ${
+        {/* 스크롤 가능한 본문 영역 */}
+        <div className="flex-1 overflow-y-auto min-h-0 pr-1 -mr-1 space-y-4">
+          {/* 1. 상단 모드 전환 탭 (고정수 선택 모드 vs 제외수 선택 모드) */}
+          <div className="grid grid-cols-2 gap-2.5 p-1.5 rounded-2xl bg-surface border border-glass-border">
+            <button
+              type="button"
+              onClick={() => setSelectMode('FIXED')}
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all border ${
                 selectMode === 'FIXED'
-                  ? 'bg-emerald-400/20 text-emerald-300'
-                  : 'bg-card text-dim'
+                  ? 'bg-emerald-500/15 border-emerald-400/50 text-emerald-400 shadow-xs'
+                  : 'bg-transparent border-transparent text-muted hover:text-main'
               }`}
             >
-              {fixedNumbers.length} / {MAX_FIXED_NUMBERS}
-            </span>
-          </button>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shrink-0" />
+              <span>고정수 선택 모드</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[0.72rem] tabular-nums ${
+                  selectMode === 'FIXED'
+                    ? 'bg-emerald-400/20 text-emerald-300'
+                    : 'bg-card text-dim'
+                }`}
+              >
+                {fixedNumbers.length} / {MAX_FIXED_NUMBERS}
+              </span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setSelectMode('EXCLUDED')}
-            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all border ${
-              selectMode === 'EXCLUDED'
-                ? 'bg-rose-500/15 border-rose-400/50 text-rose-400 shadow-xs'
-                : 'bg-transparent border-transparent text-muted hover:text-main'
-            }`}
-          >
-            <span className="w-2 h-2 rounded-full bg-rose-400 inline-block shrink-0" />
-            <span>제외수 선택 모드</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[0.72rem] tabular-nums ${
+            <button
+              type="button"
+              onClick={() => setSelectMode('EXCLUDED')}
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all border ${
                 selectMode === 'EXCLUDED'
-                  ? 'bg-rose-400/20 text-rose-300'
-                  : 'bg-card text-dim'
+                  ? 'bg-rose-500/15 border-rose-400/50 text-rose-400 shadow-xs'
+                  : 'bg-transparent border-transparent text-muted hover:text-main'
               }`}
             >
-              {excludedNumbers.length} / {MAX_EXCLUDED_NUMBERS}
-            </span>
-          </button>
-        </div>
+              <span className="w-2 h-2 rounded-full bg-rose-400 inline-block shrink-0" />
+              <span>제외수 선택 모드</span>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[0.72rem] tabular-nums ${
+                  selectMode === 'EXCLUDED'
+                    ? 'bg-rose-400/20 text-rose-300'
+                    : 'bg-card text-dim'
+                }`}
+              >
+                {excludedNumbers.length} / {MAX_EXCLUDED_NUMBERS}
+              </span>
+            </button>
+          </div>
 
-        {/* 2. 원클릭 편의 필터 (홀/짝/저/고 프리셋 & 구간별 일괄 제외) */}
-        <div className="flex flex-col gap-3 rounded-2xl bg-surface/70 border border-glass-border p-3.5 mb-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-xs font-bold text-main flex items-center gap-1.5">
-              <span className="w-1.5 h-3.5 rounded-full bg-primary-cyan inline-block" />
-              원클릭 빠른 조건 필터 (고정수는 자동 보호)
-            </span>
-            {(fixedNumbers.length > 0 || excludedNumbers.length > 0) && (
+          {/* 2. 원클릭 편의 필터 (홀/짝/저/고 프리셋 & 구간별 일괄 제외) */}
+          <div className="flex flex-col gap-3 rounded-2xl bg-surface/70 border border-glass-border p-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-xs font-bold text-main flex items-center gap-1.5">
+                <span className="w-1.5 h-3.5 rounded-full bg-primary-cyan inline-block" />
+                원클릭 빠른 조건 필터 (고정수는 자동 보호)
+              </span>
+              {(fixedNumbers.length > 0 || excludedNumbers.length > 0) && (
+                <button
+                  type="button"
+                  onClick={onClearAllFilters}
+                  className="text-[0.72rem] font-bold text-rose-400 hover:underline bg-transparent border-none cursor-pointer p-0"
+                >
+                  고정·제외 전체 초기화
+                </button>
+              )}
+            </div>
+
+            {/* 홀/짝/저/고 퀵 프리셋 */}
+            <div className="flex flex-wrap gap-1.5">
               <button
                 type="button"
-                onClick={onClearAllFilters}
-                className="text-[0.72rem] font-bold text-rose-400 hover:underline bg-transparent border-none cursor-pointer p-0"
+                onClick={() => onChangeExcludedNumbers([])}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
+                  excludedNumbers.length === 0
+                    ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                    : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+                }`}
               >
-                고정·제외 전체 초기화
+                제외 없음 (전체)
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() =>
+                  handleApplyPreset(
+                    (n) => n % 2 === 0,
+                    '홀수만 추첨 (짝수 제외)',
+                  )
+                }
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
+                  oddOnlyActive
+                    ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                    : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+                }`}
+              >
+                홀수만 (짝수 제외)
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleApplyPreset(
+                    (n) => n % 2 !== 0,
+                    '짝수만 추첨 (홀수 제외)',
+                  )
+                }
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
+                  evenOnlyActive
+                    ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                    : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+                }`}
+              >
+                짝수만 (홀수 제외)
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleApplyPreset(
+                    (n) => n >= 23,
+                    '저번호(1~22)만 추첨 (23~45 제외)',
+                  )
+                }
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
+                  lowOnlyActive
+                    ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                    : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+                }`}
+              >
+                저번호만 (1~22)
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleApplyPreset(
+                    (n) => n <= 22,
+                    '고번호(23~45)만 추첨 (1~22 제외)',
+                  )
+                }
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
+                  highOnlyActive
+                    ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                    : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+                }`}
+              >
+                고번호만 (23~45)
+              </button>
+            </div>
+
+            {/* 번호대 구간별 일괄 제외 토글 */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-glass-border/60">
+              <span className="text-[0.72rem] font-semibold text-dim mr-1">
+                구간 제외 토글:
+              </span>
+              {DECADE_BANDS.map((band) => {
+                const isExcludedBand = isBandAllExcluded(band.min, band.max);
+                return (
+                  <button
+                    key={band.label}
+                    type="button"
+                    onClick={() =>
+                      handleToggleBand(band.min, band.max, band.label)
+                    }
+                    className={`px-2.5 py-1 rounded-lg text-[0.72rem] font-bold cursor-pointer transition-all border ${
+                      isExcludedBand
+                        ? 'bg-rose-500/20 border-rose-400 text-rose-300 line-through'
+                        : `bg-card border-glass-border hover:border-glass-border-strong ${band.colorClass}`
+                    }`}
+                  >
+                    {band.label} {isExcludedBand ? '제외됨' : '제외'}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* 홀/짝/저/고 퀵 프리셋 */}
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              type="button"
-              onClick={() => onChangeExcludedNumbers([])}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
-                excludedNumbers.length === 0
-                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                  : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-              }`}
-            >
-              제외 없음 (전체)
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                handleApplyPreset((n) => n % 2 === 0, '홀수만 추첨 (짝수 제외)')
-              }
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
-                oddOnlyActive
-                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                  : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-              }`}
-            >
-              홀수만 (짝수 제외)
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                handleApplyPreset((n) => n % 2 !== 0, '짝수만 추첨 (홀수 제외)')
-              }
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
-                evenOnlyActive
-                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                  : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-              }`}
-            >
-              짝수만 (홀수 제외)
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                handleApplyPreset(
-                  (n) => n >= 23,
-                  '저번호(1~22)만 추첨 (23~45 제외)',
-                )
-              }
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
-                lowOnlyActive
-                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                  : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-              }`}
-            >
-              저번호만 (1~22)
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                handleApplyPreset(
-                  (n) => n <= 22,
-                  '고번호(23~45)만 추첨 (1~22 제외)',
-                )
-              }
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${
-                highOnlyActive
-                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                  : 'bg-card border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-              }`}
-            >
-              고번호만 (23~45)
-            </button>
-          </div>
+          {/* 3. 1~45번 인터랙티브 로또 볼 그리드 */}
+          <div>
+            <div className="flex items-center justify-between text-xs text-muted mb-2.5 px-1">
+              <span>
+                {selectMode === 'FIXED' ? (
+                  <>
+                    번호를 클릭하면{' '}
+                    <strong className="text-emerald-400">고정수</strong>로
+                    지정되어 하단 트레이에 미리 배치됩니다.
+                  </>
+                ) : (
+                  <>
+                    번호를 클릭하면{' '}
+                    <strong className="text-rose-400">제외수</strong>로 지정되어
+                    3D 챔버에서 제거됩니다.
+                  </>
+                )}
+              </span>
+            </div>
 
-          {/* 번호대 구간별 일괄 제외 토글 */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-glass-border/60">
-            <span className="text-[0.72rem] font-semibold text-dim mr-1">
-              구간 제외 토글:
-            </span>
-            {DECADE_BANDS.map((band) => {
-              const isExcludedBand = isBandAllExcluded(band.min, band.max);
-              return (
-                <button
-                  key={band.label}
-                  type="button"
-                  onClick={() =>
-                    handleToggleBand(band.min, band.max, band.label)
-                  }
-                  className={`px-2.5 py-1 rounded-lg text-[0.72rem] font-bold cursor-pointer transition-all border ${
-                    isExcludedBand
-                      ? 'bg-rose-500/20 border-rose-400 text-rose-300 line-through'
-                      : `bg-card border-glass-border hover:border-glass-border-strong ${band.colorClass}`
-                  }`}
-                >
-                  {band.label} {isExcludedBand ? '제외됨' : '제외'}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+            <div className="grid grid-cols-5 sm:grid-cols-9 gap-2 sm:gap-2.5 p-3.5 sm:p-4 rounded-2xl bg-surface border border-glass-border">
+              {Array.from({ length: 45 }, (_, idx) => idx + 1).map((num) => {
+                const isFixed = fixedSet.has(num);
+                const isExcluded = excludedSet.has(num);
 
-        {/* 3. 1~45번 인터랙티브 로또 볼 그리드 */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between text-xs text-muted mb-2.5 px-1">
-            <span>
-              {selectMode === 'FIXED' ? (
-                <>
-                  번호를 클릭하면{' '}
-                  <strong className="text-emerald-400">고정수</strong>로
-                  지정되어 하단 트레이에 미리 배치됩니다.
-                </>
-              ) : (
-                <>
-                  번호를 클릭하면{' '}
-                  <strong className="text-rose-400">제외수</strong>로 지정되어
-                  3D 챔버에서 제거됩니다.
-                </>
-              )}
-            </span>
-          </div>
+                return (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => handleToggleBall(num)}
+                    className={`relative flex items-center justify-center mx-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full font-display font-extrabold text-sm cursor-pointer transition-all duration-150 select-none border-none ${
+                      isFixed
+                        ? 'ring-3 ring-emerald-400 scale-105 shadow-[0_0_14px_rgba(52,211,153,0.55)] z-10'
+                        : isExcluded
+                          ? 'opacity-25 grayscale scale-95'
+                          : 'hover:scale-105 hover:brightness-110'
+                    }`}
+                    style={getBallStyle(num)}
+                  >
+                    <span>{num}</span>
 
-          <div className="grid grid-cols-5 sm:grid-cols-9 gap-2 sm:gap-2.5 p-3.5 sm:p-4 rounded-2xl bg-surface border border-glass-border max-h-[310px] overflow-y-auto">
-            {Array.from({ length: 45 }, (_, idx) => idx + 1).map((num) => {
-              const isFixed = fixedSet.has(num);
-              const isExcluded = excludedSet.has(num);
+                    {/* 고정수 배지 */}
+                    {isFixed && (
+                      <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-emerald-400 text-slate-950 text-[0.58rem] font-extrabold leading-tight shadow-sm border border-white/60">
+                        고정
+                      </span>
+                    )}
 
-              return (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => handleToggleBall(num)}
-                  className={`relative flex items-center justify-center mx-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full font-display font-extrabold text-sm cursor-pointer transition-all duration-150 select-none border-none ${
-                    isFixed
-                      ? 'ring-3 ring-emerald-400 scale-105 shadow-[0_0_14px_rgba(52,211,153,0.55)] z-10'
-                      : isExcluded
-                        ? 'opacity-25 grayscale scale-95'
-                        : 'hover:scale-105 hover:brightness-110'
-                  }`}
-                  style={getBallStyle(num)}
-                >
-                  <span>{num}</span>
-
-                  {/* 고정수 배지 */}
-                  {isFixed && (
-                    <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-emerald-400 text-slate-950 text-[0.58rem] font-extrabold leading-tight shadow-sm border border-white/60">
-                      고정
-                    </span>
-                  )}
-
-                  {/* 제외수 X 오버레이 */}
-                  {isExcluded && (
-                    <span className="absolute inset-0 flex items-center justify-center rounded-full bg-slate-950/55 text-rose-400 font-extrabold text-base">
-                      ✕
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+                    {/* 제외수 X 오버레이 */}
+                    {isExcluded && (
+                      <span className="absolute inset-0 flex items-center justify-center rounded-full bg-slate-950/55 text-rose-400 font-extrabold text-base">
+                        ✕
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* 4. 하단 상태 요약 및 완료 버튼 */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-glass-border">
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+        <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-glass-border mt-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs flex-1 min-w-0">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-bold whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shrink-0" />
               고정수 {fixedNumbers.length}개
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-400/30 text-rose-300 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 inline-block" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-400/30 text-rose-300 font-bold whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 inline-block shrink-0" />
               제외수 {excludedNumbers.length}개
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 border border-white/25 text-main font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
-              챔버 투입 {chamberCount}구 (추가 추첨 {7 - fixedNumbers.length}
-              구)
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 border border-white/25 text-main font-bold whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-white inline-block shrink-0" />
+              챔버 투입 {chamberCount}구 (추가 추첨 {7 - fixedNumbers.length}구)
             </span>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="btn-neon btn-cyan h-10 px-6! text-xs! shrink-0"
+            className="btn-neon btn-cyan h-10 w-full sm:w-auto! px-6! text-xs! shrink-0 whitespace-nowrap"
           >
             설정 완료
           </button>
