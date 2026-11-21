@@ -6,6 +6,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils';
 import { UserProfileModal } from '../../components/UserProfileModal';
+import { AiBadge } from '../../components/AiBadge';
 
 interface PostComment {
   id: number;
@@ -36,6 +37,7 @@ interface Post {
   _count?: { likes: number; comments: number };
   isLiked?: boolean;
   isAdmin?: boolean;
+  isAi?: boolean;
   comments?: PostComment[];
   attachments?: {
     id: number;
@@ -1690,7 +1692,9 @@ export function Board() {
                     }
                   }}
                 >
-                  {activePost.isAdmin ? (
+                  {activePost.isAi ? (
+                    <AiBadge className="mr-2" />
+                  ) : activePost.isAdmin ? (
                     <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1.5 text-[0.9em]">
                       [M] 관리자
                     </span>
@@ -1925,6 +1929,29 @@ export function Board() {
           <p className="text-muted whitespace-pre-wrap leading-[1.6] text-[0.9rem] text-left">
             {renderContentWithImages(activePost.content)}
           </p>
+
+          {activePost.isAi && (
+            <div className="mt-6 p-4 rounded-2xl bg-primary-cyan/5 border border-primary-cyan/20 text-xs text-muted leading-relaxed text-left">
+              <div className="flex items-center gap-1.5 font-bold text-primary-cyan mb-1.5">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                핵또 AI 데이터 분석관 안내 및 면책 고지
+              </div>
+              본 게시글은 핵또 내부 통계 알고리즘과 생성형 AI가 직전 회차 공공 추첨 데이터를 바탕으로 작성한 순수 참고용 분석 칼럼입니다. 로또 추첨은 매 회차 완벽한 독립 확률 시행이며, 어떠한 경우에도 당첨을 보증하거나 투자/구매를 권유하지 않습니다.
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 border-t border-glass-border pt-4 mt-6">
             {!activePost.isAdmin && (
@@ -2399,7 +2426,9 @@ export function Board() {
                       </span>
                       <div className="text-[0.72rem] text-dim mt-1 text-left flex items-center gap-2">
                         <span>
-                          {post.isAdmin ? (
+                          {post.isAi ? (
+                            <AiBadge className="mr-1" />
+                          ) : post.isAdmin ? (
                             <span className="bg-gradient-to-br from-[#FFD700] to-[#F7931A] bg-clip-text text-transparent font-bold mr-1">
                               [M] 관리자
                             </span>
