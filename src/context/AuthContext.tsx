@@ -13,7 +13,11 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (accessToken: string, refreshToken: string, userData: User) => void;
+  login: (
+    accessToken: string,
+    refreshToken: string,
+    userData?: User | null,
+  ) => void;
   logout: () => void;
   getAccessToken: () => string | null;
   requireAuthAction: (callback: () => void) => void;
@@ -37,6 +41,31 @@ export const isTokenExpired = (token: string | null): boolean => {
     return payload.exp * 1000 <= Date.now();
   } catch {
     return true;
+  }
+};
+
+export const decodeUserFromToken = (token: string | null): User | null => {
+  if (!token) return null;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(
+      base64.length + ((4 - (base64.length % 4)) % 4),
+      '=',
+    );
+    const payload = JSON.parse(atob(padded));
+    const id = payload?.sub || payload?.id;
+    if (!id) return null;
+    return {
+      id: String(id),
+      email: typeof payload.email === 'string' ? payload.email : null,
+      nickname: typeof payload.nickname === 'string' ? payload.nickname : null,
+      avatarUrl:
+        typeof payload.avatarUrl === 'string' ? payload.avatarUrl : null,
+    };
+  } catch {
+    return null;
   }
 };
 
@@ -105,27 +134,87 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     const storedUser = localStorage.getItem('user');
-    if (token && storedUser) {
+    if (token) {
       if (isTokenExpired(token) && isTokenExpired(refreshToken)) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         return null;
       }
-      try {
-        return JSON.parse(storedUser);
-      } catch {
-        return null;
+      if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
+        try {
+          const parsed = JSON.parse(storedUser);
+          if (parsed && typeof parsed === 'object' && parsed.id) {
+            return parsed as User;
+          }
+        } catch {
+          // Fall back to token decoding
+        }
+      }
+      const fallbackUser = decodeUserFromToken(token);
+      if (fallbackUser) {
+        localStorage.setItem('user', JSON.stringify(fallbackUser));
+        return fallbackUser;
       }
     }
     return null;
   });
 
-  const login = (accessToken: string, refreshToken: string, userData: User) => {
+  const syncUserFromServer = async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token || isTokenExpired(token)) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const resData = await res.json();
+        const raw = resData.data?.data || resData.data || resData;
+        if (raw && typeof raw === 'object' && raw.id) {
+          const syncedUser: User = {
+            id: String(raw.id),
+            email: raw.email ?? null,
+            nickname: raw.nickname ?? null,
+            avatarUrl: raw.avatarUrl ?? null,
+          };
+          localStorage.setItem('user', JSON.stringify(syncedUser));
+          setUser(syncedUser);
+        }
+      }
+    } catch {
+      // Ignore network errors during background profile sync
+    }
+  };
+
+  const login = (
+    accessToken: string,
+    refreshToken: string,
+    userData?: User | null,
+  ) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+
+    const decoded = decodeUserFromToken(accessToken);
+    const resolvedUser: User | null =
+      userData && typeof userData === 'object' && userData.id
+        ? userData
+        : decoded
+          ? {
+              ...decoded,
+              email: userData?.email || decoded.email,
+              nickname: userData?.nickname || decoded.nickname,
+              avatarUrl: userData?.avatarUrl || decoded.avatarUrl,
+            }
+          : null;
+
+    if (resolvedUser) {
+      localStorage.setItem('user', JSON.stringify(resolvedUser));
+      setUser(resolvedUser);
+    }
+
+    if (!userData?.id || !userData?.email) {
+      void syncUserFromServer();
+    }
   };
 
   const logout = () => {
@@ -142,8 +231,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     window.addEventListener('auth:logout', handleAuthLogout);
 
     const token = localStorage.getItem('accessToken');
-    if (token && isTokenExpired(token)) {
-      void refreshAccessToken();
+    if (token) {
+      if (isTokenExpired(token)) {
+        void refreshAccessToken().then((newToken) => {
+          if (newToken) {
+            void syncUserFromServer();
+          }
+        });
+      } else {
+        void syncUserFromServer();
+      }
     }
 
     return () => {
@@ -162,7 +259,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (user) {
       callback();
     } else {
-      window.location.href = '/login';
+      window.dispatchEvent(new CustomEvent('auth:required'));
     }
   };
 

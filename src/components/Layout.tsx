@@ -36,7 +36,10 @@ const MENU_GROUPS = [
   },
   {
     title: '예측 시스템',
-    items: [{ path: '/generate', label: '예측번호 분석기' }],
+    items: [
+      { path: '/generate', label: '예측번호 분석기' },
+      { path: '/draw', label: '예측번호 추첨기' },
+    ],
   },
   {
     title: '마이페이지',
@@ -54,7 +57,9 @@ const MENU_GROUPS = [
 export function Layout() {
   const {
     alert,
+    showAlert,
     hasUnsavedWeights,
+    isDrawingInProgress,
     showUnsavedModal,
     setShowUnsavedModal,
     setUnsavedActionTarget,
@@ -186,6 +191,15 @@ export function Layout() {
       setIsMobileMenuOpen(false);
     }
 
+    if (isDrawingInProgress && path !== location.pathname) {
+      e.preventDefault();
+      showAlert(
+        'error',
+        '추첨이 진행 중입니다. 모든 번호(6구+보너스) 추첨을 완료한 후 이동해 주세요.',
+      );
+      return;
+    }
+
     if (path === '/system' && !hasAdminAccess) {
       e.preventDefault();
       setShowAdminModal(true);
@@ -199,6 +213,26 @@ export function Layout() {
       });
       setShowUnsavedModal(true);
     }
+  };
+
+  const handleSafeNavigate = (path: string) => {
+    if (isDrawingInProgress && path !== location.pathname) {
+      showAlert(
+        'error',
+        '추첨이 진행 중입니다. 모든 번호(6구+보너스) 추첨을 완료한 후 이동해 주세요.',
+      );
+      return;
+    }
+
+    if (hasUnsavedWeights && path !== location.pathname) {
+      setUnsavedActionTarget(() => () => {
+        navigate(path);
+      });
+      setShowUnsavedModal(true);
+      return;
+    }
+
+    navigate(path);
   };
 
   const isYearlySubscribed =
@@ -225,7 +259,7 @@ export function Layout() {
           <div className="flex items-center gap-8">
             <button
               type="button"
-              onClick={() => navigate('/home')}
+              onClick={() => handleSafeNavigate('/home')}
               className="group flex cursor-pointer items-center gap-2.5 border-none bg-transparent p-0 focus:outline-none"
             >
               <HacttoLogo
@@ -283,7 +317,9 @@ export function Layout() {
                     <div key={group.title} className="dropdown-container">
                       <button
                         type="button"
-                        onClick={() => navigate(filteredItems[0].path)}
+                        onClick={() =>
+                          handleSafeNavigate(filteredItems[0].path)
+                        }
                         className={`flex cursor-pointer items-center gap-1 rounded-xl border-none px-3.5 py-2 text-[0.9rem] font-semibold transition-all ${
                           isActive
                             ? 'bg-primary-cyan/10 text-primary-cyan'
@@ -368,7 +404,11 @@ export function Layout() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => navigate('/login')}
+                    onClick={() =>
+                      navigate('/login', {
+                        state: { from: location.pathname },
+                      })
+                    }
                     className="cursor-pointer rounded-xl border-none bg-transparent px-3 py-1.5 text-[0.88rem] font-semibold text-muted transition-colors hover:bg-surface-hover hover:text-main"
                   >
                     로그인

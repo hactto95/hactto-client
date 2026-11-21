@@ -45,6 +45,8 @@ interface AppContextType {
   appendAuth: (url: string) => string;
   hasUnsavedWeights: boolean;
   setHasUnsavedWeights: (val: boolean) => void;
+  isDrawingInProgress: boolean;
+  setIsDrawingInProgress: (val: boolean) => void;
   showUnsavedModal: boolean;
   setShowUnsavedModal: (val: boolean) => void;
   unsavedActionTarget: (() => void) | null;
@@ -88,6 +90,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Unsaved weights warning states
   const [hasUnsavedWeights, setHasUnsavedWeights] = useState<boolean>(false);
+  const [isDrawingInProgress, setIsDrawingInProgress] =
+    useState<boolean>(false);
   const [showUnsavedModal, setShowUnsavedModal] = useState<boolean>(false);
   const [unsavedActionTarget, setUnsavedActionTarget] = useState<
     (() => void) | null
@@ -587,6 +591,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         appendAuth,
         hasUnsavedWeights,
         setHasUnsavedWeights,
+        isDrawingInProgress,
+        setIsDrawingInProgress,
         showUnsavedModal,
         setShowUnsavedModal,
         unsavedActionTarget,
