@@ -7,6 +7,15 @@
 
 - Always write Pull Request titles and bodies in detailed English.
 
+## Versioning and Git Tagging Guidelines
+- **Semantic Versioning (`N.M.L`) Rules**:
+  - `N` (Major) & `M` (Minor): Feature additions and modifications.
+  - `L` (Patch): Bug fixes and error resolutions.
+- **Git Tag Creation Policy**:
+  - Whenever `N` or `M` is updated (any feature-related version bump), a git tag MUST be created on that commit (format: `vN.M.L`, e.g., `v2.0.0`, `v1.9.0`) and pushed to the remote repository (`git push origin vN.M.L`).
+  - Patch updates (`L` only) do not require a git tag unless explicitly requested.
+
+
 ## Git Branch Guidelines
 - Branches must be created using the format: `anti/v1/{type:feat|chore|refactor|fix|hotfix}/{description}`
 
