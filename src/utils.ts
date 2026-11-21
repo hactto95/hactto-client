@@ -64,7 +64,7 @@ export const getBallStyle = (num: number) => {
       color: 'var(--text-dim)',
       border: '1.5px dashed var(--border-glass-strong)',
     };
-  if (num <= 10)
+  if (num < 10)
     return {
       background:
         'linear-gradient(145deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%)',
@@ -73,7 +73,7 @@ export const getBallStyle = (num: number) => {
         '0 4px 12px rgba(245, 158, 11, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.45)',
       textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
-  if (num <= 20)
+  if (num < 20)
     return {
       background:
         'linear-gradient(145deg, #60a5fa 0%, #3182f6 55%, #1d4ed8 100%)',
@@ -82,7 +82,7 @@ export const getBallStyle = (num: number) => {
         '0 4px 12px rgba(49, 130, 246, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.4)',
       textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
-  if (num <= 30)
+  if (num < 30)
     return {
       background:
         'linear-gradient(145deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%)',
@@ -91,7 +91,7 @@ export const getBallStyle = (num: number) => {
         '0 4px 12px rgba(244, 63, 94, 0.28), inset 0 2px 3px rgba(255, 255, 255, 0.4)',
       textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     };
-  if (num <= 40)
+  if (num < 40)
     return {
       background:
         'linear-gradient(145deg, #94a3b8 0%, #64748b 55%, #475569 100%)',
