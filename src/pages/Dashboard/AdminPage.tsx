@@ -391,7 +391,7 @@ export function AdminPage() {
       } else {
         showAlert(
           'success',
-          `🎉 제 ${result.round || roundVal || aiLatestRound}회차 AI 노하우 게시글(#${result.postId})이 성공적으로 생성 및 발행되었습니다!`,
+          `제 ${result.round || roundVal || aiLatestRound}회차 AI 노하우 게시글(#${result.postId})이 성공적으로 생성 및 발행되었습니다.`,
         );
         setAiTargetRoundInput('');
         setAiForceGenerate(false);
@@ -438,7 +438,7 @@ export function AdminPage() {
       }
       showAlert(
         'success',
-        '🎉 핵또 AI 분석관 명의로 노하우 게시글이 등록되었습니다!',
+        '핵또 AI 분석관 명의로 노하우 게시글이 등록되었습니다.',
       );
       setManualAiTitle('');
       setManualAiContent('');
@@ -1484,7 +1484,19 @@ export function AdminPage() {
                   <div className="bg-surface p-4 rounded-[10px] border border-primary-cyan/30 shrink-0">
                     <div className="flex justify-between items-center mb-1.5">
                       <h4 className="text-[0.92rem] text-primary-cyan m-0 flex items-center gap-1.5">
-                        🤖 Gemini AI 주간 노하우 게시글 자동 생성 & 발행
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                        </svg>
+                        Gemini AI 주간 노하우 게시글 자동 생성 및 발행
                       </h4>
                       {aiLatestRound && (
                         <span className="text-[0.72rem] bg-primary-cyan/10 text-primary-cyan border border-primary-cyan/30 px-2 py-0.5 rounded-full font-semibold">
@@ -1540,8 +1552,8 @@ export function AdminPage() {
                           className="btn-submit h-9 px-4 text-[0.82rem] bg-primary-cyan text-white border-none font-bold rounded-lg cursor-pointer hover:opacity-90 disabled:opacity-50"
                         >
                           {generatingAiPost
-                            ? '🤖 Gemini AI가 분석글 작성 중... (약 5~15초)'
-                            : '🤖 AI 분석글 자동 생성 및 발행 실행'}
+                            ? 'Gemini AI가 분석글 작성 중... (약 5~15초)'
+                            : 'AI 분석글 자동 생성 및 발행 실행'}
                         </button>
                       </div>
                     </form>
@@ -1551,8 +1563,21 @@ export function AdminPage() {
                   <div className="bg-surface p-4 rounded-[10px] border border-glass-border shrink-0">
                     <div className="flex justify-between items-center">
                       <div className="text-left">
-                        <h4 className="text-[0.9rem] text-primary-purple m-0 mb-1">
-                          ✍️ [핵또 AI 분석관] 명의로 직접 원고 작성 & 발행
+                        <h4 className="text-[0.9rem] text-primary-purple m-0 mb-1 flex items-center gap-1.5">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                          </svg>
+                          [핵또 AI 분석관] 명의로 직접 원고 작성 및 발행
                         </h4>
                         <p className="text-xs text-dim m-0">
                           Gemini API 장애 시 또는 직접 작성/편집한 마크다운
@@ -1564,9 +1589,7 @@ export function AdminPage() {
                         onClick={() => setShowManualAiForm((prev) => !prev)}
                         className="btn-neon btn-outline text-[0.76rem] px-3 h-8 whitespace-nowrap w-auto"
                       >
-                        {showManualAiForm
-                          ? '입력창 접기 ▲'
-                          : '직접 작성 열기 ▼'}
+                        {showManualAiForm ? '입력창 접기' : '직접 작성 열기'}
                       </button>
                     </div>
 
@@ -1588,7 +1611,7 @@ export function AdminPage() {
                           <input
                             type="text"
                             className="input-glow h-9 flex-1 text-[0.82rem] px-3"
-                            placeholder="게시글 제목 (예: 🔥 [1150회 분석] 직전 당첨번호와 가장 닮은 이번 주 원픽!)"
+                            placeholder="게시글 제목 (예: [1150회 분석] 직전 당첨번호와 가장 닮은 이번 주 원픽!)"
                             value={manualAiTitle}
                             onChange={(e) => setManualAiTitle(e.target.value)}
                             disabled={submittingManualAi}
@@ -1609,7 +1632,7 @@ export function AdminPage() {
                           >
                             {submittingManualAi
                               ? '등록 중...'
-                              : '✍️ AI 분석관 명의로 게시글 등록'}
+                              : 'AI 분석관 명의로 게시글 등록'}
                           </button>
                         </div>
                       </form>
@@ -1628,7 +1651,7 @@ export function AdminPage() {
                         disabled={loadingAiPosts}
                         className="text-xs text-primary-cyan bg-transparent border border-primary-cyan/30 rounded px-2.5 py-1 cursor-pointer hover:bg-primary-cyan/10"
                       >
-                        {loadingAiPosts ? '새로고침 중...' : '↻ 새로고침'}
+                        {loadingAiPosts ? '새로고침 중...' : '새로고침'}
                       </button>
                     </div>
 
