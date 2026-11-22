@@ -39,7 +39,7 @@ export const AiBadge: React.FC<AiBadgeProps> = ({
       {showTooltip && hovered && (
         <div className="absolute left-0 bottom-full mb-2 w-64 p-3 rounded-xl bg-card border border-glass-border shadow-2xl backdrop-blur-md text-[0.7rem] text-main leading-relaxed z-50 animate-fade-in pointer-events-none">
           <p className="font-bold text-primary-cyan mb-1 flex items-center gap-1">
-            <span>🤖 핵또 공식 AI 데이터 브리핑</span>
+            <span>핵또 공식 AI 데이터 브리핑</span>
           </p>
           <p className="text-muted">
             본 게시글은 핵또 통계 알고리즘과 생성형 AI가 공공 회차 데이터를

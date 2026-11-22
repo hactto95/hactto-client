@@ -1116,13 +1116,6 @@ export function Board() {
             {category === 'WINNING' && winningImageUrl ? (
               <div className="p-5 bg-surface rounded-xl border border-glass-border">
                 <h3 className="m-0 mb-2 text-primary-cyan">
-                  {lottoRank === 1
-                    ? '🏆'
-                    : lottoRank === 2
-                      ? '🥈'
-                      : lottoRank === 3
-                        ? '🥉'
-                        : '🎊'}{' '}
                   {lottoRank}등 당첨! 축하합니다!
                 </h3>
                 {lottoRound && (
@@ -1133,7 +1126,22 @@ export function Board() {
               </div>
             ) : (
               <>
-                <span className="block text-[1.2rem] mb-1">📤</span>
+                <span className="flex justify-center mb-1.5 text-primary-cyan">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" x2="12" y1="3" y2="15" />
+                  </svg>
+                </span>
                 <span className="text-[0.78rem] text-dim">
                   클릭하거나 파일을 여기로 드래그하여 업로드하세요
                 </span>
@@ -1986,9 +1994,9 @@ export function Board() {
             {!activePost.isAdmin && (
               <button
                 onClick={() => setShowReportModal(true)}
-                className="py-1 px-2 bg-error/10 border border-error/20 text-error rounded text-xs cursor-pointer"
+                className="py-1 px-2.5 bg-error/10 border border-error/20 text-error rounded text-xs cursor-pointer inline-flex items-center gap-1"
               >
-                🚨 신고하기
+                신고하기
               </button>
             )}
             <button

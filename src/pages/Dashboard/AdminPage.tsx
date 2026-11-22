@@ -35,9 +35,9 @@ export function AdminPage() {
   const [activeTab, setActiveTab] = useState<
     | 'algo'
     | 'system'
+    | 'AI_POSTS'
     | 'notices'
     | 'inquiries'
-    | 'users'
     | 'users'
     | 'NICKNAME_REPORTS'
     | 'BANNED_WORDS'
@@ -320,6 +320,159 @@ export function AdminPage() {
     }
   };
 
+  // AI Posts Management States
+  const [aiPosts, setAiPosts] = useState<any[]>([]);
+  const [aiLatestRound, setAiLatestRound] = useState<number | null>(null);
+  const [loadingAiPosts, setLoadingAiPosts] = useState(false);
+  const [aiTargetRoundInput, setAiTargetRoundInput] = useState('');
+  const [aiForceGenerate, setAiForceGenerate] = useState(false);
+  const [generatingAiPost, setGeneratingAiPost] = useState(false);
+  const [manualAiRound, setManualAiRound] = useState('');
+  const [manualAiTitle, setManualAiTitle] = useState('');
+  const [manualAiContent, setManualAiContent] = useState('');
+  const [submittingManualAi, setSubmittingManualAi] = useState(false);
+  const [showManualAiForm, setShowManualAiForm] = useState(false);
+
+  const fetchAiPosts = async () => {
+    setLoadingAiPosts(true);
+    try {
+      const res = await fetch(appendAuth(`${API_BASE_URL}/manager/ai-posts`));
+      const data = await res.json();
+      if (res.ok) {
+        const result = data.data || data;
+        setAiPosts(result.posts || []);
+        if (result.latestRound) {
+          setAiLatestRound(result.latestRound);
+          setManualAiRound((prev) => prev || String(result.latestRound));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      showAlert('error', 'AI 게시글 목록을 불러오지 못했습니다.');
+    } finally {
+      setLoadingAiPosts(false);
+    }
+  };
+
+  const handleGenerateAiPost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const roundVal = aiTargetRoundInput.trim()
+      ? parseInt(aiTargetRoundInput.trim(), 10)
+      : undefined;
+    if (aiTargetRoundInput.trim() && (isNaN(roundVal!) || roundVal! <= 0)) {
+      showAlert('error', '올바른 회차 번호를 입력해 주세요.');
+      return;
+    }
+
+    setGeneratingAiPost(true);
+    try {
+      const res = await fetch(
+        appendAuth(`${API_BASE_URL}/manager/ai-posts/generate`),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            round: roundVal,
+            force: aiForceGenerate,
+          }),
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'AI 게시글 자동 생성에 실패했습니다.');
+      }
+
+      const result = data.data || data;
+      if (result.skipped) {
+        showAlert(
+          'error',
+          `제 ${result.round || roundVal || aiLatestRound}회차 AI 노하우 글이 이미 존재합니다 (게시글 #${result.postId}). 새로 작성하려면 [중복 회차 강제 재발행]을 체크해 주세요.`,
+        );
+      } else {
+        showAlert(
+          'success',
+          `제 ${result.round || roundVal || aiLatestRound}회차 AI 노하우 게시글(#${result.postId})이 성공적으로 생성 및 발행되었습니다.`,
+        );
+        setAiTargetRoundInput('');
+        setAiForceGenerate(false);
+        await fetchAiPosts();
+      }
+    } catch (err: any) {
+      showAlert(
+        'error',
+        err.message || 'AI 게시글 생성 중 오류가 발생했습니다.',
+      );
+    } finally {
+      setGeneratingAiPost(false);
+    }
+  };
+
+  const handleCreateManualAiPost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualAiTitle.trim() || !manualAiContent.trim()) {
+      showAlert('error', '제목과 본문 내용을 모두 입력해 주세요.');
+      return;
+    }
+
+    const roundVal = manualAiRound.trim()
+      ? parseInt(manualAiRound.trim(), 10)
+      : aiLatestRound || undefined;
+
+    setSubmittingManualAi(true);
+    try {
+      const res = await fetch(
+        appendAuth(`${API_BASE_URL}/manager/ai-posts/manual`),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            round: roundVal,
+            title: manualAiTitle.trim(),
+            content: manualAiContent.trim(),
+          }),
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'AI 수동 게시글 등록에 실패했습니다.');
+      }
+      showAlert(
+        'success',
+        '핵또 AI 분석관 명의로 노하우 게시글이 등록되었습니다.',
+      );
+      setManualAiTitle('');
+      setManualAiContent('');
+      setShowManualAiForm(false);
+      await fetchAiPosts();
+    } catch (err: any) {
+      showAlert('error', err.message || '게시글 등록 중 오류가 발생했습니다.');
+    } finally {
+      setSubmittingManualAi(false);
+    }
+  };
+
+  const handleDeleteAiPost = (postId: number) => {
+    setConfirmConfig({
+      isOpen: true,
+      message: `해당 AI 분석 게시글(#${postId})을 완전히 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          const res = await fetch(
+            appendAuth(`${API_BASE_URL}/manager/posts/${postId}`),
+            { method: 'DELETE' },
+          );
+          if (!res.ok) throw new Error('삭제 실패');
+          showAlert('success', 'AI 게시글이 삭제되었습니다.');
+          await fetchAiPosts();
+        } catch {
+          showAlert('error', '게시글 삭제에 실패했습니다.');
+        } finally {
+          setConfirmConfig(null);
+        }
+      },
+    });
+  };
+
   useEffect(() => {
     if (true && activeTab === 'algo') {
       fetchAlgorithms();
@@ -328,7 +481,9 @@ export function AdminPage() {
 
   useEffect(() => {
     if (true) {
-      if (activeTab === 'notices') {
+      if (activeTab === 'AI_POSTS') {
+        fetchAiPosts();
+      } else if (activeTab === 'notices') {
         fetchAdminNotices();
       } else if (activeTab === 'inquiries') {
         fetchAdminInquiries();
@@ -995,6 +1150,16 @@ export function AdminPage() {
               </button>
               <button
                 className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'AI_POSTS'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
+                onClick={() => setActiveTab('AI_POSTS')}
+              >
+                AI 게시글
+              </button>
+              <button
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
                   activeTab === 'notices'
                     ? 'active-tab text-primary-cyan'
                     : 'text-dim'
@@ -1308,6 +1473,240 @@ export function AdminPage() {
                         ? '분석 중...'
                         : '예측번호 분석 실행'}
                     </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'AI_POSTS' && (
+                /* AI Posts Management Tab */
+                <div className="flex flex-col gap-4 h-full overflow-y-auto pr-1">
+                  {/* 1. Gemini AI 자동 생성 및 발행 */}
+                  <div className="bg-surface p-4 rounded-[10px] border border-primary-cyan/30 shrink-0">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <h4 className="text-[0.92rem] text-primary-cyan m-0 flex items-center gap-1.5">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                        </svg>
+                        Gemini AI 주간 노하우 게시글 자동 생성 및 발행
+                      </h4>
+                      {aiLatestRound && (
+                        <span className="text-[0.72rem] bg-primary-cyan/10 text-primary-cyan border border-primary-cyan/30 px-2 py-0.5 rounded-full font-semibold">
+                          최신 당첨 회차: 제 {aiLatestRound}회
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-dim m-0 mb-3 text-left leading-relaxed">
+                      주간 스케줄러 자동 발행이 실패했거나 특정 회차의 AI
+                      분석글을 수동으로 즉시 생성할 때 실행합니다. 회차를
+                      비워두면 최신 당첨 회차(
+                      {aiLatestRound ? `${aiLatestRound}회` : '최신'}) 기준으로
+                      파워블로거 칼럼을 작성하여 노하우 게시판에 등록하고
+                      Slack으로 알림을 보냅니다.
+                    </p>
+                    <form
+                      onSubmit={handleGenerateAiPost}
+                      className="flex flex-col gap-3"
+                    >
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <input
+                          type="number"
+                          min="1"
+                          className="input-glow h-9 w-[220px] text-[0.82rem] px-3"
+                          placeholder={
+                            aiLatestRound
+                              ? `회차 번호 (미입력 시 ${aiLatestRound}회)`
+                              : '회차 번호 (미입력 시 최신 회차)'
+                          }
+                          value={aiTargetRoundInput}
+                          onChange={(e) =>
+                            setAiTargetRoundInput(e.target.value)
+                          }
+                          disabled={generatingAiPost}
+                        />
+                        <label className="flex items-center gap-1.5 text-[0.78rem] text-muted cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={aiForceGenerate}
+                            onChange={(e) =>
+                              setAiForceGenerate(e.target.checked)
+                            }
+                            disabled={generatingAiPost}
+                            className="accent-primary-cyan cursor-pointer"
+                          />
+                          이미 해당 회차 글이 있어도 새로 생성 (강제 재발행)
+                        </label>
+                      </div>
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={generatingAiPost}
+                          className="btn-submit h-9 px-4 text-[0.82rem] bg-primary-cyan text-white border-none font-bold rounded-lg cursor-pointer hover:opacity-90 disabled:opacity-50"
+                        >
+                          {generatingAiPost
+                            ? 'Gemini AI가 분석글 작성 중... (약 5~15초)'
+                            : 'AI 분석글 자동 생성 및 발행 실행'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* 2. 수동 직접 작성 (Fallback) */}
+                  <div className="bg-surface p-4 rounded-[10px] border border-glass-border shrink-0">
+                    <div className="flex justify-between items-center">
+                      <div className="text-left">
+                        <h4 className="text-[0.9rem] text-primary-purple m-0 mb-1 flex items-center gap-1.5">
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                          </svg>
+                          [핵또 AI 분석관] 명의로 직접 원고 작성 및 발행
+                        </h4>
+                        <p className="text-xs text-dim m-0">
+                          Gemini API 장애 시 또는 직접 작성/편집한 마크다운
+                          분석글을 AI 분석관 계정으로 등록합니다.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowManualAiForm((prev) => !prev)}
+                        className="btn-neon btn-outline text-[0.76rem] px-3 h-8 whitespace-nowrap w-auto"
+                      >
+                        {showManualAiForm ? '입력창 접기' : '직접 작성 열기'}
+                      </button>
+                    </div>
+
+                    {showManualAiForm && (
+                      <form
+                        onSubmit={handleCreateManualAiPost}
+                        className="flex flex-col gap-2.5 mt-3 pt-3 border-t border-glass-border"
+                      >
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            min="1"
+                            className="input-glow h-9 w-[140px] text-[0.82rem] px-3"
+                            placeholder="회차 (예: 1150)"
+                            value={manualAiRound}
+                            onChange={(e) => setManualAiRound(e.target.value)}
+                            disabled={submittingManualAi}
+                          />
+                          <input
+                            type="text"
+                            className="input-glow h-9 flex-1 text-[0.82rem] px-3"
+                            placeholder="게시글 제목 (예: [1150회 분석] 직전 당첨번호와 가장 닮은 이번 주 원픽!)"
+                            value={manualAiTitle}
+                            onChange={(e) => setManualAiTitle(e.target.value)}
+                            disabled={submittingManualAi}
+                          />
+                        </div>
+                        <textarea
+                          className="input-glow min-h-[160px] text-[0.82rem] p-3 resize-y leading-relaxed"
+                          placeholder="마크다운(Markdown) 형식의 본문 내용을 입력해 주세요..."
+                          value={manualAiContent}
+                          onChange={(e) => setManualAiContent(e.target.value)}
+                          disabled={submittingManualAi}
+                        />
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            disabled={submittingManualAi}
+                            className="btn-submit h-9 px-4 text-[0.82rem] bg-primary-purple text-white border-none font-bold rounded-lg cursor-pointer hover:opacity-90 disabled:opacity-50"
+                          >
+                            {submittingManualAi
+                              ? '등록 중...'
+                              : 'AI 분석관 명의로 게시글 등록'}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+
+                  {/* 3. 발행된 AI 게시글 이력 */}
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-[0.9rem] text-main m-0 text-left">
+                        발행된 AI 분석 게시글 목록 ({aiPosts.length}건)
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={fetchAiPosts}
+                        disabled={loadingAiPosts}
+                        className="text-xs text-primary-cyan bg-transparent border border-primary-cyan/30 rounded px-2.5 py-1 cursor-pointer hover:bg-primary-cyan/10"
+                      >
+                        {loadingAiPosts ? '새로고침 중...' : '새로고침'}
+                      </button>
+                    </div>
+
+                    {loadingAiPosts ? (
+                      <p className="text-[0.82rem] text-dim">불러오는 중...</p>
+                    ) : aiPosts.length === 0 ? (
+                      <p className="text-[0.82rem] text-dim text-center py-6 bg-surface rounded-lg border border-glass-border">
+                        아직 발행된 AI 분석 게시글이 없습니다.
+                      </p>
+                    ) : (
+                      aiPosts.map((post) => (
+                        <div
+                          key={post.id}
+                          className="bg-surface p-3 rounded-lg border border-glass-border flex justify-between items-center gap-3"
+                        >
+                          <div className="text-left flex-1 overflow-hidden">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-[0.7rem] font-bold px-2 py-0.5 rounded bg-primary-cyan/15 text-primary-cyan border border-primary-cyan/30">
+                                {post.lottoRound
+                                  ? `제 ${post.lottoRound}회`
+                                  : 'AI 칼럼'}
+                              </span>
+                              <span className="text-[0.7rem] text-dim">
+                                #{post.id} ·{' '}
+                                {new Date(post.createdAt).toLocaleString()}
+                              </span>
+                              <span className="text-[0.7rem] text-dim">
+                                조회 {post.views ?? 0}
+                              </span>
+                            </div>
+                            <strong className="block text-[0.85rem] text-main truncate">
+                              {post.title}
+                            </strong>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                navigate(`/board?postId=${post.id}`)
+                              }
+                              className="bg-primary-cyan/10 border border-primary-cyan/30 text-primary-cyan text-xs py-1 px-2.5 rounded cursor-pointer hover:bg-primary-cyan/20"
+                            >
+                              보기
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteAiPost(post.id)}
+                              className="bg-error/10 border border-error/30 text-error text-xs py-1 px-2.5 rounded cursor-pointer hover:bg-error/20"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
