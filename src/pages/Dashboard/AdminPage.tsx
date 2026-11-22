@@ -1580,8 +1580,8 @@ export function AdminPage() {
                           [핵또 AI 분석관] 명의로 직접 원고 작성 및 발행
                         </h4>
                         <p className="text-xs text-dim m-0">
-                          Gemini API 장애 시 또는 직접 작성/편집한 마크다운
-                          분석글을 AI 분석관 계정으로 등록합니다.
+                          Gemini API 장애 시 또는 직접 작성/편집한 분석글을 AI
+                          분석관 계정으로 등록합니다.
                         </p>
                       </div>
                       <button
@@ -1619,7 +1619,7 @@ export function AdminPage() {
                         </div>
                         <textarea
                           className="input-glow min-h-[160px] text-[0.82rem] p-3 resize-y leading-relaxed"
-                          placeholder="마크다운(Markdown) 형식의 본문 내용을 입력해 주세요..."
+                          placeholder="게시글 본문 내용을 입력해 주세요..."
                           value={manualAiContent}
                           onChange={(e) => setManualAiContent(e.target.value)}
                           disabled={submittingManualAi}
