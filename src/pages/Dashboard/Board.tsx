@@ -1453,16 +1453,10 @@ export function Board() {
                 <option value="title" className="bg-surface-elevated text-main">
                   제목
                 </option>
-                <option
-                  value="content"
-                  className="bg-surface-elevated text-main"
-                >
+                <option value="content" className="bg-surface-elevated text-main">
                   내용
                 </option>
-                <option
-                  value="author"
-                  className="bg-surface-elevated text-main"
-                >
+                <option value="author" className="bg-surface-elevated text-main">
                   작성자
                 </option>
               </select>
