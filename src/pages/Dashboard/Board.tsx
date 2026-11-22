@@ -46,6 +46,17 @@ interface Post {
   }[];
 }
 
+const cleanMarkdownSyntax = (text: string) => {
+  return text
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*\*([^*]*)$/gm, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/^>\s*\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/gim, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/^-{3,}\s*$/gm, '');
+};
+
 const renderContentWithImages = (content: string) => {
   const parts = content.split(/(!\[[^\]]*\]\([^)]+\))/g);
   return parts.map((part, index) => {
@@ -60,7 +71,7 @@ const renderContentWithImages = (content: string) => {
         />
       );
     }
-    return <span key={index}>{part}</span>;
+    return <span key={index}>{cleanMarkdownSyntax(part)}</span>;
   });
 };
 
@@ -1453,10 +1464,16 @@ export function Board() {
                 <option value="title" className="bg-surface-elevated text-main">
                   제목
                 </option>
-                <option value="content" className="bg-surface-elevated text-main">
+                <option
+                  value="content"
+                  className="bg-surface-elevated text-main"
+                >
                   내용
                 </option>
-                <option value="author" className="bg-surface-elevated text-main">
+                <option
+                  value="author"
+                  className="bg-surface-elevated text-main"
+                >
                   작성자
                 </option>
               </select>
