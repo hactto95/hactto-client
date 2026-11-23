@@ -4,6 +4,7 @@ import { API_BASE_URL } from '../../utils';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { HacttoLogo } from '../../components/HacttoLogo';
+import { PasswordInput } from '../../components/PasswordInput';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -128,11 +129,9 @@ export const LoginPage: React.FC = () => {
               <label className="mb-1.5 block text-xs font-semibold text-muted">
                 비밀번호
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-glow"
                 required
                 placeholder="비밀번호를 입력해주세요"
               />
