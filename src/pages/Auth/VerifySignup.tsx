@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../utils';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import { PasswordInput } from '../../components/PasswordInput';
 
 export const VerifySignup = () => {
   const [searchParams] = useSearchParams();
@@ -150,11 +151,9 @@ export const VerifySignup = () => {
                 (영문 대소문자/숫자/특수기호 포함 10자 이상)
               </span>
             </label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input-glow"
               required
               placeholder="비밀번호를 입력해주세요"
             />
@@ -164,11 +163,9 @@ export const VerifySignup = () => {
             <label className="mb-1.5 block text-xs font-semibold text-muted">
               비밀번호 확인
             </label>
-            <input
-              type="password"
+            <PasswordInput
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
-              className="input-glow"
               required
               placeholder="비밀번호를 한번 더 입력해주세요"
             />
