@@ -2,6 +2,10 @@
 
 ## Pull Request Guidelines
 - When creating a Release Pull Request from the `dev` branch to the `main` branch, no additional version bump is required (as it should already be updated in `dev`). However, you must explicitly highlight the accumulated version difference between `main` and `dev` (e.g., `1.0.0` ➔ `1.1.0`) in the PR title or description so reviewers can easily trace the release version.
+- **Preventing `package.json` Merge Conflicts on `dev` ➔ `main` Release PRs (MANDATORY)**:
+  - Because GitHub squash-merges (`(#PR)`) previous `dev` ➔ `main` Release PRs, `origin/main` has a diverged commit hash from `origin/dev`, causing `package.json` / `package-lock.json` version conflicts on subsequent Release PRs.
+  - **Before creating (or right after creating) any Release PR from `dev` to `main`**, AND **before creating a new feature branch from `dev`**, always check if `origin/main` is already an ancestor of `dev` (`git merge-base --is-ancestor origin/main dev`).
+  - If `origin/main` is NOT an ancestor of `dev`, you MUST sync `origin/main` into `dev` keeping `dev`'s newer version and files (`git checkout dev && git pull origin dev && git merge origin/main -X ours -m "chore: sync origin/main into dev to prevent release PR conflicts" && git push origin dev`) so the `dev` ➔ `main` PR is 100% conflict-free (`MERGEABLE`).
 
 - When creating a Pull Request to the `dev` branch, you must bump the version in `package.json` and run `npm install` before committing.
 
