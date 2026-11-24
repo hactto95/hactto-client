@@ -1831,7 +1831,7 @@ export function Board() {
 
                       return (
                         <div
-                          className="absolute top-full right-auto left-0 mt-2 bg-modal border border-glass-border rounded-md py-2.5 px-3.5 shadow-glass z-10 flex flex-col gap-3 whitespace-nowrap backdrop-blur-xl"
+                          className="absolute top-full right-0 sm:right-auto sm:left-0 mt-2 bg-modal border border-glass-border rounded-md py-2.5 px-3.5 shadow-glass z-10 flex flex-col gap-3 max-w-[calc(100vw-40px)] sm:whitespace-nowrap backdrop-blur-xl"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {allAttachments.map((att, index) => {
@@ -1925,11 +1925,11 @@ export function Board() {
                             return (
                               <div
                                 key={index}
-                                className="flex items-center gap-5"
+                                className="flex items-center justify-between gap-3 sm:gap-5"
                               >
-                                <div className="text-[0.85rem] text-main flex items-center gap-2">
+                                <div className="text-[0.85rem] text-main flex items-center gap-2 min-w-0">
                                   {icon}
-                                  <span className="overflow-hidden text-ellipsis max-w-[250px]">
+                                  <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[140px] sm:max-w-[250px]">
                                     {filename}
                                   </span>
                                 </div>
@@ -2656,8 +2656,11 @@ export function Board() {
             <div
               className="fixed bg-modal border border-glass-border rounded-lg p-2 flex flex-col gap-1 z-[1000000] min-w-[120px] shadow-glass backdrop-blur-xl"
               style={{
-                top: nicknameMenuTarget.y,
-                left: nicknameMenuTarget.x,
+                top: Math.min(nicknameMenuTarget.y, window.innerHeight - 105),
+                left: Math.min(
+                  Math.max(12, nicknameMenuTarget.x),
+                  window.innerWidth - 136,
+                ),
               }}
             >
               <button
@@ -2755,8 +2758,20 @@ export function Board() {
                   )}
                   {isPdfPreview ? (
                     <>
+                      <div className="flex items-center justify-between bg-modal border-b border-glass-border px-4 py-2.5 text-main shrink-0">
+                        <span className="text-xs sm:text-sm font-bold">
+                          PDF 문서 미리보기
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setModalPreviewImage(null)}
+                          className="px-3 py-1 rounded-lg bg-surface hover:bg-surface-hover border border-glass-border text-xs font-bold text-main cursor-pointer"
+                        >
+                          ✕ 닫기
+                        </button>
+                      </div>
                       {showPdfNotice && (
-                        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-modal text-main py-2 px-4 rounded-[20px] text-[0.9rem] pointer-events-none z-10 backdrop-blur-xs shadow-glass animate-[fadeInOut_2s_ease-in-out_forwards]">
+                        <div className="hidden sm:block absolute top-14 left-1/2 -translate-x-1/2 bg-modal text-main py-2 px-4 rounded-[20px] text-[0.9rem] pointer-events-none z-10 backdrop-blur-xs shadow-glass animate-[fadeInOut_2s_ease-in-out_forwards]">
                           ESC 키를 눌러 닫을 수 있습니다
                         </div>
                       )}

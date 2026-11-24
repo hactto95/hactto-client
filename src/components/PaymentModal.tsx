@@ -302,7 +302,7 @@ export function PaymentModal({
 
   return createPortal(
     <div className="admin-modal-overlay z-100000">
-      <div className="glass-card w-[90%] max-w-[960px] p-[35px] max-h-[85vh] overflow-hidden text-left relative">
+      <div className="glass-card w-[94%] sm:w-[90%] max-w-[960px] p-5 sm:p-[35px] max-h-[88dvh] overflow-y-auto text-left relative">
         {/* 결제 진행 중 오버레이 */}
         {paymentStatus.status === 'PENDING' && (
           <div className="absolute inset-0 bg-overlay backdrop-blur-sm flex flex-col justify-center items-center z-100 rounded-[inherit]">
@@ -384,7 +384,7 @@ export function PaymentModal({
         <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5 mt-2.5">
           {/* 1번째 열: 혼 단건 충전 카드 (내부에 가로로 긴 미니 카드 3개 포함) */}
           <div
-            className={`glass-card py-6 px-5 border border-glass-border bg-surface flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+            className={`glass-card py-5 px-4 sm:py-6 sm:px-5 border border-glass-border bg-surface flex flex-col h-full min-h-0 lg:min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
               highlight === 'HON'
                 ? 'shadow-[0_0_0_2px_var(--primary-cyan),0_0_20px_4px_var(--primary-cyan-glow)]'
                 : 'shadow-none'
@@ -504,7 +504,7 @@ export function PaymentModal({
 
           {/* 2번째 열: 월간 무제한 이용권 */}
           <div
-            className={`glass-card py-6 px-5 border border-glass-border bg-surface flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+            className={`glass-card py-5 px-4 sm:py-6 sm:px-5 border border-glass-border bg-surface flex flex-col h-full min-h-0 lg:min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
               highlight === 'SUBSCRIPTION'
                 ? 'shadow-[0_0_0_2px_var(--primary-purple),0_0_20px_4px_var(--primary-purple-glow)]'
                 : 'shadow-none'
@@ -581,7 +581,7 @@ export function PaymentModal({
 
           {/* 3번째 열: 연간 무제한 이용권 */}
           <div
-            className={`glass-card relative py-6 px-5 border border-yellow-500/25 bg-yellow-500/5 flex flex-col h-full min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
+            className={`glass-card relative py-5 px-4 sm:py-6 sm:px-5 border border-yellow-500/25 bg-yellow-500/5 flex flex-col h-full min-h-0 lg:min-h-[450px] overflow-visible max-h-none transition-shadow duration-500 ${
               highlight === 'SUBSCRIPTION'
                 ? 'shadow-[0_0_0_2px_#eab308,0_0_20px_4px_rgba(234,179,8,0.4)]'
                 : 'shadow-none'

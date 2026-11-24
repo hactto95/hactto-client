@@ -31,6 +31,21 @@ export function PersonalAnalysisCard({
     return hoveredNumbers.has(num);
   };
 
+  const isSameNumberSet = (targetNums: number[]) => {
+    if (!hoveredNumbers || targetNums.length === 0) return false;
+    if (hoveredNumbers.size !== targetNums.length) return false;
+    return targetNums.every((n) => hoveredNumbers.has(n));
+  };
+
+  const handleTagToggle = (targetNums: number[]) => {
+    if (targetNums.length === 0) return;
+    if (isSameNumberSet(targetNums)) {
+      setHoveredNumbers(null);
+    } else {
+      setHoveredNumbers(new Set(targetNums));
+    }
+  };
+
   const getDecadeNumbers = (decadeIndex: number) => {
     switch (decadeIndex) {
       case 0:
@@ -202,39 +217,74 @@ export function PersonalAnalysisCard({
 
       {/* Main Analysis Sections */}
       <div className="flex flex-col gap-3.5 border-t border-glass-border pt-5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-dim">
+            항목을 탭하거나 마우스를 올리면 해당 번호가 강조됩니다
+          </span>
+          {hoveredNumbers !== null && (
+            <button
+              type="button"
+              onClick={() => setHoveredNumbers(null)}
+              className="cursor-pointer rounded-lg border border-primary-cyan/40 bg-primary-cyan/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan transition-colors hover:bg-primary-cyan/20"
+            >
+              강조 해제
+            </button>
+          )}
+        </div>
+
         {/* Temperatures */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           <span className="text-xs font-semibold text-muted w-[110px] shrink-0">
             번호 온도 분포
           </span>
           <div className="flex gap-2 flex-wrap">
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(getTempNumbers('HOT')))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-600 dark:text-red-400 cursor-pointer"
-            >
-              열번호 🔥 {analysis.hot}개
-            </span>
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(getTempNumbers('WARM')))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/25 text-orange-600 dark:text-orange-400 cursor-pointer"
-            >
-              온번호 🟠 {analysis.warm}개
-            </span>
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(getTempNumbers('COLD')))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-600 dark:text-blue-400 cursor-pointer"
-            >
-              냉번호 ❄️ {analysis.cold}개
-            </span>
+            {(
+              [
+                {
+                  type: 'HOT' as const,
+                  label: `열번호 🔥 ${analysis.hot}개`,
+                  baseClass:
+                    'bg-red-500/10 border-red-500/25 text-red-600 dark:text-red-400',
+                  activeClass: 'ring-2 ring-red-500/50 bg-red-500/20',
+                },
+                {
+                  type: 'WARM' as const,
+                  label: `온번호 🟠 ${analysis.warm}개`,
+                  baseClass:
+                    'bg-orange-500/10 border-orange-500/25 text-orange-600 dark:text-orange-400',
+                  activeClass: 'ring-2 ring-orange-500/50 bg-orange-500/20',
+                },
+                {
+                  type: 'COLD' as const,
+                  label: `냉번호 ❄️ ${analysis.cold}개`,
+                  baseClass:
+                    'bg-blue-500/10 border-blue-500/25 text-blue-600 dark:text-blue-400',
+                  activeClass: 'ring-2 ring-blue-500/50 bg-blue-500/20',
+                },
+              ] as const
+            ).map((t) => {
+              const tempNums = getTempNumbers(t.type);
+              const isActive = isSameNumberSet(tempNums);
+              return (
+                <span
+                  key={t.type}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse' && tempNums.length > 0) {
+                      setHoveredNumbers(new Set(tempNums));
+                    }
+                  }}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                  }}
+                  onClick={() => handleTagToggle(tempNums)}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl border cursor-pointer select-none transition-all ${t.baseClass} ${
+                    isActive ? t.activeClass : ''
+                  }`}
+                >
+                  {t.label}
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -250,22 +300,33 @@ export function PersonalAnalysisCard({
               { label: '20번대', val: analysis.cnt20s, idx: 2 },
               { label: '30번대', val: analysis.cnt30s, idx: 3 },
               { label: '40번대', val: analysis.cnt40s, idx: 4 },
-            ].map((d) => (
-              <span
-                key={d.idx}
-                onMouseEnter={() =>
-                  setHoveredNumbers(new Set(getDecadeNumbers(d.idx)))
-                }
-                onMouseLeave={() => setHoveredNumbers(null)}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-xl cursor-pointer transition-all duration-200 ${
-                  d.val > 0
-                    ? 'bg-primary-cyan/10 border border-primary-cyan/30 text-primary-cyan'
-                    : 'bg-surface border border-glass-border text-dim'
-                }`}
-              >
-                {d.label}: {d.val}개
-              </span>
-            ))}
+            ].map((d) => {
+              const decadeNums = getDecadeNumbers(d.idx);
+              const isActive = isSameNumberSet(decadeNums);
+              return (
+                <span
+                  key={d.idx}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse' && decadeNums.length > 0) {
+                      setHoveredNumbers(new Set(decadeNums));
+                    }
+                  }}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                  }}
+                  onClick={() => handleTagToggle(decadeNums)}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-xl cursor-pointer select-none transition-all duration-200 ${
+                    isActive
+                      ? 'bg-primary-cyan/20 border border-primary-cyan text-primary-cyan ring-2 ring-primary-cyan/40'
+                      : d.val > 0
+                        ? 'bg-primary-cyan/10 border border-primary-cyan/30 text-primary-cyan'
+                        : 'bg-surface border border-glass-border text-dim'
+                  }`}
+                >
+                  {d.label}: {d.val}개
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -275,33 +336,46 @@ export function PersonalAnalysisCard({
             수 속성 분포
           </span>
           <div className="flex gap-2 flex-wrap">
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(mainNumbers.filter(isPrimeNum)))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
-            >
-              소수: <b>{analysis.prime}개</b>
-            </span>
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(mainNumbers.filter(isCompositeNum)))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
-            >
-              합성수: <b>{analysis.composite}개</b>
-            </span>
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(new Set(mainNumbers.filter(isMul3Num)))
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border text-main cursor-pointer hover:border-primary-cyan/40 transition-colors"
-            >
-              3의 배수: <b>{analysis.mul3}개</b>
-            </span>
+            {[
+              {
+                label: '소수',
+                count: analysis.prime,
+                nums: mainNumbers.filter(isPrimeNum),
+              },
+              {
+                label: '합성수',
+                count: analysis.composite,
+                nums: mainNumbers.filter(isCompositeNum),
+              },
+              {
+                label: '3의 배수',
+                count: analysis.mul3,
+                nums: mainNumbers.filter(isMul3Num),
+              },
+            ].map((prop) => {
+              const isActive = isSameNumberSet(prop.nums);
+              return (
+                <span
+                  key={prop.label}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse' && prop.nums.length > 0) {
+                      setHoveredNumbers(new Set(prop.nums));
+                    }
+                  }}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                  }}
+                  onClick={() => handleTagToggle(prop.nums)}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-xl border cursor-pointer select-none hover:border-primary-cyan/40 transition-all ${
+                    isActive
+                      ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan ring-2 ring-primary-cyan/40'
+                      : 'bg-surface border-glass-border text-main'
+                  }`}
+                >
+                  {prop.label}: <b>{prop.count}개</b>
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -312,17 +386,32 @@ export function PersonalAnalysisCard({
               끝자리 그룹
             </span>
             <div className="flex gap-2 flex-wrap">
-              {lastDigits.map((item) => (
-                <span
-                  key={item.digit}
-                  onMouseEnter={() => setHoveredNumbers(new Set(item.nums))}
-                  onMouseLeave={() => setHoveredNumbers(null)}
-                  className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border cursor-pointer transition-all duration-200 text-main hover:border-primary-cyan/40"
-                >
-                  끝자리 {item.digit}: {item.nums.join(',')} ({item.nums.length}
-                  개)
-                </span>
-              ))}
+              {lastDigits.map((item) => {
+                const isActive = isSameNumberSet(item.nums);
+                return (
+                  <span
+                    key={item.digit}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(item.nums));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(item.nums)}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border cursor-pointer select-none transition-all duration-200 hover:border-primary-cyan/40 ${
+                      isActive
+                        ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'bg-surface border-glass-border text-main'
+                    }`}
+                  >
+                    끝자리 {item.digit}: {item.nums.join(',')} (
+                    {item.nums.length}
+                    개)
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}
@@ -334,16 +423,30 @@ export function PersonalAnalysisCard({
           </span>
           <div className="flex gap-2 flex-wrap">
             {consecutiveGroups.length > 0 ? (
-              consecutiveGroups.map((group, idx) => (
-                <span
-                  key={idx}
-                  onMouseEnter={() => setHoveredNumbers(new Set(group))}
-                  onMouseLeave={() => setHoveredNumbers(null)}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-primary-cyan/10 border border-primary-cyan/30 cursor-pointer transition-all duration-200 text-primary-cyan"
-                >
-                  {group.join('-')}
-                </span>
-              ))
+              consecutiveGroups.map((group, idx) => {
+                const isActive = isSameNumberSet(group);
+                return (
+                  <span
+                    key={idx}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(group));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(group)}
+                    className={`text-xs font-semibold px-3 py-1.5 rounded-xl border cursor-pointer select-none transition-all duration-200 text-primary-cyan ${
+                      isActive
+                        ? 'bg-primary-cyan/25 border-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'bg-primary-cyan/10 border-primary-cyan/30'
+                    }`}
+                  >
+                    {group.join('-')}
+                  </span>
+                );
+              })
             ) : (
               <span className="text-xs text-dim py-1">연속수 없음</span>
             )}
@@ -359,12 +462,24 @@ export function PersonalAnalysisCard({
             {pairsList.length > 0 ? (
               pairsList.map((item, idx) => {
                 const pairArr = Array.isArray(item.pair) ? item.pair : [];
+                const isActive = isSameNumberSet(pairArr);
                 return (
                   <span
                     key={idx}
-                    onMouseEnter={() => setHoveredNumbers(new Set(pairArr))}
-                    onMouseLeave={() => setHoveredNumbers(null)}
-                    className="text-xs font-medium px-3 py-1.5 rounded-xl bg-surface border border-glass-border cursor-pointer transition-all duration-200 text-main hover:border-primary-cyan/40"
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(pairArr));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(pairArr)}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border cursor-pointer select-none transition-all duration-200 hover:border-primary-cyan/40 ${
+                      isActive
+                        ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'bg-surface border-glass-border text-main'
+                    }`}
                   >
                     ({pairArr.join(', ')}): <b>{item.count}회</b>
                   </span>

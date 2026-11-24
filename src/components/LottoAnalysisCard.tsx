@@ -35,6 +35,21 @@ export function LottoAnalysisCard({
     return hoveredNumbers.has(num);
   };
 
+  const isSameNumberSet = (targetNums: number[]) => {
+    if (!hoveredNumbers || targetNums.length === 0) return false;
+    if (hoveredNumbers.size !== targetNums.length) return false;
+    return targetNums.every((n) => hoveredNumbers.has(n));
+  };
+
+  const handleTagToggle = (targetNums: number[]) => {
+    if (targetNums.length === 0) return;
+    if (isSameNumberSet(targetNums)) {
+      setHoveredNumbers(null);
+    } else {
+      setHoveredNumbers(new Set(targetNums));
+    }
+  };
+
   const getDecadeNumbers = (decadeIndex: number) => {
     switch (decadeIndex) {
       case 0:
@@ -72,11 +87,37 @@ export function LottoAnalysisCard({
 
   return (
     <div className="bento-card p-6 sm:p-7">
-      {title && (
-        <div className="mb-4 flex items-center justify-between">
+      {title ? (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-base font-bold text-main">{title}</h3>
+          <div className="flex items-center gap-2">
+            {hoveredNumbers !== null && (
+              <button
+                type="button"
+                onClick={() => setHoveredNumbers(null)}
+                className="cursor-pointer rounded-lg border border-primary-cyan/40 bg-primary-cyan/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan transition-colors hover:bg-primary-cyan/20"
+              >
+                강조 해제
+              </button>
+            )}
+            <span className="text-xs text-dim">
+              항목을 탭하거나 마우스를 올리면 해당 번호가 강조됩니다
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-3 flex items-center justify-end gap-2">
+          {hoveredNumbers !== null && (
+            <button
+              type="button"
+              onClick={() => setHoveredNumbers(null)}
+              className="cursor-pointer rounded-lg border border-primary-cyan/40 bg-primary-cyan/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan transition-colors hover:bg-primary-cyan/20"
+            >
+              강조 해제
+            </button>
+          )}
           <span className="text-xs text-dim">
-            항목에 마우스를 올리면 해당 번호가 강조됩니다
+            항목을 탭하거나 마우스를 올리면 해당 번호가 강조됩니다
           </span>
         </div>
       )}
@@ -131,24 +172,30 @@ export function LottoAnalysisCard({
       </div>
 
       {/* KPI Metrics Row */}
-      <div className="mb-6 grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-glass-border bg-surface px-4 py-3.5">
-          <div className="text-xs font-medium text-dim">총합</div>
-          <div className="mt-1 font-display text-xl font-extrabold text-main">
+      <div className="mb-6 grid grid-cols-3 gap-2.5 sm:gap-3">
+        <div className="rounded-2xl border border-glass-border bg-surface px-3 sm:px-4 py-3 sm:py-3.5">
+          <div className="text-[0.72rem] sm:text-xs font-medium text-dim whitespace-nowrap">
+            총합
+          </div>
+          <div className="mt-1 font-display text-lg sm:text-xl font-extrabold text-main">
             {analysis.sum}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-glass-border bg-surface px-4 py-3.5">
-          <div className="text-xs font-medium text-dim">AC값 (복잡도)</div>
-          <div className="mt-1 font-display text-xl font-extrabold text-primary-cyan">
+        <div className="rounded-2xl border border-glass-border bg-surface px-3 sm:px-4 py-3 sm:py-3.5">
+          <div className="text-[0.72rem] sm:text-xs font-medium text-dim whitespace-nowrap">
+            AC값 (복잡도)
+          </div>
+          <div className="mt-1 font-display text-lg sm:text-xl font-extrabold text-primary-cyan">
             {analysis.ac}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-glass-border bg-surface px-4 py-3.5">
-          <div className="text-xs font-medium text-dim">끝자리 합</div>
-          <div className="mt-1 font-display text-xl font-extrabold text-main">
+        <div className="rounded-2xl border border-glass-border bg-surface px-3 sm:px-4 py-3 sm:py-3.5">
+          <div className="text-[0.72rem] sm:text-xs font-medium text-dim whitespace-nowrap">
+            끝자리 합
+          </div>
+          <div className="mt-1 font-display text-lg sm:text-xl font-extrabold text-main">
             {analysis.sumLastDigits}
           </div>
         </div>
@@ -162,28 +209,52 @@ export function LottoAnalysisCard({
             홀짝 비율
           </span>
           <div className="flex flex-wrap gap-2">
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(
-                  new Set(mainNumbers.filter((n) => n % 2 !== 0)),
-                )
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan"
-            >
-              홀수 {analysis.odd}개
-            </span>
-            <span
-              onMouseEnter={() =>
-                setHoveredNumbers(
-                  new Set(mainNumbers.filter((n) => n % 2 === 0)),
-                )
-              }
-              onMouseLeave={() => setHoveredNumbers(null)}
-              className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan"
-            >
-              짝수 {analysis.even}개
-            </span>
+            {(() => {
+              const oddNums = mainNumbers.filter((n) => n % 2 !== 0);
+              const evenNums = mainNumbers.filter((n) => n % 2 === 0);
+              const isOddActive = isSameNumberSet(oddNums);
+              const isEvenActive = isSameNumberSet(evenNums);
+              return (
+                <>
+                  <span
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse' && oddNums.length > 0) {
+                        setHoveredNumbers(new Set(oddNums));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(oddNums)}
+                    className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan ${
+                      isOddActive
+                        ? 'border-primary-cyan bg-primary-cyan/15 text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'border-glass-border bg-surface text-main'
+                    }`}
+                  >
+                    홀수 {analysis.odd}개
+                  </span>
+                  <span
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse' && evenNums.length > 0) {
+                        setHoveredNumbers(new Set(evenNums));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(evenNums)}
+                    className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan ${
+                      isEvenActive
+                        ? 'border-primary-cyan bg-primary-cyan/15 text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'border-glass-border bg-surface text-main'
+                    }`}
+                  >
+                    짝수 {analysis.even}개
+                  </span>
+                </>
+              );
+            })()}
           </div>
         </div>
 
@@ -201,18 +272,31 @@ export function LottoAnalysisCard({
               { label: '40번대', val: analysis.cnt40s, idx: 4 },
             ]
               .filter((d) => d.val > 0)
-              .map((d) => (
-                <span
-                  key={d.idx}
-                  onMouseEnter={() =>
-                    setHoveredNumbers(new Set(getDecadeNumbers(d.idx)))
-                  }
-                  onMouseLeave={() => setHoveredNumbers(null)}
-                  className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan"
-                >
-                  {d.label} {d.val}개
-                </span>
-              ))}
+              .map((d) => {
+                const decadeNums = getDecadeNumbers(d.idx);
+                const isActive = isSameNumberSet(decadeNums);
+                return (
+                  <span
+                    key={d.idx}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(decadeNums));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(decadeNums)}
+                    className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan ${
+                      isActive
+                        ? 'border-primary-cyan bg-primary-cyan/15 text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'border-glass-border bg-surface text-main'
+                    }`}
+                  >
+                    {d.label} {d.val}개
+                  </span>
+                );
+              })}
           </div>
         </div>
 
@@ -223,17 +307,32 @@ export function LottoAnalysisCard({
               끝자리 그룹
             </span>
             <div className="flex flex-wrap gap-2">
-              {lastDigits.map((item) => (
-                <span
-                  key={item.digit}
-                  onMouseEnter={() => setHoveredNumbers(new Set(item.nums))}
-                  onMouseLeave={() => setHoveredNumbers(null)}
-                  className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan"
-                >
-                  끝수 {item.digit}: {item.nums.join(', ')} ({item.nums.length}
-                  개)
-                </span>
-              ))}
+              {lastDigits.map((item) => {
+                const isActive = isSameNumberSet(item.nums);
+                return (
+                  <span
+                    key={item.digit}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(item.nums));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(item.nums)}
+                    className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan ${
+                      isActive
+                        ? 'border-primary-cyan bg-primary-cyan/15 text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'border-glass-border bg-surface text-main'
+                    }`}
+                  >
+                    끝수 {item.digit}: {item.nums.join(', ')} (
+                    {item.nums.length}
+                    개)
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}
@@ -250,6 +349,8 @@ export function LottoAnalysisCard({
                   label: '열번호 🔥',
                   hoverClass:
                     'hover:border-rose-500 hover:bg-rose-500/10 hover:text-rose-500',
+                  activeClass:
+                    'border-rose-500 bg-rose-500/15 text-rose-500 ring-2 ring-rose-500/40',
                   val: analysis.hot,
                   type: 'HOT' as const,
                 },
@@ -257,6 +358,8 @@ export function LottoAnalysisCard({
                   label: '온번호 ☀️',
                   hoverClass:
                     'hover:border-amber-500 hover:bg-amber-500/10 hover:text-amber-500',
+                  activeClass:
+                    'border-amber-500 bg-amber-500/15 text-amber-500 ring-2 ring-amber-500/40',
                   val: analysis.warm,
                   type: 'WARM' as const,
                 },
@@ -264,23 +367,38 @@ export function LottoAnalysisCard({
                   label: '냉번호 ❄️',
                   hoverClass:
                     'hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-500',
+                  activeClass:
+                    'border-blue-500 bg-blue-500/15 text-blue-500 ring-2 ring-blue-500/40',
                   val: analysis.cold,
                   type: 'COLD' as const,
                 },
               ]
                 .filter((t) => t.val > 0)
-                .map((t) => (
-                  <span
-                    key={t.type}
-                    onMouseEnter={() =>
-                      setHoveredNumbers(new Set(getTempNumbers(t.type)))
-                    }
-                    onMouseLeave={() => setHoveredNumbers(null)}
-                    className={`cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all ${t.hoverClass}`}
-                  >
-                    {t.label} {t.val}개
-                  </span>
-                ))}
+                .map((t) => {
+                  const tempNums = getTempNumbers(t.type);
+                  const isActive = isSameNumberSet(tempNums);
+                  return (
+                    <span
+                      key={t.type}
+                      onPointerEnter={(e) => {
+                        if (e.pointerType === 'mouse') {
+                          setHoveredNumbers(new Set(tempNums));
+                        }
+                      }}
+                      onPointerLeave={(e) => {
+                        if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                      }}
+                      onClick={() => handleTagToggle(tempNums)}
+                      className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all ${t.hoverClass} ${
+                        isActive
+                          ? t.activeClass
+                          : 'border-glass-border bg-surface text-main'
+                      }`}
+                    >
+                      {t.label} {t.val}개
+                    </span>
+                  );
+                })}
             </div>
           </div>
         )}
@@ -292,16 +410,30 @@ export function LottoAnalysisCard({
           </span>
           <div className="flex flex-wrap gap-2">
             {analysis.consecutive && analysis.consecutive.length > 0 ? (
-              analysis.consecutive.map((group, idx) => (
-                <span
-                  key={idx}
-                  onMouseEnter={() => setHoveredNumbers(new Set(group))}
-                  onMouseLeave={() => setHoveredNumbers(null)}
-                  className="cursor-pointer rounded-xl border border-glass-border bg-surface px-3 py-1.5 text-xs font-semibold text-main transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan"
-                >
-                  {group.join(' - ')}
-                </span>
-              ))
+              analysis.consecutive.map((group, idx) => {
+                const isActive = isSameNumberSet(group);
+                return (
+                  <span
+                    key={idx}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setHoveredNumbers(new Set(group));
+                      }
+                    }}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredNumbers(null);
+                    }}
+                    onClick={() => handleTagToggle(group)}
+                    className={`cursor-pointer select-none rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all hover:border-primary-cyan hover:bg-primary-cyan/10 hover:text-primary-cyan ${
+                      isActive
+                        ? 'border-primary-cyan bg-primary-cyan/15 text-primary-cyan ring-2 ring-primary-cyan/40'
+                        : 'border-glass-border bg-surface text-main'
+                    }`}
+                  >
+                    {group.join(' - ')}
+                  </span>
+                );
+              })
             ) : (
               <span className="text-xs text-dim">연속수 없음</span>
             )}

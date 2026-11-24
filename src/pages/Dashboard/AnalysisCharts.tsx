@@ -12,8 +12,8 @@ export function AnalysisCharts() {
   // States to manage hover tooltips for line charts
   const [hoveredSumIndex, setHoveredSumIndex] = useState<number | null>(null);
   const [hoveredAcIndex, setHoveredAcIndex] = useState<number | null>(null);
-  const [sumMousePos, setSumMousePos] = useState({ x: 0, y: 0 });
-  const [acMousePos, setAcMousePos] = useState({ x: 0, y: 0 });
+  const [sumMousePos, setSumMousePos] = useState({ x: 0, y: 0, width: 600 });
+  const [acMousePos, setAcMousePos] = useState({ x: 0, y: 0, width: 600 });
 
   useEffect(() => {
     const fetchWinningNumbers = async () => {
@@ -230,12 +230,21 @@ export function AnalysisCharts() {
       <div className="flex flex-col gap-5">
         {/* Chart 1: Sum Trendline */}
         <div
-          className="bento-card p-6 relative overflow-hidden min-w-0"
-          onMouseMove={(e) => {
+          className="bento-card p-5 sm:p-6 relative overflow-hidden min-w-0"
+          onPointerMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setSumMousePos({
               x: e.clientX - rect.left,
               y: e.clientY - rect.top,
+              width: rect.width || 600,
+            });
+          }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setSumMousePos({
+              x: e.clientX - rect.left,
+              y: e.clientY - rect.top,
+              width: rect.width || 600,
             });
           }}
         >
@@ -388,8 +397,11 @@ export function AnalysisCharts() {
                     height={chartH}
                     fill="transparent"
                     className="cursor-pointer"
-                    onMouseEnter={() => setHoveredSumIndex(i)}
-                    onMouseLeave={() => setHoveredSumIndex(null)}
+                    onPointerEnter={() => setHoveredSumIndex(i)}
+                    onPointerDown={() => setHoveredSumIndex(i)}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredSumIndex(null);
+                    }}
                   />
                   {isActive && (
                     <>
@@ -441,8 +453,8 @@ export function AnalysisCharts() {
               className="absolute bg-modal border border-primary-cyan/30 rounded-lg py-1.5 px-2.5 text-xs pointer-events-none shadow-glass backdrop-blur-sm z-10 whitespace-nowrap"
               style={{
                 left: `${sumMousePos.x}px`,
-                top: `${sumMousePos.y}px`,
-                transform: `translate(${sumMousePos.x > 500 ? '-110%' : '15px'}, ${sumMousePos.y > 120 ? '-110%' : '15px'})`,
+                top: `${Math.max(16, sumMousePos.y)}px`,
+                transform: `translate(${sumMousePos.x > sumMousePos.width * 0.52 ? '-108%' : '12px'}, ${sumMousePos.y > 110 ? '-108%' : '12px'})`,
               }}
             >
               <div className="text-muted font-bold">
@@ -460,12 +472,21 @@ export function AnalysisCharts() {
 
         {/* Chart 2: AC Trendline */}
         <div
-          className="bento-card p-6 relative overflow-hidden min-w-0"
-          onMouseMove={(e) => {
+          className="bento-card p-5 sm:p-6 relative overflow-hidden min-w-0"
+          onPointerMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setAcMousePos({
               x: e.clientX - rect.left,
               y: e.clientY - rect.top,
+              width: rect.width || 600,
+            });
+          }}
+          onPointerDown={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            setAcMousePos({
+              x: e.clientX - rect.left,
+              y: e.clientY - rect.top,
+              width: rect.width || 600,
             });
           }}
         >
@@ -617,8 +638,11 @@ export function AnalysisCharts() {
                     height={chartH}
                     fill="transparent"
                     className="cursor-pointer"
-                    onMouseEnter={() => setHoveredAcIndex(i)}
-                    onMouseLeave={() => setHoveredAcIndex(null)}
+                    onPointerEnter={() => setHoveredAcIndex(i)}
+                    onPointerDown={() => setHoveredAcIndex(i)}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse') setHoveredAcIndex(null);
+                    }}
                   />
                   {isActive && (
                     <>
@@ -666,8 +690,8 @@ export function AnalysisCharts() {
               className="absolute bg-modal border border-primary-purple/30 rounded-lg py-1.5 px-2.5 text-xs pointer-events-none shadow-glass backdrop-blur-sm z-10 whitespace-nowrap"
               style={{
                 left: `${acMousePos.x}px`,
-                top: `${acMousePos.y}px`,
-                transform: `translate(${acMousePos.x > 500 ? '-110%' : '15px'}, ${acMousePos.y > 120 ? '-110%' : '15px'})`,
+                top: `${Math.max(16, acMousePos.y)}px`,
+                transform: `translate(${acMousePos.x > acMousePos.width * 0.52 ? '-108%' : '12px'}, ${acMousePos.y > 110 ? '-108%' : '12px'})`,
               }}
             >
               <div className="text-muted font-bold">

@@ -404,7 +404,7 @@ export const Lottery3DCanvas = forwardRef<
     return (
       <div
         ref={containerRef}
-        className={`relative w-full h-full min-h-[420px] select-none flex items-center justify-center overflow-hidden ${className}`}
+        className={`relative w-full h-full min-h-[300px] sm:min-h-[420px] touch-pan-y select-none flex items-center justify-center overflow-hidden ${className}`}
       />
     );
   },
