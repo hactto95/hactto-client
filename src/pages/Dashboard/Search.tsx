@@ -165,7 +165,7 @@ export function Search() {
               상세 분석 리포트 보기 →
             </span>
           </div>
-          <LottoBalls numbers={searchResult.numbers} />
+          <LottoBalls numbers={searchResult.numbers} disableTooltip />
         </div>
       )}
 
@@ -176,7 +176,7 @@ export function Search() {
             최근 20개 회차 당첨 내역
           </h2>
           <span className="text-xs text-dim">
-            회차를 클릭하면 심층 분석 모달이 열립니다
+            회차를 탭하거나 클릭하면 심층 분석 모달이 열립니다
           </span>
         </div>
 
@@ -209,7 +209,7 @@ export function Search() {
                 </div>
 
                 <div className="flex items-center justify-between gap-4 sm:justify-end">
-                  <LottoBalls numbers={wn.numbers} />
+                  <LottoBalls numbers={wn.numbers} disableTooltip />
                   <span className="hidden text-xs font-semibold text-muted sm:inline-block">
                     상세 →
                   </span>

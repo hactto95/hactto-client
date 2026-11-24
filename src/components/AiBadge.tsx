@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface AiBadgeProps {
   className?: string;
@@ -10,12 +10,46 @@ export const AiBadge: React.FC<AiBadgeProps> = ({
   showTooltip = true,
 }) => {
   const [hovered, setHovered] = useState(false);
+  const badgeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!hovered) return;
+
+    const handleOutsidePointerDown = (e: PointerEvent) => {
+      if (badgeRef.current && !badgeRef.current.contains(e.target as Node)) {
+        setHovered(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setHovered(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleOutsidePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsidePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [hovered]);
 
   return (
     <div
+      ref={badgeRef}
       className="relative inline-flex items-center"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'mouse') setHovered(true);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'mouse') setHovered(false);
+      }}
+      onClick={(e) => {
+        if (!showTooltip) return;
+        e.stopPropagation();
+        setHovered((prev) => !prev);
+      }}
     >
       <span
         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.72rem] font-bold bg-primary-cyan/15 text-primary-cyan border border-primary-cyan/30 cursor-help transition-all duration-200 select-none shadow-xs hover:bg-primary-cyan/25 hover:border-primary-cyan/50 ${className}`}
@@ -37,11 +71,11 @@ export const AiBadge: React.FC<AiBadgeProps> = ({
       </span>
 
       {showTooltip && hovered && (
-        <div className="absolute left-0 bottom-full mb-2 w-64 p-3 rounded-xl bg-card border border-glass-border shadow-2xl backdrop-blur-md text-[0.7rem] text-main leading-relaxed z-50 animate-fade-in pointer-events-none">
+        <div className="absolute left-0 bottom-full mb-2 w-60 sm:w-64 max-w-[calc(100vw-32px)] p-3 rounded-xl bg-card border border-glass-border shadow-2xl backdrop-blur-md text-[0.7rem] text-main leading-relaxed z-50 animate-fade-in pointer-events-none">
           <p className="font-bold text-primary-cyan mb-1 flex items-center gap-1">
             <span>핵또 공식 AI 데이터 브리핑</span>
           </p>
-          <p className="text-muted">
+          <p className="text-muted whitespace-normal">
             본 게시글은 핵또 통계 알고리즘과 생성형 AI가 공공 회차 데이터를
             기반으로 작성한 데이터 분석 리포트입니다. 모든 추첨은 독립 시행이며
             당첨을 보장하지 않습니다.

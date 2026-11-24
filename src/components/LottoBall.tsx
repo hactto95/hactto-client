@@ -5,9 +5,14 @@ import { BallHoverTooltip } from './BallHoverTooltip';
 interface LottoBallsProps {
   numbers: number[];
   matchResult?: MatchResult | null;
+  disableTooltip?: boolean;
 }
 
-export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
+export function LottoBalls({
+  numbers,
+  matchResult,
+  disableTooltip = false,
+}: LottoBallsProps) {
   if (!numbers || (numbers.length !== 6 && numbers.length !== 7)) return null;
   const mainNumbers = numbers.slice(0, 6);
   const bonusNumber = numbers[6];
@@ -30,7 +35,7 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
           : 'scale-100 opacity-100';
 
         return (
-          <BallHoverTooltip key={i} ball={num}>
+          <BallHoverTooltip key={i} ball={num} disabled={disableTooltip}>
             <div
               className={`lotto-ball ${stateClass}`}
               style={getBallStyle(num)}
@@ -51,7 +56,7 @@ export function LottoBalls({ numbers, matchResult }: LottoBallsProps) {
                 : 'scale-100 opacity-35'
               : 'scale-100 opacity-100';
             return (
-              <BallHoverTooltip ball={bonusNumber}>
+              <BallHoverTooltip ball={bonusNumber} disabled={disableTooltip}>
                 <div
                   className={`lotto-ball ${bonusClass}`}
                   style={getBallStyle(bonusNumber)}

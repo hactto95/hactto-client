@@ -66,16 +66,15 @@ export function SouthKoreaMap({
           );
         })}
       </svg>
-      {hoveredLocation && hoveredLocation !== selectedRegionId && (
-        <div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-[20px] border border-primary-cyan bg-modal px-4 py-2 text-sm font-semibold text-main shadow-glass backdrop-blur-md transition-opacity duration-200">
-          {regionNameMap[
-            southKoreaMap.locations.find(
-              (loc: any) => loc.id === hoveredLocation,
-            )?.name || ''
-          ] ||
-            southKoreaMap.locations.find(
-              (loc: any) => loc.id === hoveredLocation,
-            )?.name}
+      {(hoveredLocation || selectedRegionId) && (
+        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-[20px] border border-primary-cyan bg-modal px-4 py-1.5 text-xs sm:text-sm font-semibold text-main shadow-glass backdrop-blur-md transition-opacity duration-200 whitespace-nowrap">
+          {(() => {
+            const targetId = hoveredLocation || selectedRegionId;
+            const locName =
+              southKoreaMap.locations.find((loc: any) => loc.id === targetId)
+                ?.name || '';
+            return regionNameMap[locName] || locName;
+          })()}
         </div>
       )}
     </div>

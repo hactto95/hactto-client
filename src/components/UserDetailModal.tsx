@@ -260,23 +260,25 @@ export function UserDetailModal({
 
   return (
     <div
-      className="fixed inset-0 w-full h-full bg-overlay backdrop-blur-md flex items-center justify-center z-99999 p-5 box-border"
+      className="fixed inset-0 w-full h-full bg-overlay backdrop-blur-md flex items-center justify-center z-99999 p-3 sm:p-5 box-border"
       onClick={onClose}
     >
       <div
-        className="glass-card max-w-[560px] w-full h-[85vh] bg-card border border-glass-border rounded-2xl flex flex-col relative overflow-hidden p-5"
+        className="glass-card max-w-[560px] w-full h-[88dvh] sm:h-[85vh] bg-card border border-glass-border rounded-2xl flex flex-col relative overflow-hidden p-3 sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-glass-border shrink-0 flex justify-between items-center">
-          <h2 className="m-0 text-[1.4rem] text-main">내 프로필</h2>
-          <div className="flex items-center gap-4">
+        <div className="p-4 sm:p-6 border-b border-glass-border shrink-0 flex justify-between items-center">
+          <h2 className="m-0 text-[1.25rem] sm:text-[1.4rem] text-main">
+            내 프로필
+          </h2>
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => {
                 onClose();
                 logout();
               }}
-              className="bg-error/10 border border-error text-error cursor-pointer text-[0.85rem] px-3 py-1.5 rounded font-bold"
+              className="bg-error/10 border border-error text-error cursor-pointer text-[0.8rem] sm:text-[0.85rem] px-3 py-1.5 rounded font-bold"
             >
               로그아웃
             </button>
@@ -290,7 +292,7 @@ export function UserDetailModal({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-glass-border px-6 shrink-0">
+        <div className="flex border-b border-glass-border px-3 sm:px-6 shrink-0">
           {[
             { id: 'PROFILE', label: '상세 정보' },
             { id: 'HISTORY', label: 'HON 사용 내역' },
@@ -299,7 +301,7 @@ export function UserDetailModal({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TabType)}
-              className={`bg-transparent border-none border-b-2 px-5 py-4 text-[0.95rem] cursor-pointer transition-all duration-200 ${
+              className={`bg-transparent border-none border-b-2 px-3 sm:px-5 py-3.5 sm:py-4 text-xs sm:text-[0.95rem] cursor-pointer transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'border-b-primary-cyan text-primary-cyan font-bold'
                   : 'border-b-transparent text-dim font-normal'
@@ -339,11 +341,11 @@ export function UserDetailModal({
                     <div className="text-[1.8rem] font-extrabold text-main tracking-[1px]">
                       {nickname}
                     </div>
-                    <div className="text-[0.85rem] text-dim bg-canvas/70 px-4 py-2 rounded-full flex gap-2 items-center mt-2">
-                      <span className="text-primary-cyan font-bold">
+                    <div className="text-[0.8rem] sm:text-[0.85rem] text-dim bg-canvas/70 px-3.5 py-2 rounded-full flex gap-2 items-center mt-2 max-w-full">
+                      <span className="text-primary-cyan font-bold shrink-0">
                         고유 식별자
                       </span>
-                      <span>{userId}</span>
+                      <span className="truncate">{userId}</span>
                       <button
                         onClick={handleCopyId}
                         title="복사하기"
@@ -374,11 +376,11 @@ export function UserDetailModal({
                   </div>
                 ) : (
                   <div className="py-10 px-6 w-full bg-surface rounded-[20px] border border-glass-border shadow-glass flex flex-col justify-center items-center">
-                    <div className="mb-8 text-[0.85rem] text-dim bg-canvas/70 px-4 py-2 rounded-full flex gap-2 items-center">
-                      <span className="text-primary-cyan font-bold">
+                    <div className="mb-8 text-[0.8rem] sm:text-[0.85rem] text-dim bg-canvas/70 px-3.5 py-2 rounded-full flex gap-2 items-center max-w-full">
+                      <span className="text-primary-cyan font-bold shrink-0">
                         고유 식별자
                       </span>
-                      <span>{userId}</span>
+                      <span className="truncate">{userId}</span>
                       <button
                         onClick={handleCopyId}
                         title="복사하기"
@@ -459,7 +461,7 @@ export function UserDetailModal({
                     HON/구독
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* HON Card */}
                     <div className="p-5 rounded-xl bg-surface border border-primary-cyan/25 flex flex-col relative overflow-hidden">
                       <div className="absolute -top-5 -right-5 w-20 h-20 bg-primary-cyan blur-2xl opacity-20" />

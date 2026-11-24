@@ -379,19 +379,19 @@ export function Layout() {
           </div>
 
           {/* Right: User Profile, Theme Toggle, Help, Mobile Menu Trigger */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             {!isAdminMode &&
               (isAuthenticated ? (
                 <button
                   type="button"
                   onClick={() => setShowUserDetailModal(true)}
                   title="프로필 및 알림 보기"
-                  className="flex cursor-pointer items-center gap-2 rounded-full border border-glass-border bg-surface px-3.5 py-1.5 text-[0.85rem] font-medium text-main transition-all hover:border-primary-cyan/40 hover:bg-surface-hover"
+                  className="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-full border border-glass-border bg-surface px-2.5 sm:px-3.5 py-1.5 text-[0.82rem] sm:text-[0.85rem] font-medium text-main transition-all hover:border-primary-cyan/40 hover:bg-surface-hover"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-cyan/15 text-[0.7rem] font-bold text-primary-cyan">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-cyan/15 text-[0.7rem] font-bold text-primary-cyan">
                     {(user?.nickname || user?.email || 'U')[0].toUpperCase()}
                   </span>
-                  <span className="max-w-[110px] truncate font-semibold">
+                  <span className="max-w-[72px] sm:max-w-[110px] truncate font-semibold">
                     {user?.nickname || user?.email?.split('@')[0]}
                   </span>
                   {unreadNotiCount > 0 && (

@@ -214,7 +214,7 @@ export function Locations() {
       {/* Two-Column Bento Grid: Map (Left) + Store List (Right) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Map Bento Card */}
-        <div className="bento-card flex min-h-[420px] flex-col items-center justify-center p-6 lg:col-span-5">
+        <div className="bento-card flex min-h-[300px] sm:min-h-[420px] flex-col items-center justify-center p-5 sm:p-6 lg:col-span-5">
           <SouthKoreaMap
             onLocationClick={handleLocationClick}
             selectedRegionId={selectedRegion?.id}

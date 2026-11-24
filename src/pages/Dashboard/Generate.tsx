@@ -54,6 +54,7 @@ export function Generate() {
   const [activeSubTab, setActiveSubTab] = useState<'generate' | 'analyze'>(
     () => (navState?.tab === 'analyze' ? 'analyze' : 'generate'),
   );
+  const [activeMobileGameIdx, setActiveMobileGameIdx] = useState<number>(0);
   const [selectedGames, setSelectedGames] = useState<number[][]>(() => {
     if (
       navState?.tab === 'analyze' &&
@@ -607,104 +608,150 @@ export function Generate() {
 
   const renderAnalyze = () => {
     return (
-      <div className="flex justify-center items-stretch gap-2.5 py-2.5 w-full flex-wrap">
-        {selectedGames.map((selectedNumbers, gameIndex) => {
-          return (
-            <div
-              key={gameIndex}
-              className="w-[180px] bg-[#faf8f2] border border-[#e0d9c3] border-t-[6px] border-t-[#c62828] rounded-[4px] pt-4 px-3 pb-3 shadow-[0_6px_15px_rgba(0,0,0,0.35)] text-[#3e2723] font-mono relative overflow-hidden shrink-0 flex flex-col justify-between"
-            >
-              {/* Pink sidebar line pattern */}
-              <div className="absolute left-1 top-0 bottom-0 border-l border-dashed border-[#c62828]/15" />
-              <div className="absolute right-1 top-0 bottom-0 border-l border-dashed border-[#c62828]/15" />
+      <div className="flex flex-col items-center w-full">
+        {/* 모바일 전용 GAME A ~ E 단일 슬립 전환 탭 바 (< md) */}
+        <div className="grid grid-cols-5 gap-1.5 w-full max-w-[320px] mb-3 p-1.5 rounded-2xl bg-surface border border-glass-border md:hidden">
+          {selectedGames.map((nums, idx) => {
+            const isTabActive = activeMobileGameIdx === idx;
+            const isComplete = nums.length === 6;
+            const isPartial = nums.length > 0 && nums.length < 6;
+            const gameLetter = String.fromCharCode(65 + idx);
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveMobileGameIdx(idx)}
+                className={`relative flex flex-col items-center justify-center py-2 px-1 rounded-xl border text-center cursor-pointer transition-all ${
+                  isTabActive
+                    ? 'bg-card border-primary-cyan text-primary-cyan shadow-xs font-bold'
+                    : isComplete
+                      ? 'bg-primary-cyan/10 border-primary-cyan/30 text-main font-semibold'
+                      : 'bg-transparent border-transparent text-muted hover:text-main font-medium'
+                }`}
+              >
+                <span className="text-[0.72rem] leading-tight">
+                  GAME {gameLetter}
+                </span>
+                <span
+                  className={`mt-0.5 text-[0.62rem] font-mono font-bold leading-none ${
+                    isComplete
+                      ? 'text-primary-cyan'
+                      : isPartial
+                        ? 'text-amber-500'
+                        : 'text-dim'
+                  }`}
+                >
+                  {isComplete ? '● 6/6' : `${nums.length}/6`}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-              <div>
-                {/* Header Text */}
-                <div className="text-center mb-2.5 text-[0.78rem] font-bold text-[#c62828] tracking-[0.5px]">
-                  HACTTO - GAME {String.fromCharCode(65 + gameIndex)}
-                </div>
+        <div className="flex justify-center items-stretch gap-2.5 py-2.5 w-full flex-wrap">
+          {selectedGames.map((selectedNumbers, gameIndex) => {
+            const isMobileActive = gameIndex === activeMobileGameIdx;
+            return (
+              <div
+                key={gameIndex}
+                className={`${
+                  isMobileActive ? 'flex' : 'hidden md:flex'
+                } w-full max-w-[300px] md:w-[180px] bg-[#faf8f2] border border-[#e0d9c3] border-t-[6px] border-t-[#c62828] rounded-[4px] pt-4 px-4 pb-3.5 md:px-3 md:pb-3 shadow-[0_6px_15px_rgba(0,0,0,0.35)] text-[#3e2723] font-mono relative overflow-hidden shrink-0 flex-col justify-between`}
+              >
+                {/* Pink sidebar line pattern */}
+                <div className="absolute left-1 top-0 bottom-0 border-l border-dashed border-[#c62828]/15" />
+                <div className="absolute right-1 top-0 bottom-0 border-l border-dashed border-[#c62828]/15" />
 
-                {/* Numbers Grid */}
-                <div className="grid grid-cols-7 gap-y-1 gap-x-2 mb-0 p-0.5">
-                  {Array.from({ length: 45 }, (_, i) => i + 1).map((num) => {
-                    const isSelected = selectedNumbers.includes(num);
-                    const isDisabled =
-                      !isSelected && selectedNumbers.length >= 6;
-                    return (
-                      <div
-                        key={num}
-                        onClick={() =>
-                          !isDisabled &&
-                          handleNumberToggleForGame(gameIndex, num)
-                        }
-                        className={`flex flex-col items-center justify-center h-8 relative select-none ${
-                          isDisabled
-                            ? 'cursor-not-allowed opacity-35'
-                            : 'cursor-pointer opacity-100'
-                        }`}
-                      >
-                        {/* Number Box */}
-                        <div className="w-[14px] h-[26px] border-t border-b border-[#c62828]/40 relative flex items-center justify-center text-[0.62rem] font-bold text-[#c62828] bg-[#c62828]/[0.02]">
-                          <div className="absolute top-0 left-0 w-px h-0.5 bg-[#c62828]/40" />
-                          <div className="absolute top-0 right-0 w-px h-0.5 bg-[#c62828]/40" />
-                          <div className="absolute bottom-0 left-0 w-px h-0.5 bg-[#c62828]/40" />
-                          <div className="absolute bottom-0 right-0 w-px h-0.5 bg-[#c62828]/40" />
-                          {num}
+                <div>
+                  {/* Header Text */}
+                  <div className="text-center mb-2.5 text-[0.88rem] md:text-[0.78rem] font-bold text-[#c62828] tracking-[0.5px]">
+                    HACTTO - GAME {String.fromCharCode(65 + gameIndex)}
+                  </div>
+
+                  {/* Numbers Grid */}
+                  <div className="grid grid-cols-7 gap-y-1.5 gap-x-2 md:gap-y-1 md:gap-x-2 mb-0 p-0.5">
+                    {Array.from({ length: 45 }, (_, i) => i + 1).map((num) => {
+                      const isSelected = selectedNumbers.includes(num);
+                      const isDisabled =
+                        !isSelected && selectedNumbers.length >= 6;
+                      return (
+                        <div
+                          key={num}
+                          onClick={() =>
+                            !isDisabled &&
+                            handleNumberToggleForGame(gameIndex, num)
+                          }
+                          className={`flex flex-col items-center justify-center h-9 md:h-8 relative select-none ${
+                            isDisabled
+                              ? 'cursor-not-allowed opacity-35'
+                              : 'cursor-pointer opacity-100'
+                          }`}
+                        >
+                          {/* Number Box */}
+                          <div className="w-[22px] h-[30px] md:w-[14px] md:h-[26px] border-t border-b border-[#c62828]/40 relative flex items-center justify-center text-[0.76rem] md:text-[0.62rem] font-bold text-[#c62828] bg-[#c62828]/[0.02]">
+                            <div className="absolute top-0 left-0 w-px h-0.5 bg-[#c62828]/40" />
+                            <div className="absolute top-0 right-0 w-px h-0.5 bg-[#c62828]/40" />
+                            <div className="absolute bottom-0 left-0 w-px h-0.5 bg-[#c62828]/40" />
+                            <div className="absolute bottom-0 right-0 w-px h-0.5 bg-[#c62828]/40" />
+                            {num}
+                          </div>
+
+                          {/* Computer Sign Pen Stroke */}
+                          {isSelected && (
+                            <div className="absolute w-[3.5px] h-[31px] md:w-[3px] md:h-[27px] bg-[#1c1c1c] rounded-[1px] rotate-12 opacity-90 pointer-events-none" />
+                          )}
                         </div>
+                      );
+                    })}
+                  </div>
+                </div>
 
-                        {/* Computer Sign Pen Stroke */}
-                        {isSelected && (
-                          <div className="absolute w-[3px] h-[27px] bg-[#1c1c1c] rounded-[1px] rotate-12 opacity-90 pointer-events-none" />
-                        )}
-                      </div>
-                    );
-                  })}
+                {/* Bottom Section inside the Ticket */}
+                <div className="border-t border-dashed border-black/12 pt-2.5 md:pt-2 flex flex-col gap-2 md:gap-1.5 mt-2.5 md:mt-2">
+                  {/* Auto / Semi-Auto Section */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-[0.76rem] md:text-[0.68rem] font-bold text-[#c62828]">
+                      반자동 채우기
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleSemiAutoForGame(gameIndex)}
+                      disabled={
+                        selectedNumbers.length === 6 || isSaving || analyzing
+                      }
+                      className={`text-white border-none rounded-[3px] md:rounded-[2px] px-2.5 py-1 md:px-1.5 md:py-0.5 text-[0.72rem] md:text-[0.62rem] font-bold ${
+                        selectedNumbers.length === 6
+                          ? 'bg-[#ccc] cursor-not-allowed'
+                          : 'bg-[#c62828] cursor-pointer'
+                      }`}
+                    >
+                      자동
+                    </button>
+                  </div>
+
+                  {/* Reset Section */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-[0.76rem] md:text-[0.68rem] font-bold text-[#555]">
+                      초기화
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleResetForGame(gameIndex)}
+                      disabled={selectedNumbers.length === 0}
+                      className={`text-white border-none rounded-[3px] md:rounded-[2px] px-2.5 py-1 md:px-1.5 md:py-0.5 text-[0.72rem] md:text-[0.62rem] font-bold ${
+                        selectedNumbers.length === 0
+                          ? 'bg-[#ccc] cursor-not-allowed'
+                          : 'bg-[#3e2723] cursor-pointer'
+                      }`}
+                    >
+                      리셋
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* Bottom Section inside the Ticket */}
-              <div className="border-t border-dashed border-black/12 pt-2 flex flex-col gap-1.5 mt-2">
-                {/* Auto / Semi-Auto Section */}
-                <div className="flex justify-between items-center">
-                  <span className="text-[0.68rem] font-bold text-[#c62828]">
-                    반자동 채우기
-                  </span>
-                  <button
-                    onClick={() => handleSemiAutoForGame(gameIndex)}
-                    disabled={
-                      selectedNumbers.length === 6 || isSaving || analyzing
-                    }
-                    className={`text-white border-none rounded-[2px] px-1.5 py-0.5 text-[0.62rem] font-bold ${
-                      selectedNumbers.length === 6
-                        ? 'bg-[#ccc] cursor-not-allowed'
-                        : 'bg-[#c62828] cursor-pointer'
-                    }`}
-                  >
-                    자동
-                  </button>
-                </div>
-
-                {/* Reset Section */}
-                <div className="flex justify-between items-center">
-                  <span className="text-[0.68rem] font-bold text-[#555]">
-                    초기화
-                  </span>
-                  <button
-                    onClick={() => handleResetForGame(gameIndex)}
-                    disabled={selectedNumbers.length === 0}
-                    className={`text-white border-none rounded-[2px] px-1.5 py-0.5 text-[0.62rem] font-bold ${
-                      selectedNumbers.length === 0
-                        ? 'bg-[#ccc] cursor-not-allowed'
-                        : 'bg-[#3e2723] cursor-pointer'
-                    }`}
-                  >
-                    리셋
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Portals for modals */}
         {showConfirmModal &&
@@ -742,6 +789,14 @@ export function Generate() {
 
                 {/* HON Status Card */}
                 {(() => {
+                  const completedGameNames = selectedGames
+                    .map((g, idx) =>
+                      g.length === 6
+                        ? `GAME ${String.fromCharCode(65 + idx)}`
+                        : null,
+                    )
+                    .filter(Boolean)
+                    .join(', ');
                   const validGamesCount = selectedGames.filter(
                     (game) => game.length === 6,
                   ).length;
@@ -751,6 +806,12 @@ export function Generate() {
 
                   return (
                     <div className="bg-surface/80 rounded-xl p-3.5 mb-6 border border-glass-border flex flex-col gap-2 text-left">
+                      <div className="flex justify-between items-center text-[0.82rem]">
+                        <span className="text-muted">분석 대상 게임</span>
+                        <span className="font-bold text-primary-cyan">
+                          {completedGameNames}
+                        </span>
+                      </div>
                       <div className="flex justify-between items-center text-[0.85rem]">
                         <span className="text-muted">현재 보유 HON</span>
                         <span className="font-semibold text-main">
@@ -806,13 +867,14 @@ export function Generate() {
         {analyzedResults.length > 0 &&
           createPortal(
             <div className="admin-modal-overlay overflow-hidden flex items-center justify-center fixed inset-0 z-[1000]">
-              {/* Pagination Left Button */}
+              {/* Desktop Floating Pagination Left Button */}
               <button
+                type="button"
                 onClick={() =>
                   setCurrentAnalysisIndex((prev) => Math.max(0, prev - 1))
                 }
                 disabled={currentAnalysisIndex === 0}
-                className={`absolute left-[calc(50%-410px)] top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-glass-border text-[1.2rem] font-bold flex items-center justify-center z-[1010] transition-all duration-200 ${
+                className={`hidden md:flex absolute left-[calc(50%-410px)] top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-glass-border text-[1.2rem] font-bold items-center justify-center z-[1010] transition-all duration-200 ${
                   currentAnalysisIndex === 0
                     ? 'bg-surface text-dim/40 cursor-not-allowed shadow-none'
                     : 'bg-surface-hover text-main cursor-pointer shadow-glass hover:bg-surface-elevated'
@@ -822,14 +884,51 @@ export function Generate() {
               </button>
 
               {/* Main Content Box */}
-              <div className="max-w-[680px] w-[90%] max-h-[90vh] overflow-y-hidden relative mx-auto z-[1005] pt-6">
-                {/* Header Row: Contains Result Indicator (Center) and Close Button (Right) */}
-                <div className="flex justify-center items-center relative mb-4 w-full">
-                  <div className="text-muted text-[0.95rem] font-semibold">
-                    결과 {currentAnalysisIndex + 1} / {analyzedResults.length}
+              <div className="max-w-[680px] w-[94%] sm:w-[90%] max-h-[88dvh] overflow-y-auto relative mx-auto z-[1005] py-4 px-1">
+                {/* Header Row: Contains Inline Mobile Pagination + Result Indicator (Center) and Close Button (Right) */}
+                <div className="flex justify-between sm:justify-center items-center relative mb-3 px-1 w-full">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCurrentAnalysisIndex((prev) => Math.max(0, prev - 1))
+                      }
+                      disabled={currentAnalysisIndex === 0}
+                      className={`md:hidden flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border text-sm font-bold transition-colors ${
+                        currentAnalysisIndex === 0
+                          ? 'bg-surface text-dim/40 cursor-not-allowed'
+                          : 'bg-card text-main cursor-pointer hover:bg-surface-hover'
+                      }`}
+                      aria-label="이전 결과"
+                    >
+                      &lt;
+                    </button>
+                    <div className="text-muted text-[0.9rem] sm:text-[0.95rem] font-semibold">
+                      결과 {currentAnalysisIndex + 1} / {analyzedResults.length}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCurrentAnalysisIndex((prev) =>
+                          Math.min(analyzedResults.length - 1, prev + 1),
+                        )
+                      }
+                      disabled={
+                        currentAnalysisIndex === analyzedResults.length - 1
+                      }
+                      className={`md:hidden flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border text-sm font-bold transition-colors ${
+                        currentAnalysisIndex === analyzedResults.length - 1
+                          ? 'bg-surface text-dim/40 cursor-not-allowed'
+                          : 'bg-card text-main cursor-pointer hover:bg-surface-hover'
+                      }`}
+                      aria-label="다음 결과"
+                    >
+                      &gt;
+                    </button>
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => {
                       const totalCount = analyzedResults.length;
                       const savedCount = Object.keys(savedPredictionIds).length;
@@ -839,7 +938,7 @@ export function Generate() {
                         setAnalyzedResults([]);
                       }
                     }}
-                    className="absolute right-0 bg-transparent border-none text-muted hover:text-main cursor-pointer p-1 flex items-center gap-1.5 transition-colors duration-200 z-[110] text-[0.9rem] font-bold"
+                    className="sm:absolute sm:right-0 bg-card/90 sm:bg-transparent border border-glass-border sm:border-none rounded-lg px-2.5 py-1 sm:p-1 text-muted hover:text-main cursor-pointer flex items-center gap-1.5 transition-colors duration-200 z-[110] text-[0.85rem] sm:text-[0.9rem] font-bold"
                   >
                     <svg
                       width="18"
@@ -869,15 +968,16 @@ export function Generate() {
                 />
               </div>
 
-              {/* Pagination Right Button */}
+              {/* Desktop Floating Pagination Right Button */}
               <button
+                type="button"
                 onClick={() =>
                   setCurrentAnalysisIndex((prev) =>
                     Math.min(analyzedResults.length - 1, prev + 1),
                   )
                 }
                 disabled={currentAnalysisIndex === analyzedResults.length - 1}
-                className={`absolute right-[calc(50%-410px)] top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-glass-border text-[1.2rem] font-bold flex items-center justify-center z-[1010] transition-all duration-200 ${
+                className={`hidden md:flex absolute right-[calc(50%-410px)] top-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-glass-border text-[1.2rem] font-bold items-center justify-center z-[1010] transition-all duration-200 ${
                   currentAnalysisIndex === analyzedResults.length - 1
                     ? 'bg-surface text-dim/40 cursor-not-allowed shadow-none'
                     : 'bg-surface-hover text-main cursor-pointer shadow-glass hover:bg-surface-elevated'
