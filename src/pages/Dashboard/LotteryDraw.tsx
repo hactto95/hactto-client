@@ -405,26 +405,26 @@ export const LotteryDraw: React.FC = () => {
       </div>
 
       {/* 2. 메인 시뮬레이터 및 컨트롤 2열 레이아웃 */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
         {/* 좌측: 3D 로또 캔버스 + 하단 볼 트레이 (7~8컬럼) */}
-        <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
+        <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 lg:gap-5">
           {/* 3D 캔버스 Bento Card 컨테이너 */}
           <div className="bento-card p-0! relative w-full aspect-[4/3] sm:aspect-[16/11] overflow-hidden flex flex-col items-center justify-center bg-radial from-primary-cyan/[0.06] via-surface to-card">
             {/* 좌상단 기계 뱃지 */}
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-card/85 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-glass-border text-xs shadow-xs">
+            <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 flex items-center gap-1.5 sm:gap-2 bg-card/85 backdrop-blur-md px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-glass-border text-[0.7rem] sm:text-xs shadow-xs">
               <span
-                className="w-2.5 h-2.5 rounded-full"
+                className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: currentSpec.themeColor }}
               />
               <span className="font-bold text-main">{currentSpec.name}</span>
-              <span className="text-dim text-[0.7rem]">
+              <span className="hidden sm:inline text-dim text-[0.7rem]">
                 · {currentSpec.airSystem.nozzleCount}채널 노즐
               </span>
             </div>
 
             {/* 우상단 바람 & 혼 상태 표시 */}
-            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-card/85 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-glass-border text-xs shadow-xs">
+            <div className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-10 flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 bg-card/85 backdrop-blur-md px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-glass-border text-[0.7rem] sm:text-xs shadow-xs">
                 <span
                   className={`w-2 h-2 rounded-full ${
                     isDrawUnlocked

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useApp } from '../../context/AppContext';
 import {
@@ -59,6 +59,7 @@ export function Stats() {
     score: number;
     index: number;
   } | null>(null);
+  const lastChartPointerTypeRef = useRef<string>('mouse');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [clickedPointData, setClickedPointData] = useState<any | null>(null);
@@ -111,6 +112,7 @@ export function Stats() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setClickedPointData(null);
+    setHoveredPoint(null);
   }, [activeSubTab, selectedAlgorithm]);
 
   // Mount logic to load overview data
@@ -590,7 +592,7 @@ export function Stats() {
               <div className="text-[0.8rem] text-dim mb-2 font-semibold">
                 설정된 가중치 조합
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {(() => {
                   const weights = (prediction.weights || []).slice(0, 6);
                   const maxWeight = Math.max(...weights, 1);
@@ -774,14 +776,56 @@ export function Stats() {
         </div>
 
         {/* Custom SVG Line Chart Container */}
-        <div className="bento-card p-6 relative">
-          <div className="text-left mb-3.5">
-            <span className="text-[0.78rem] text-dim uppercase tracking-[0.05em]">
-              RELIABILITY TREND (LAST 20 ROUNDS)
-            </span>
-            <h4 className="text-base font-bold text-main">
-              회차별 분석 점수 변동 추이
-            </h4>
+        <div className="bento-card p-5 sm:p-6 relative">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5">
+            <div className="text-left">
+              <span className="text-[0.78rem] text-dim uppercase tracking-[0.05em]">
+                RELIABILITY TREND (LAST 20 ROUNDS)
+              </span>
+              <h4 className="text-base font-bold text-main">
+                회차별 분석 점수 변동 추이
+              </h4>
+            </div>
+
+            {/* Sticky Summary Action Bar for Touch & Quick Inspection (Zero Clipping) */}
+            {hasHistory && (
+              <div className="flex items-center justify-between sm:justify-end gap-2.5 rounded-xl border border-glass-border bg-surface px-3 py-2 text-xs">
+                {hoveredPoint ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-main">
+                        제 {hoveredPoint.episode}회
+                      </span>
+                      <span
+                        className="font-mono font-extrabold"
+                        style={{
+                          color: getReliabilityColor(hoveredPoint.score),
+                        }}
+                      >
+                        {hoveredPoint.score.toFixed(2)}%
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handlePointClick(
+                          hoveredPoint.episode,
+                          selectedAlgorithm,
+                        )
+                      }
+                      className="cursor-pointer rounded-lg border border-primary-cyan/40 bg-primary-cyan/15 px-2.5 py-1 text-[0.72rem] font-bold text-primary-cyan transition-colors hover:bg-primary-cyan hover:text-white whitespace-nowrap"
+                    >
+                      상세 조합 보기 →
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-[0.72rem] text-dim">
+                    포인트를 탭하거나 클릭하면 해당 회차 최고 조합을 볼 수
+                    있습니다
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {!hasHistory ? (
@@ -939,11 +983,31 @@ export function Stats() {
                         r="16"
                         fill="transparent"
                         className="cursor-pointer"
-                        onMouseEnter={() => setHoveredPoint(p)}
-                        onMouseLeave={() => setHoveredPoint(null)}
-                        onClick={() =>
-                          handlePointClick(p.episode, selectedAlgorithm)
-                        }
+                        onPointerEnter={(e) => {
+                          lastChartPointerTypeRef.current = e.pointerType;
+                          if (e.pointerType === 'mouse') {
+                            setHoveredPoint(p);
+                          }
+                        }}
+                        onPointerLeave={(e) => {
+                          if (e.pointerType === 'mouse') {
+                            setHoveredPoint(null);
+                          }
+                        }}
+                        onPointerDown={(e) => {
+                          lastChartPointerTypeRef.current = e.pointerType;
+                        }}
+                        onClick={() => {
+                          if (lastChartPointerTypeRef.current !== 'mouse') {
+                            if (hoveredPoint?.episode === p.episode) {
+                              handlePointClick(p.episode, selectedAlgorithm);
+                            } else {
+                              setHoveredPoint(p);
+                            }
+                          } else {
+                            handlePointClick(p.episode, selectedAlgorithm);
+                          }
+                        }}
                       />
                     </g>
                   );
@@ -983,28 +1047,28 @@ export function Stats() {
         </div>
 
         {/* KPI Summaries */}
-        <div className="stats-kpi-container grid grid-cols-3 gap-2.5">
-          <div className="bg-surface border border-glass-border py-3 px-2 rounded-xl text-center">
-            <div className="kpi-label text-[0.72rem] text-dim mb-1">
+        <div className="stats-kpi-container grid grid-cols-3 gap-2 sm:gap-2.5">
+          <div className="bg-surface border border-glass-border py-3 px-1.5 sm:px-2 rounded-xl text-center">
+            <div className="kpi-label text-[0.66rem] sm:text-[0.72rem] text-dim mb-1 break-keep">
               최고 분석 점수 (PEAK)
             </div>
-            <div className="kpi-value text-[1.1rem] font-extrabold text-success">
+            <div className="kpi-value text-[1rem] sm:text-[1.1rem] font-extrabold text-success">
               {peakScore.toFixed(1)}%
             </div>
           </div>
-          <div className="bg-surface border border-glass-border py-3 px-2 rounded-xl text-center">
-            <div className="kpi-label text-[0.72rem] text-dim mb-1">
+          <div className="bg-surface border border-glass-border py-3 px-1.5 sm:px-2 rounded-xl text-center">
+            <div className="kpi-label text-[0.66rem] sm:text-[0.72rem] text-dim mb-1 break-keep">
               평균 분석 점수 (AVG)
             </div>
-            <div className="kpi-value text-[1.1rem] font-extrabold text-primary-cyan">
+            <div className="kpi-value text-[1rem] sm:text-[1.1rem] font-extrabold text-primary-cyan">
               {avgScore.toFixed(1)}%
             </div>
           </div>
-          <div className="bg-surface border border-glass-border py-3 px-2 rounded-xl text-center">
-            <div className="kpi-label text-[0.72rem] text-dim mb-1">
+          <div className="bg-surface border border-glass-border py-3 px-1.5 sm:px-2 rounded-xl text-center">
+            <div className="kpi-label text-[0.66rem] sm:text-[0.72rem] text-dim mb-1 break-keep">
               최저 분석 점수 (LOW)
             </div>
-            <div className="kpi-value text-[1.1rem] font-extrabold text-error">
+            <div className="kpi-value text-[1rem] sm:text-[1.1rem] font-extrabold text-error">
               {lowestScore.toFixed(1)}%
             </div>
           </div>

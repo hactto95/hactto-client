@@ -110,7 +110,7 @@ export function Home() {
 
               <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-glass-border pt-4 text-xs text-dim">
                 <span>
-                  번호 위에 마우스를 올리면 출현 순위와 현재
+                  번호를 탭하거나 마우스를 올리면 출현 순위와 현재
                   온도(HOT/WARM/COLD)를 확인할 수 있습니다.
                 </span>
                 <button
@@ -124,13 +124,13 @@ export function Home() {
             </div>
 
             {/* Quick KPI Summary Bento Cards (4 cols) */}
-            <div className="grid grid-cols-2 gap-4 lg:col-span-4 lg:grid-cols-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:col-span-4 lg:grid-cols-1">
               <div className="bento-card flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-muted">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-muted whitespace-nowrap">
                     6개 번호 총합
                   </span>
-                  <span className="rounded-lg bg-primary-cyan/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan">
+                  <span className="shrink-0 whitespace-nowrap rounded-lg bg-primary-cyan/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-cyan">
                     합계 지표
                   </span>
                 </div>
@@ -138,18 +138,18 @@ export function Home() {
                   <span className="font-display text-3xl font-extrabold text-main">
                     {analysis?.sum ?? '-'}
                   </span>
-                  <span className="text-xs text-dim">
+                  <span className="text-xs text-dim whitespace-nowrap">
                     (끝자리 합 {analysis?.sumLastDigits ?? '-'})
                   </span>
                 </div>
               </div>
 
               <div className="bento-card flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-muted">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-muted whitespace-nowrap">
                     조합 복잡도 & 홀짝비
                   </span>
-                  <span className="rounded-lg bg-primary-purple/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-purple">
+                  <span className="shrink-0 whitespace-nowrap rounded-lg bg-primary-purple/10 px-2 py-0.5 text-[0.7rem] font-bold text-primary-purple">
                     패턴 지표
                   </span>
                 </div>

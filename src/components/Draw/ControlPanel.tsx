@@ -114,30 +114,59 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const [hoveredMachine, setHoveredMachine] =
     useState<LottoMachineModel | null>(null);
   const hoveredSpec = hoveredMachine ? LOTTO_MACHINES[hoveredMachine] : null;
+  const currentMachineSpec = LOTTO_MACHINES[machineModel];
+  const [isMobileMachineOpen, setIsMobileMachineOpen] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(true);
 
   return (
-    <div className="bento-card p-6 flex flex-col justify-between gap-5 h-full flex-1">
+    <div className="bento-card p-5 sm:p-6 flex flex-col justify-between gap-5 h-full flex-1">
       {/* 1. 기계 모델 선택 */}
-      <div className="relative flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
+      <div className="relative flex flex-col gap-2.5 pt-4 border-t border-glass-border lg:pt-0 lg:border-t-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
             <label className="text-sm font-bold text-main">
               추첨 기계 모델 선택
             </label>
-            <span className="text-[0.68rem] text-dim font-medium">
+            <span className="hidden lg:inline text-[0.68rem] text-dim font-medium">
               (마우스 오버 시 상세 스펙)
             </span>
           </div>
-          {isDrawInProgress && (
-            <span className="text-[0.68rem] font-semibold text-error">
-              추첨 진행 중 변경 불가
-            </span>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            {isDrawInProgress && (
+              <span className="text-[0.68rem] font-semibold text-error">
+                추첨 진행 중 변경 불가
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsMobileMachineOpen((prev) => !prev)}
+              className="lg:hidden flex items-center gap-1 px-2 py-0.5 rounded-lg bg-surface border border-glass-border text-[0.7rem] font-semibold text-muted cursor-pointer"
+            >
+              <span>{isMobileMachineOpen ? '스펙 접기' : '상세 스펙'}</span>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-transform duration-200 ${
+                  isMobileMachineOpen ? 'rotate-180' : 'rotate-0'
+                }`}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div
           className="grid grid-cols-3 gap-2"
-          onMouseLeave={() => setHoveredMachine(null)}
+          onPointerLeave={(e) => {
+            if (e.pointerType === 'mouse') setHoveredMachine(null);
+          }}
         >
           {MACHINE_LIST.map((spec) => {
             const isSelected = spec.id === machineModel;
@@ -146,9 +175,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 key={spec.id}
                 type="button"
                 disabled={isDrawInProgress || isExtracting || isAutoDrawing}
-                onMouseEnter={() => setHoveredMachine(spec.id)}
-                onFocus={() => setHoveredMachine(spec.id)}
-                onBlur={() => setHoveredMachine(null)}
+                onPointerEnter={(e) => {
+                  if (e.pointerType === 'mouse') {
+                    setHoveredMachine(spec.id);
+                  }
+                }}
                 onClick={() => onSelectMachine(spec.id)}
                 className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center cursor-pointer transition-all duration-200 ${
                   isSelected
@@ -171,9 +202,28 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           })}
         </div>
 
-        {/* 기계 모델 마우스 호버 시 노출되는 상세 메커니즘 툴팁 카드 */}
+        {/* 모바일 인라인 기계 스펙 요약 및 상세 접기/펼치기 */}
+        <div className="lg:hidden rounded-xl bg-surface/80 border border-glass-border px-3 py-2 text-xs">
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-bold text-primary-cyan truncate">
+              {currentMachineSpec.airSystem.type}
+            </span>
+            <span className="text-[0.68rem] text-dim shrink-0">
+              {currentMachineSpec.ballSpecs.diameterMm}mm /{' '}
+              {currentMachineSpec.ballSpecs.weightG}g ·{' '}
+              {currentMachineSpec.episodeRange}
+            </span>
+          </div>
+          {isMobileMachineOpen && (
+            <p className="mt-1.5 pt-1.5 border-t border-glass-border text-[0.72rem] text-muted leading-relaxed m-0 break-keep">
+              {currentMachineSpec.airSystem.description}
+            </p>
+          )}
+        </div>
+
+        {/* 데스크톱 기계 모델 마우스 호버 시 노출되는 상세 메커니즘 툴팁 카드 */}
         {hoveredSpec && (
-          <div className="absolute left-0 right-0 top-full mt-2 z-30 rounded-2xl border border-primary-cyan/35 bg-card/95 backdrop-blur-xl p-4 shadow-glass flex flex-col gap-2.5 pointer-events-none animate-[fadeIn_0.15s_ease-out]">
+          <div className="hidden lg:flex absolute left-0 right-0 top-full mt-2 z-30 rounded-2xl border border-primary-cyan/35 bg-card/95 backdrop-blur-xl p-4 shadow-glass flex-col gap-2.5 pointer-events-none animate-[fadeIn_0.15s_ease-out]">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
                 <span className="w-1.5 h-4 rounded-full bg-primary-cyan inline-block shrink-0" />
@@ -206,10 +256,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         )}
       </div>
 
-      <div className="h-px bg-glass-border" />
-
-      {/* 2. 물리 파라미터 조절 슬라이더 (Generate.tsx 가중치 슬라이더 스타일과 통일) */}
-      <div className="flex flex-col gap-3">
+      {/* 2. 물리 파라미터 조절 슬라이더 (추첨 중에도 실시간 조작 가능하도록 상시 노출) */}
+      <div className="flex flex-col gap-3 pt-4 border-t border-glass-border">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-main">
@@ -308,15 +356,32 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
       </div>
 
-      <div className="h-px bg-glass-border" />
-
       {/* 2.5. 고정수 · 제외수 및 편의 필터 컴팩트 설정 섹션 */}
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2.5 pt-4 border-t border-glass-border">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-sm font-bold text-main whitespace-nowrap">
-              고정수 · 제외수 설정
-            </span>
+            <button
+              type="button"
+              onClick={() => setIsMobileFilterOpen((prev) => !prev)}
+              className="flex items-center gap-1.5 bg-transparent border-none p-0 text-sm font-bold text-main whitespace-nowrap cursor-pointer lg:cursor-default"
+            >
+              <span>고정수 · 제외수 설정</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`lg:hidden text-dim transition-transform duration-200 ${
+                  isMobileFilterOpen ? 'rotate-180' : 'rotate-0'
+                }`}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
             {(fixedNumbers.length > 0 || excludedNumbers.length > 0) &&
               !isFilterLocked && (
                 <button
@@ -352,121 +417,123 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           </button>
         </div>
 
-        {/* 요약 상태 바 (고정수 미니 볼 + 제외수 + 챔버 잔여 공) */}
-        <div className="flex flex-col gap-2 rounded-xl bg-surface border border-glass-border px-3.5 py-2.5">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shrink-0" />
-              <span className="text-muted">고정수</span>
-              <strong className="text-emerald-400 font-bold tabular-nums">
-                {fixedNumbers.length}/{MAX_FIXED_NUMBERS}
-              </strong>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-400 inline-block shrink-0" />
-              <span className="text-muted">제외수</span>
-              <strong className="text-rose-400 font-bold tabular-nums">
-                {excludedNumbers.length}/{MAX_EXCLUDED_NUMBERS}
-              </strong>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-white inline-block shrink-0" />
-              <span className="text-dim">챔버 투입</span>
-              <strong className="text-main font-bold tabular-nums">
-                {chamberBallCount}구
-              </strong>
-            </div>
-          </div>
-
-          {fixedNumbers.length > 0 && (
-            <div className="flex items-center gap-1.5 pt-1.5 border-t border-glass-border/60">
-              <span className="text-[0.68rem] font-semibold text-dim shrink-0">
-                고정 배치됨:
-              </span>
-              <div className="flex flex-wrap items-center gap-1">
-                {fixedNumbers.map((num) => (
-                  <span
-                    key={num}
-                    className="inline-flex items-center justify-center w-6 h-6 rounded-full font-display font-extrabold text-[0.7rem] ring-1 ring-emerald-400"
-                    style={getBallStyle(num)}
-                  >
-                    {num}
-                  </span>
-                ))}
+        <div
+          className={`${isMobileFilterOpen ? 'flex' : 'hidden'} lg:flex flex-col gap-2.5`}
+        >
+          {/* 요약 상태 바 (고정수 미니 볼 + 제외수 + 챔버 잔여 공) */}
+          <div className="flex flex-col gap-2 rounded-xl bg-surface border border-glass-border px-3.5 py-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shrink-0" />
+                <span className="text-muted">고정수</span>
+                <strong className="text-emerald-400 font-bold tabular-nums">
+                  {fixedNumbers.length}/{MAX_FIXED_NUMBERS}
+                </strong>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-rose-400 inline-block shrink-0" />
+                <span className="text-muted">제외수</span>
+                <strong className="text-rose-400 font-bold tabular-nums">
+                  {excludedNumbers.length}/{MAX_EXCLUDED_NUMBERS}
+                </strong>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-white inline-block shrink-0" />
+                <span className="text-dim">챔버 투입</span>
+                <strong className="text-main font-bold tabular-nums">
+                  {chamberBallCount}구
+                </strong>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* 원클릭 퀵 프리셋 칩 (전체 / 홀수만 / 짝수만 / 저번호 / 고번호) */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <button
-            type="button"
-            disabled={isFilterLocked}
-            onClick={() => onChangeExcludedNumbers([])}
-            className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
-              excludedNumbers.length === 0
-                ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-            } disabled:opacity-45 disabled:cursor-not-allowed`}
-          >
-            전체
-          </button>
-          <button
-            type="button"
-            disabled={isFilterLocked}
-            onClick={() => handleQuickPreset((n) => n % 2 === 0)}
-            className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
-              oddOnlyActive
-                ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-            } disabled:opacity-45 disabled:cursor-not-allowed`}
-          >
-            홀수만
-          </button>
-          <button
-            type="button"
-            disabled={isFilterLocked}
-            onClick={() => handleQuickPreset((n) => n % 2 !== 0)}
-            className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
-              evenOnlyActive
-                ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-            } disabled:opacity-45 disabled:cursor-not-allowed`}
-          >
-            짝수만
-          </button>
-          <button
-            type="button"
-            disabled={isFilterLocked}
-            onClick={() => handleQuickPreset((n) => n >= 23)}
-            className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
-              lowOnlyActive
-                ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-            } disabled:opacity-45 disabled:cursor-not-allowed`}
-          >
-            저(1~22)
-          </button>
-          <button
-            type="button"
-            disabled={isFilterLocked}
-            onClick={() => handleQuickPreset((n) => n <= 22)}
-            className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
-              highOnlyActive
-                ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
-                : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
-            } disabled:opacity-45 disabled:cursor-not-allowed`}
-          >
-            고(23~45)
-          </button>
+            {fixedNumbers.length > 0 && (
+              <div className="flex items-center gap-1.5 pt-1.5 border-t border-glass-border/60">
+                <span className="text-[0.68rem] font-semibold text-dim shrink-0">
+                  고정 배치됨:
+                </span>
+                <div className="flex flex-wrap items-center gap-1">
+                  {fixedNumbers.map((num) => (
+                    <span
+                      key={num}
+                      className="inline-flex items-center justify-center w-6 h-6 rounded-full font-display font-extrabold text-[0.7rem] ring-1 ring-emerald-400"
+                      style={getBallStyle(num)}
+                    >
+                      {num}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 원클릭 퀵 프리셋 칩 (전체 / 홀수만 / 짝수만 / 저번호 / 고번호) */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              disabled={isFilterLocked}
+              onClick={() => onChangeExcludedNumbers([])}
+              className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
+                excludedNumbers.length === 0
+                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                  : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+              } disabled:opacity-45 disabled:cursor-not-allowed`}
+            >
+              전체
+            </button>
+            <button
+              type="button"
+              disabled={isFilterLocked}
+              onClick={() => handleQuickPreset((n) => n % 2 === 0)}
+              className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
+                oddOnlyActive
+                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                  : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+              } disabled:opacity-45 disabled:cursor-not-allowed`}
+            >
+              홀수만
+            </button>
+            <button
+              type="button"
+              disabled={isFilterLocked}
+              onClick={() => handleQuickPreset((n) => n % 2 !== 0)}
+              className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
+                evenOnlyActive
+                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                  : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+              } disabled:opacity-45 disabled:cursor-not-allowed`}
+            >
+              짝수만
+            </button>
+            <button
+              type="button"
+              disabled={isFilterLocked}
+              onClick={() => handleQuickPreset((n) => n >= 23)}
+              className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
+                lowOnlyActive
+                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                  : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+              } disabled:opacity-45 disabled:cursor-not-allowed`}
+            >
+              저(1~22)
+            </button>
+            <button
+              type="button"
+              disabled={isFilterLocked}
+              onClick={() => handleQuickPreset((n) => n <= 22)}
+              className={`flex-1 min-w-fit py-1.5 px-2 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all border text-center whitespace-nowrap ${
+                highOnlyActive
+                  ? 'bg-primary-cyan/15 border-primary-cyan text-primary-cyan'
+                  : 'bg-surface border-glass-border text-muted hover:text-main hover:border-glass-border-strong'
+              } disabled:opacity-45 disabled:cursor-not-allowed`}
+            >
+              고(23~45)
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="h-px bg-glass-border" />
-
-      {/* 3. HON 이용 안내 및 추첨 액션 컨트롤 버튼들 */}
-      <div className="flex flex-col gap-3">
+      {/* 3. HON 이용 안내 및 추첨 액션 컨트롤 버튼들 (모바일에서는 최상단 order-first로 배치하여 3D 챔버 직하단에서 즉시 조작) */}
+      <div className="order-first lg:order-none flex flex-col gap-3 lg:pt-4 lg:border-t lg:border-glass-border">
         {/* HON 안내 */}
         <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface border border-glass-border text-xs">
           <div className="flex items-center gap-1.5">

@@ -3,6 +3,9 @@ import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { getBallStyle, getTemperatureMeta } from '../utils';
 
+let activeTooltipId: object | null = null;
+let activeTooltipCloseFn: (() => void) | null = null;
+
 interface BallHoverTooltipProps {
   ball: number;
   children: React.ReactNode;
@@ -26,8 +29,13 @@ export function BallHoverTooltip({
     placeBelow: false,
   });
 
+  const instanceIdRef = useRef<object>({});
   const triggerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const hideTimeoutRef = useRef<number | null>(null);
+  const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
+  const openScrollYRef = useRef<number>(0);
+  const lastPointerTypeRef = useRef<string>('mouse');
 
   const stat = ball >= 1 && ball <= 45 ? ballStatsMap[ball] : undefined;
 
@@ -37,6 +45,15 @@ export function BallHoverTooltip({
       hideTimeoutRef.current = null;
     }
   }, []);
+
+  const closeTooltip = useCallback(() => {
+    clearHideTimer();
+    setVisible(false);
+    if (activeTooltipId === instanceIdRef.current) {
+      activeTooltipId = null;
+      activeTooltipCloseFn = null;
+    }
+  }, [clearHideTimer]);
 
   const updatePosition = useCallback(() => {
     if (!triggerRef.current) return;
@@ -61,43 +78,79 @@ export function BallHoverTooltip({
   const handleOpen = useCallback(() => {
     if (disabled || !stat) return;
     clearHideTimer();
+    if (
+      activeTooltipId &&
+      activeTooltipId !== instanceIdRef.current &&
+      activeTooltipCloseFn
+    ) {
+      activeTooltipCloseFn();
+    }
+    activeTooltipId = instanceIdRef.current;
+    activeTooltipCloseFn = closeTooltip;
+    openScrollYRef.current = window.scrollY;
     updatePosition();
     setVisible(true);
-  }, [clearHideTimer, disabled, stat, updatePosition]);
+  }, [clearHideTimer, closeTooltip, disabled, stat, updatePosition]);
 
   const handleDelayedClose = useCallback(() => {
     clearHideTimer();
     hideTimeoutRef.current = window.setTimeout(() => {
-      setVisible(false);
+      closeTooltip();
     }, 90);
-  }, [clearHideTimer]);
+  }, [clearHideTimer, closeTooltip]);
 
   useEffect(() => {
     if (!visible) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setVisible(false);
+        closeTooltip();
       }
     };
 
-    const handleScrollOrResize = () => {
-      setVisible(false);
+    const handleScroll = () => {
+      if (Math.abs(window.scrollY - openScrollYRef.current) > 8) {
+        closeTooltip();
+      }
+    };
+
+    const handleResize = () => {
+      closeTooltip();
+    };
+
+    const handleOutsidePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(target) &&
+        (!tooltipRef.current || !tooltipRef.current.contains(target))
+      ) {
+        closeTooltip();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('scroll', handleScrollOrResize, true);
-    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('pointerdown', handleOutsidePointerDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('scroll', handleScrollOrResize, true);
-      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('pointerdown', handleOutsidePointerDown);
     };
-  }, [visible]);
+  }, [visible, closeTooltip]);
 
   useEffect(() => {
-    return () => clearHideTimer();
+    const id = instanceIdRef.current;
+    return () => {
+      clearHideTimer();
+      if (activeTooltipId === id) {
+        activeTooltipId = null;
+        activeTooltipCloseFn = null;
+      }
+    };
   }, [clearHideTimer]);
 
   if (ball < 1 || ball > 45) {
@@ -111,10 +164,50 @@ export function BallHoverTooltip({
       <div
         ref={triggerRef}
         className="inline-flex items-center"
-        onMouseEnter={handleOpen}
-        onMouseLeave={handleDelayedClose}
-        onFocus={handleOpen}
-        onBlur={handleDelayedClose}
+        onPointerEnter={(e) => {
+          lastPointerTypeRef.current = e.pointerType;
+          if (e.pointerType === 'mouse') {
+            handleOpen();
+          }
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === 'mouse') {
+            handleDelayedClose();
+          }
+        }}
+        onPointerDown={(e) => {
+          lastPointerTypeRef.current = e.pointerType;
+          if (e.pointerType !== 'mouse') {
+            pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+          }
+        }}
+        onPointerUp={(e) => {
+          if (e.pointerType !== 'mouse' && pointerDownPosRef.current) {
+            const dist = Math.hypot(
+              e.clientX - pointerDownPosRef.current.x,
+              e.clientY - pointerDownPosRef.current.y,
+            );
+            pointerDownPosRef.current = null;
+            if (dist <= 6 && !disabled && stat) {
+              e.stopPropagation();
+              if (visible) {
+                closeTooltip();
+              } else {
+                handleOpen();
+              }
+            }
+          }
+        }}
+        onFocus={() => {
+          if (lastPointerTypeRef.current === 'mouse') {
+            handleOpen();
+          }
+        }}
+        onBlur={() => {
+          if (lastPointerTypeRef.current === 'mouse') {
+            handleDelayedClose();
+          }
+        }}
       >
         {children}
       </div>
@@ -123,8 +216,17 @@ export function BallHoverTooltip({
         stat &&
         createPortal(
           <div
-            onMouseEnter={clearHideTimer}
-            onMouseLeave={handleDelayedClose}
+            ref={tooltipRef}
+            onPointerEnter={(e) => {
+              if (e.pointerType === 'mouse') {
+                clearHideTimer();
+              }
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType === 'mouse') {
+                handleDelayedClose();
+              }
+            }}
             className={`pointer-events-auto fixed z-[99999] min-w-[215px] rounded-xl border border-primary-cyan/35 bg-modal px-3.5 py-2.5 text-[0.78rem] leading-[1.45] text-main shadow-glass backdrop-blur-md ${
               coords.placeBelow
                 ? '-translate-x-1/2 translate-y-0'

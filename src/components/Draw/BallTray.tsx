@@ -34,7 +34,7 @@ export const BallTray: React.FC<BallTrayProps> = ({
             실시간 당첨 번호 거치대
           </span>
           <span className="hidden sm:inline-block text-[0.72rem] text-dim bg-surface px-2.5 py-0.5 rounded-full border border-glass-border">
-            공에 마우스를 올리면 상세 통계가 표시됩니다
+            공을 탭하거나 마우스를 올리면 상세 통계가 표시됩니다
           </span>
         </div>
         <span className="text-xs font-bold text-primary-cyan bg-primary-cyan/10 px-2.5 py-1 rounded-lg">

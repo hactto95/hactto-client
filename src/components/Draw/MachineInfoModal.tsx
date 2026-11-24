@@ -45,9 +45,9 @@ export const MachineInfoModal: React.FC<MachineInfoModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="glass-card admin-modal-content-wide max-w-[720px]! p-0! text-left relative overflow-hidden flex flex-col">
+      <div className="glass-card admin-modal-content-wide max-w-[720px]! max-h-[90dvh]! p-0! text-left relative overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-glass-border bg-surface">
+        <div className="shrink-0 flex items-center justify-between px-5 sm:px-6 py-4 border-b border-glass-border bg-surface">
           <div>
             <h3 className="font-display text-lg font-extrabold text-main m-0">
               대한민국 역대 로또 추첨기 역사관
@@ -78,7 +78,7 @@ export const MachineInfoModal: React.FC<MachineInfoModalProps> = ({
         </div>
 
         {/* 탭 네비게이션 */}
-        <div className="px-6 py-2.5 border-b border-glass-border bg-card flex gap-2 flex-wrap">
+        <div className="shrink-0 px-5 sm:px-6 py-2.5 border-b border-glass-border bg-card flex gap-2 flex-wrap">
           {MACHINE_LIST.map((spec) => {
             const isTabActive = spec.id === activeTab;
             return (
@@ -97,7 +97,7 @@ export const MachineInfoModal: React.FC<MachineInfoModalProps> = ({
         </div>
 
         {/* 바디 상세 내용 */}
-        <div className="px-6 py-5 flex flex-col gap-4 text-sm">
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 sm:px-6 py-5 flex flex-col gap-4 text-sm">
           {/* 주요 요약 카드 */}
           <div className="p-4 rounded-2xl bg-surface border border-glass-border flex flex-col gap-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
@@ -216,7 +216,7 @@ export const MachineInfoModal: React.FC<MachineInfoModalProps> = ({
         </div>
 
         {/* 푸터 */}
-        <div className="flex items-center justify-between flex-wrap gap-3 px-6 py-3.5 border-t border-glass-border bg-surface">
+        <div className="shrink-0 flex items-center justify-between flex-wrap gap-3 px-5 sm:px-6 py-3.5 border-t border-glass-border bg-surface">
           <span className="text-xs text-muted">
             현재 시뮬레이터 적용 모델:{' '}
             <strong className="text-main">
