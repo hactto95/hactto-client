@@ -2,20 +2,60 @@ import type { MatchResult } from '../types';
 import { getBallStyle } from '../utils';
 import { BallHoverTooltip } from './BallHoverTooltip';
 
+export interface SingleLottoBallProps {
+  number: number;
+  size?: 'sm' | 'md' | 'lg';
+  disableTooltip?: boolean;
+  className?: string;
+}
+
+export function LottoBall({
+  number,
+  size = 'md',
+  disableTooltip = false,
+  className = '',
+}: SingleLottoBallProps) {
+  const sizeClass =
+    size === 'sm'
+      ? '!w-8 !h-8 !text-xs'
+      : size === 'lg'
+        ? '!w-12 !h-12 !text-base'
+        : '';
+
+  return (
+    <BallHoverTooltip ball={number} disabled={disableTooltip}>
+      <div
+        className={`lotto-ball ${sizeClass} ${className}`}
+        style={getBallStyle(number)}
+      >
+        {number}
+      </div>
+    </BallHoverTooltip>
+  );
+}
+
 interface LottoBallsProps {
   numbers: number[];
   matchResult?: MatchResult | null;
   disableTooltip?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export function LottoBalls({
   numbers,
   matchResult,
   disableTooltip = false,
+  size = 'md',
 }: LottoBallsProps) {
   if (!numbers || (numbers.length !== 6 && numbers.length !== 7)) return null;
   const mainNumbers = numbers.slice(0, 6);
   const bonusNumber = numbers[6];
+  const sizeClass =
+    size === 'sm'
+      ? '!w-8 !h-8 !text-xs'
+      : size === 'lg'
+        ? '!w-12 !h-12 !text-base'
+        : '';
 
   return (
     <div className="lotto-balls-container">
@@ -37,7 +77,7 @@ export function LottoBalls({
         return (
           <BallHoverTooltip key={i} ball={num} disabled={disableTooltip}>
             <div
-              className={`lotto-ball ${stateClass}`}
+              className={`lotto-ball ${sizeClass} ${stateClass}`}
               style={getBallStyle(num)}
             >
               {num}
@@ -58,7 +98,7 @@ export function LottoBalls({
             return (
               <BallHoverTooltip ball={bonusNumber} disabled={disableTooltip}>
                 <div
-                  className={`lotto-ball ${bonusClass}`}
+                  className={`lotto-ball ${sizeClass} ${bonusClass}`}
                   style={getBallStyle(bonusNumber)}
                 >
                   {bonusNumber}
