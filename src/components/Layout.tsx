@@ -42,6 +42,10 @@ const MENU_GROUPS = [
     ],
   },
   {
+    title: '미니게임',
+    items: [{ path: '/minigame', label: '일일 로또 미니게임' }],
+  },
+  {
     title: '마이페이지',
     items: [{ path: '/history', label: '내 당첨이력' }],
   },
@@ -282,6 +286,7 @@ export function Layout() {
                     ? group.items.filter(
                         (item) =>
                           item.path !== '/generate' &&
+                          item.path !== '/minigame' &&
                           item.path !== '/history' &&
                           item.path !== '/support',
                       )
@@ -506,6 +511,7 @@ export function Layout() {
                   ? group.items.filter(
                       (item) =>
                         item.path !== '/generate' &&
+                        item.path !== '/minigame' &&
                         item.path !== '/history' &&
                         item.path !== '/support',
                     )
