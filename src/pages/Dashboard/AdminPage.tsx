@@ -730,6 +730,7 @@ export function AdminPage() {
         setNewNoticeContent('');
         setNewNoticeEndsAt('');
         fetchAdminNotices();
+        window.dispatchEvent(new Event('refresh-notices'));
       } else {
         throw new Error('공지 등록 실패');
       }
@@ -753,6 +754,7 @@ export function AdminPage() {
           if (res.ok) {
             showAlert('success', '공지가 삭제되었습니다.');
             fetchAdminNotices();
+            window.dispatchEvent(new Event('refresh-notices'));
           } else {
             throw new Error('공지 삭제 실패');
           }

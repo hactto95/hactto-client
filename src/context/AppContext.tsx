@@ -58,8 +58,6 @@ interface AppContextType {
     message: string;
     estimatedCompletionTime?: string;
   } | null;
-  showWelcomeModal: boolean;
-  setShowWelcomeModal: (val: boolean) => void;
   freeHon: number;
   paidHon: number;
   subscription: SubscriptionStatus | null;
@@ -67,6 +65,7 @@ interface AppContextType {
   setNickname: (name: string | null) => void;
   isBlockedUser: boolean;
   setIsBlockedUser: (val: boolean) => void;
+  blockedUserId: string;
   ballStatsList: LotteryBallStat[];
   ballStatsMap: Record<number, LotteryBallStat>;
   refreshBallStats: () => Promise<void>;
@@ -86,7 +85,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [pending, setPending] = useState<boolean>(false);
   const [clientIp, setClientIp] = useState<string>('');
-  const [showWelcomeModal, setShowWelcomeModal] = useState<boolean>(false);
 
   // Unsaved weights warning states
   const [hasUnsavedWeights, setHasUnsavedWeights] = useState<boolean>(false);
@@ -115,6 +113,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const [nickname, setNickname] = useState<string | null>(null);
   const [isBlockedUser, setIsBlockedUser] = useState<boolean>(false);
+  const [blockedUserId, setBlockedUserId] = useState<string>('');
   const [ballStatsList, setBallStatsList] = useState<LotteryBallStat[]>([]);
   const [ballStatsMap, setBallStatsMap] = useState<
     Record<number, LotteryBallStat>
@@ -221,7 +220,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      if (response.status === 403 && !urlString.includes('/user/register')) {
+      if (response.status === 403) {
         try {
           const clone = response.clone();
           const errData = await clone.json();
@@ -233,17 +232,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
               setIsBlockedUser(true);
             }
             if (errData.ip) setClientIp(errData.ip);
+            if (errData.userId) setBlockedUserId(errData.userId);
           }
         } catch {
           // Ignore
         }
-      }
-
-      const isFirstVisit = response.headers.get('x-first-visit') === 'true';
-      const hasConsented =
-        localStorage.getItem('hactto_welcome_consented') === 'true';
-      if (isFirstVisit && !hasConsented) {
-        setShowWelcomeModal(true);
       }
 
       return response;
@@ -296,17 +289,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
             setPending(false);
             setClientIp(adminResult.ip || 'unknown');
             setIsBlockedUser(false);
-            const isFirstVisit =
-              adminRes.headers.get('x-first-visit') === 'true';
-            const hasConsented =
-              localStorage.getItem('hactto_welcome_consented') === 'true';
-            if (!hasConsented) {
-              if (isFirstVisit) {
-                setShowWelcomeModal(true);
-              } else {
-                localStorage.setItem('hactto_welcome_consented', 'true');
-              }
-            }
             setLoading(false);
             return;
           } else {
@@ -330,6 +312,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               ) {
                 setIsBlockedUser(true);
                 if (errData.ip) setClientIp(errData.ip);
+                if (errData.userId) setBlockedUserId(errData.userId);
                 setLoading(false);
                 return;
               }
@@ -350,18 +333,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSubscription(result.subscription || null);
         setAllowed(true);
         setPending(false);
+        setIsBlockedUser(false);
+        setBlockedUserId('');
         if (result.ip) setClientIp(result.ip);
-
-        const isFirstVisit = res.headers.get('x-first-visit') === 'true';
-        const hasConsented =
-          localStorage.getItem('hactto_welcome_consented') === 'true';
-        if (!hasConsented) {
-          if (isFirstVisit) {
-            setShowWelcomeModal(true);
-          } else {
-            localStorage.setItem('hactto_welcome_consented', 'true');
-          }
-        }
       } catch (err: unknown) {
         console.error(err);
         setAllowed(true);
@@ -600,8 +574,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isSystemAnalyzing,
         setIsSystemAnalyzing,
         systemAnalysisProgress,
-        showWelcomeModal,
-        setShowWelcomeModal,
         freeHon,
         paidHon,
         subscription,
@@ -609,6 +581,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setNickname,
         isBlockedUser,
         setIsBlockedUser,
+        blockedUserId,
         ballStatsList,
         ballStatsMap,
         refreshBallStats,
