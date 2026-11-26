@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../utils';
 import { Alert } from '../components/Alert';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -15,7 +16,10 @@ interface Inquiry {
 }
 
 export function BlockedPage() {
-  const { clientIp, alert, showAlert } = useApp();
+  const { clientIp, blockedUserId, setIsBlockedUser, alert, showAlert } =
+    useApp();
+  const { user, logout } = useAuth();
+  const effectiveUserId = blockedUserId || user?.id || '';
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -27,32 +31,35 @@ export function BlockedPage() {
   const hasPendingBlock = inquiries.some((i) => i.status === 'PENDING');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const fetchInquiries = useCallback(async (silent = false) => {
-    if (!silent) setLoadingList(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/user/inquiries?type=BLOCK`, {
-        headers: {
-          'x-user-id': clientIp,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const list = Array.isArray(data.data)
-          ? data.data
-          : Array.isArray(data)
-            ? data
-            : [];
-        setInquiries(list);
-        return list;
+  const fetchInquiries = useCallback(
+    async (silent = false) => {
+      if (!effectiveUserId) return [];
+      if (!silent) setLoadingList(true);
+      try {
+        const res = await fetch(`${API_BASE_URL}/user/inquiries?type=BLOCK`, {
+          headers: {
+            'x-user-id': effectiveUserId,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const list = Array.isArray(data.data)
+            ? data.data
+            : Array.isArray(data)
+              ? data
+              : [];
+          setInquiries(list);
+          return list;
+        }
+      } catch (err) {
+        console.error('문의 내역 조회 실패:', err);
+      } finally {
+        if (!silent) setLoadingList(false);
       }
-    } catch (err) {
-      console.error('문의 내역 조회 실패:', err);
-    } finally {
-      if (!silent) setLoadingList(false);
-    }
-    return [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      return [];
+    },
+    [effectiveUserId],
+  );
 
   // Fetch inquiries on mount to determine initial view mode
   useEffect(() => {
@@ -78,7 +85,7 @@ export function BlockedPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': clientIp,
+          ...(effectiveUserId ? { 'x-user-id': effectiveUserId } : {}),
         },
         body: JSON.stringify({ title, content, type: 'BLOCK' }),
       });
@@ -173,12 +180,32 @@ export function BlockedPage() {
 
           {/* User Details Box */}
           <div className="mb-6 rounded-lg border border-glass-border bg-surface px-3.5 py-2.5 text-left text-xs">
+            {effectiveUserId && (
+              <div className="mb-1 flex justify-between">
+                <span className="text-dim">사용자 ID</span>
+                <span className="font-mono text-main">{effectiveUserId}</span>
+              </div>
+            )}
             <div className="mb-1 flex justify-between">
               <span className="text-dim">접속 IP</span>
               <span className="font-mono text-main">
                 {clientIp || '확인 불가'}
               </span>
             </div>
+            {user && (
+              <div className="mt-2 flex justify-end border-t border-glass-border pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setIsBlockedUser(false);
+                  }}
+                  className="cursor-pointer rounded border border-glass-border bg-canvas px-2.5 py-1 text-[0.72rem] font-semibold text-muted transition-colors hover:bg-surface-hover hover:text-main"
+                >
+                  로그아웃
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Subtitle / Mode Header */}
