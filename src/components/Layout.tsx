@@ -258,22 +258,22 @@ export function Layout() {
           STICKY GLOBAL NAVIGATION BAR (TOSS / LINEAR STYLE)
          ===================================================================== */}
       <header className="sticky top-0 z-40 w-full border-b border-glass-border bg-card/85 backdrop-blur-xl transition-colors">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
           {/* Left: Brand Logo & Desktop Navigation */}
-          <div className="flex items-center gap-8">
+          <div className="flex shrink-0 items-center gap-4 sm:gap-8">
             <button
               type="button"
               onClick={() => handleSafeNavigate('/home')}
-              className="group flex cursor-pointer items-center gap-2.5 border-none bg-transparent p-0 focus:outline-none"
+              className="group flex shrink-0 cursor-pointer items-center gap-1.5 sm:gap-2.5 border-none bg-transparent p-0 focus:outline-none"
             >
               <HacttoLogo
-                size={32}
-                className="transition-transform group-hover:scale-105"
+                size={30}
+                className="shrink-0 transition-transform group-hover:scale-105"
               />
-              <span className="font-display text-xl font-extrabold tracking-tight text-main">
+              <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-main whitespace-nowrap">
                 Hactto
               </span>
-              <span className="hidden rounded-md bg-primary-cyan/10 px-1.5 py-0.5 text-[0.65rem] font-bold tracking-wide text-primary-cyan sm:inline-block">
+              <span className="hidden rounded-md bg-primary-cyan/10 px-1.5 py-0.5 text-[0.65rem] font-bold tracking-wide text-primary-cyan whitespace-nowrap sm:inline-block">
                 AI ANALYTICS
               </span>
             </button>
@@ -384,14 +384,14 @@ export function Layout() {
           </div>
 
           {/* Right: User Profile, Theme Toggle, Help, Mobile Menu Trigger */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2.5">
             {!isAdminMode &&
               (isAuthenticated ? (
                 <button
                   type="button"
                   onClick={() => setShowUserDetailModal(true)}
                   title="프로필 및 알림 보기"
-                  className="flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-full border border-glass-border bg-surface px-2.5 sm:px-3.5 py-1.5 text-[0.82rem] sm:text-[0.85rem] font-medium text-main transition-all hover:border-primary-cyan/40 hover:bg-surface-hover"
+                  className="flex shrink-0 cursor-pointer items-center gap-1.5 sm:gap-2 rounded-full border border-glass-border bg-surface px-2.5 sm:px-3.5 py-1.5 text-[0.82rem] sm:text-[0.85rem] font-medium text-main whitespace-nowrap transition-all hover:border-primary-cyan/40 hover:bg-surface-hover"
                 >
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-cyan/15 text-[0.7rem] font-bold text-primary-cyan">
                     {(user?.nickname || user?.email || 'U')[0].toUpperCase()}
@@ -406,7 +406,7 @@ export function Layout() {
                   )}
                 </button>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                   <button
                     type="button"
                     onClick={() =>
@@ -414,26 +414,26 @@ export function Layout() {
                         state: { from: location.pathname },
                       })
                     }
-                    className="cursor-pointer rounded-xl border-none bg-transparent px-3 py-1.5 text-[0.88rem] font-semibold text-muted transition-colors hover:bg-surface-hover hover:text-main"
+                    className="shrink-0 cursor-pointer rounded-xl border-none bg-transparent px-2 sm:px-3 py-1.5 text-[0.8rem] sm:text-[0.88rem] font-semibold text-muted whitespace-nowrap transition-colors hover:bg-surface-hover hover:text-main"
                   >
                     로그인
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate('/signup')}
-                    className="cursor-pointer rounded-xl border-none bg-primary-cyan px-3.5 py-1.5 text-[0.85rem] font-semibold text-white shadow-sm transition-all hover:brightness-105"
+                    className="shrink-0 cursor-pointer rounded-xl border-none bg-primary-cyan px-2.5 sm:px-3.5 py-1.5 text-[0.8rem] sm:text-[0.85rem] font-semibold text-white whitespace-nowrap shadow-sm transition-all hover:brightness-105"
                   >
                     시작하기
                   </button>
                 </div>
               ))}
 
-            <ThemeToggle />
+            <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />
 
             <button
               type="button"
               onClick={() => setShowHelpModal(true)}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-[0.88rem] font-bold text-muted transition-all hover:border-primary-cyan/40 hover:bg-surface-hover hover:text-primary-cyan focus:outline-none"
+              className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-[0.85rem] sm:text-[0.88rem] font-bold text-muted transition-all hover:border-primary-cyan/40 hover:bg-surface-hover hover:text-primary-cyan focus:outline-none"
               title="로또 분석 용어 사전"
             >
               ?
@@ -444,7 +444,7 @@ export function Layout() {
                 ref={hamburgerRef}
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-main transition-colors hover:bg-surface-hover focus:outline-none"
+                className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-glass-border bg-surface text-main transition-colors hover:bg-surface-hover focus:outline-none"
                 aria-label="메뉴 열기"
               >
                 <svg
@@ -636,7 +636,11 @@ export function Layout() {
         {/* Right Ad Rail (Desktop XL+) */}
         {!isYearlySubscribed && !isMobileOrTablet && (
           <aside className="google-ad-sidebar right-ad hidden xl:flex">
-            <AdSenseBanner slot="0987654321" format="vertical" />
+            <AdSenseBanner
+              slot="0987654321"
+              format="vertical"
+              fallbackVariant="minigame"
+            />
           </aside>
         )}
       </div>

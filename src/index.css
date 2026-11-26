@@ -1179,6 +1179,119 @@ body {
   transform: scale(1.03);
 }
 
+/* Minigame Right Panel Fallback Ad Variant */
+.ad-fallback-minigame {
+  background: linear-gradient(-45deg, #09191f, #11182c, #171132, #0b2228);
+  background-size: 350% 350%;
+  border-color: rgba(16, 185, 129, 0.38);
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.25),
+    0 0 18px rgba(16, 185, 129, 0.14),
+    inset 0 1px 1px rgba(255, 255, 255, 0.14);
+}
+
+.ad-fallback-minigame:hover {
+  border-color: rgba(52, 211, 153, 0.78);
+  box-shadow:
+    0 16px 36px rgba(16, 185, 129, 0.24),
+    0 0 24px rgba(245, 158, 11, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22);
+}
+
+.ad-fallback-minigame .ad-subtitle {
+  color: #34d399;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.45);
+}
+
+.ad-fallback-minigame .ad-title {
+  font-size: 1.75rem;
+  background: linear-gradient(135deg, #ffffff 10%, #34d399 55%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(16, 185, 129, 0.35));
+}
+
+.ad-fallback-minigame .ad-badge {
+  background: linear-gradient(90deg, #10b981, #f59e0b);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+}
+
+.ad-minigame-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 18px 0;
+  z-index: 3;
+}
+
+.ad-minigame-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  font-size: 0.76rem;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.ad-minigame-chip .chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ad-minigame-chip.chip-1 {
+  border-left: 3px solid #38bdf8;
+}
+.ad-minigame-chip.chip-1 .chip-icon {
+  color: #38bdf8;
+}
+.ad-minigame-chip.chip-2 {
+  border-left: 3px solid #fbbf24;
+}
+.ad-minigame-chip.chip-2 .chip-icon {
+  color: #fbbf24;
+}
+.ad-minigame-chip.chip-3 {
+  border-left: 3px solid #a855f7;
+}
+.ad-minigame-chip.chip-3 .chip-icon {
+  color: #a855f7;
+}
+.ad-minigame-chip.chip-4 {
+  border-left: 3px solid #34d399;
+}
+.ad-minigame-chip.chip-4 .chip-icon {
+  color: #34d399;
+}
+
+.ad-fallback-minigame:hover .ad-minigame-chip {
+  border-color: rgba(52, 211, 153, 0.32);
+}
+
+.ad-fallback-minigame .ad-desc strong {
+  color: #34d399;
+}
+
+.ad-fallback-minigame .ad-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #f59e0b 100%);
+  background-size: 200% auto;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+}
+
+.ad-fallback-minigame .ad-button:hover {
+  box-shadow:
+    0 6px 20px rgba(16, 185, 129, 0.55),
+    0 0 15px rgba(245, 158, 11, 0.35);
+}
+
 .ad-fallback-horizontal {
   flex-direction: row;
   justify-content: space-between;
@@ -1202,18 +1315,22 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.35));
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ad-fallback-horizontal .ad-divider {
   width: 1px;
   height: 26px;
   background: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
 }
 
 .ad-fallback-horizontal .ad-text-content {
   display: flex;
   flex-direction: column;
   text-align: left;
+  min-width: 0;
 }
 
 .ad-fallback-horizontal .ad-tagline {
@@ -1274,6 +1391,8 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(49, 130, 246, 0.35);
   transition: all 0.25s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ad-fallback-horizontal .ad-button:hover {
