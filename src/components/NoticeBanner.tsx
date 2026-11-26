@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { API_BASE_URL } from '../utils';
 
 interface Notice {
@@ -151,6 +152,8 @@ function NoticeText({
 }
 
 export function NoticeBanner() {
+  const location = useLocation();
+  const isHomePath = location.pathname === '/home' || location.pathname === '/';
   const [notices, setNotices] = useState<Notice[]>([]);
   const [bannerIndex, setBannerIndex] = useState(0);
   const [modalIndex, setModalIndex] = useState(0);
@@ -177,7 +180,11 @@ export function NoticeBanner() {
             areAllNoticesDismissedToday(BANNER_HIDE_DATE_KEY, list),
           );
 
-          if (list.length > 0) {
+          if (
+            list.length > 0 &&
+            (window.location.pathname === '/home' ||
+              window.location.pathname === '/')
+          ) {
             const isPopupHiddenToday = areAllNoticesDismissedToday(
               POPUP_HIDE_DATE_KEY,
               list,
@@ -211,8 +218,11 @@ export function NoticeBanner() {
     return () => clearInterval(interval);
   }, [notices.length]);
 
+  const activeModalMode =
+    modalMode === 'AUTO_POPUP' && !isHomePath ? null : modalMode;
+
   useEffect(() => {
-    if (modalMode !== null) {
+    if (activeModalMode !== null) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -220,7 +230,7 @@ export function NoticeBanner() {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [modalMode]);
+  }, [activeModalMode]);
 
   if (notices.length === 0) return null;
 
@@ -294,7 +304,7 @@ export function NoticeBanner() {
       )}
 
       {/* Entry Popup Modal & Banner Detail Modal (PC & Mobile) */}
-      {modalMode !== null && currentModalNotice && (
+      {activeModalMode !== null && currentModalNotice && (
         <div
           onClick={handleCloseModal}
           className="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center bg-overlay p-4 backdrop-blur-md"
@@ -346,10 +356,12 @@ export function NoticeBanner() {
 
             <div
               className={`flex items-center gap-3 border-t border-glass-border bg-surface/50 px-6 py-3.5 ${
-                modalMode === 'AUTO_POPUP' ? 'justify-between' : 'justify-end'
+                activeModalMode === 'AUTO_POPUP'
+                  ? 'justify-between'
+                  : 'justify-end'
               }`}
             >
-              {modalMode === 'AUTO_POPUP' && (
+              {activeModalMode === 'AUTO_POPUP' && (
                 <button
                   type="button"
                   onClick={handleHidePopupToday}
