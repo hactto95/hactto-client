@@ -6,6 +6,7 @@ import { Alert } from '../../components/Alert';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { useNavigate } from 'react-router-dom';
 import { AdminPolicyManagement } from '../../components/AdminPolicyManagement';
+import { AdminYoutubeShortsTab } from '../../components/AdminYoutubeShortsTab';
 
 export function AdminPage() {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export function AdminPage() {
     | 'algo'
     | 'system'
     | 'AI_POSTS'
+    | 'YOUTUBE_SHORTS'
     | 'notices'
     | 'inquiries'
     | 'users'
@@ -1162,6 +1164,16 @@ export function AdminPage() {
               </button>
               <button
                 className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
+                  activeTab === 'YOUTUBE_SHORTS'
+                    ? 'active-tab text-primary-cyan'
+                    : 'text-dim'
+                }`}
+                onClick={() => setActiveTab('YOUTUBE_SHORTS')}
+              >
+                유튜브 숏츠
+              </button>
+              <button
+                className={`tab-btn bg-transparent border-none py-2 px-3 text-[0.85rem] cursor-pointer shrink-0 ${
                   activeTab === 'notices'
                     ? 'active-tab text-primary-cyan'
                     : 'text-dim'
@@ -1477,6 +1489,13 @@ export function AdminPage() {
                     </button>
                   </div>
                 </div>
+              )}
+
+              {activeTab === 'YOUTUBE_SHORTS' && (
+                <AdminYoutubeShortsTab
+                  appendAuth={appendAuth}
+                  showAlert={showAlert}
+                />
               )}
 
               {activeTab === 'AI_POSTS' && (
