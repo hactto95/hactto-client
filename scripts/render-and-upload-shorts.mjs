@@ -231,13 +231,20 @@ function buildMasterAudioTrack(manifest, outDir) {
     const sceneWavPath = path.join(audioDir, `scene-${idx}.wav`);
 
     if (scene.audioBase64) {
-      const rawMp3Path = path.join(audioDir, `raw-${idx}.mp3`);
-      fs.writeFileSync(rawMp3Path, Buffer.from(scene.audioBase64, 'base64'));
-      // Pad or trim scene audio to exact scene durationInFrames
-      execSync(
-        `ffmpeg -y -i "${rawMp3Path}" -af "apad=whole_dur=${durationSec}" -t ${durationSec} -ar 44100 -ac 2 "${sceneWavPath}"`,
-        { stdio: 'ignore' },
-      );
+      try {
+        const rawMp3Path = path.join(audioDir, `raw-${idx}.mp3`);
+        fs.writeFileSync(rawMp3Path, Buffer.from(scene.audioBase64, 'base64'));
+        // Pad or trim scene audio to exact scene durationInFrames
+        execSync(
+          `ffmpeg -y -i "${rawMp3Path}" -af "apad=whole_dur=${durationSec}" -t ${durationSec} -ar 44100 -ac 2 "${sceneWavPath}"`,
+          { stdio: 'ignore' },
+        );
+      } catch {
+        execSync(
+          `ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t ${durationSec} "${sceneWavPath}"`,
+          { stdio: 'ignore' },
+        );
+      }
     } else {
       execSync(
         `ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t ${durationSec} "${sceneWavPath}"`,
@@ -262,12 +269,20 @@ async function renderShortsMp4(manifest, outDir, jobId) {
   const fps = manifest.fps || 30;
   const totalFrames = manifest.totalFrames || 900;
 
-  // Start Vite preview server
+  // Start Vite preview server and poll until ready
   const serverProc = spawn('npx', ['vite', 'preview', '--port', '4173', '--host', '127.0.0.1'], {
     stdio: 'ignore',
   });
 
-  await new Promise((r) => setTimeout(r, 2500));
+  for (let i = 0; i < 30; i++) {
+    try {
+      const check = await fetch('http://127.0.0.1:4173/');
+      if (check.ok) break;
+    } catch {
+      // wait for server startup
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
 
   try {
     const { chromium } = await import('playwright');
