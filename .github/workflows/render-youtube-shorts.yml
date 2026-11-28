@@ -8,6 +8,9 @@ on:
         required: true
         type: string
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   render-and-upload:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout hactto-client
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Korean fonts and FFmpeg
         run: |
@@ -23,15 +26,14 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-noto-cjk
           fc-cache -fv
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: '24'
 
       - name: Install dependencies and Playwright Chromium
         run: |
-          npm ci
+          npm install
           npm install --no-save playwright
           npx playwright install --with-deps chromium
 
