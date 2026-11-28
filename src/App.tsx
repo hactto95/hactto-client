@@ -34,6 +34,7 @@ import { LoginPage } from './pages/Auth/LoginPage';
 import { SignupRequestPage } from './pages/Auth/SignupRequestPage';
 import { ResetPasswordRequestPage } from './pages/Auth/ResetPasswordRequestPage';
 import { ResetPasswordPage } from './pages/Auth/ResetPasswordPage';
+import { HacttoShortsHeadlessRenderer } from './remotion/HacttoShortsHeadlessRenderer';
 
 function AppContent() {
   const {
@@ -163,6 +164,13 @@ function AppContent() {
 }
 
 export function App() {
+  if (
+    typeof window !== 'undefined' &&
+    window.location.search.includes('shortsRenderMode=1')
+  ) {
+    return <HacttoShortsHeadlessRenderer />;
+  }
+
   return (
     <ThemeProvider>
       <AuthProvider>

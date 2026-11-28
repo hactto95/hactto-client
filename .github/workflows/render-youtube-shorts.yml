@@ -1,0 +1,50 @@
+name: Render and Upload YouTube Shorts
+
+on:
+  workflow_dispatch:
+    inputs:
+      jobId:
+        description: 'YoutubeShortsJob UUID from hactto-api'
+        required: true
+        type: string
+
+jobs:
+  render-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout hactto-client
+        uses: actions/checkout@v4
+
+      - name: Install Korean fonts and FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          fc-cache -fv
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies and Playwright Chromium
+        run: |
+          npm ci
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Build hactto-client
+        run: npm run build
+
+      - name: Render 1080x1920 MP4 and Upload to YouTube
+        env:
+          JOB_ID: ${{ inputs.jobId }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          HACTTO_API_URL: ${{ secrets.HACTTO_API_URL }}
+          SHORTS_WEBHOOK_SECRET: ${{ secrets.SHORTS_WEBHOOK_SECRET }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: node scripts/render-and-upload-shorts.mjs
