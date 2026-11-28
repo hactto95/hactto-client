@@ -136,10 +136,18 @@ async function uploadMp4ToYoutube(accessToken, mp4Path, payload) {
     return existingVideoId;
   }
 
+  const legalDisclaimer =
+    '[법적 고지 및 면책 조항] 본 영상과 채널에서 제공하는 모든 로또 번호 추천 및 통계 분석은 과거 공공 데이터를 바탕으로 한 단순 참고·엔터테인먼트용 콘텐츠이며, 실제 동행복권 추첨 및 당첨 결과와는 전혀 관계가 없습니다. 로또 추첨은 매 회차 완전한 독립 확률 시행으로 당첨을 보장하지 않으며, 구매 및 선택에 따른 어떠한 금전적·법적 책임도 지지 않습니다.';
+
+  let baseDesc = payload.description || '';
+  if (!baseDesc.includes('실제 동행복권 추첨 및 당첨 결과와는 전혀 관계가 없습니다')) {
+    baseDesc = `${baseDesc}\n\n${legalDisclaimer}`;
+  }
+
   const marker = `\n\n[HACTTO_JOB:${payload.id}]`;
-  const description = (payload.description || '').includes(marker.trim())
-    ? payload.description
-    : `${payload.description || ''}${marker}`;
+  const description = baseDesc.includes(marker.trim())
+    ? baseDesc
+    : `${baseDesc}${marker}`;
 
   const metadata = {
     snippet: {

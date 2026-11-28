@@ -308,22 +308,35 @@ const SundaySceneView: React.FC<{
         ))}
       </div>
 
-      {/* 하단 자막 바 */}
-      <div
-        style={{
-          padding: '26px 34px',
-          borderRadius: 28,
-          background: 'rgba(2, 6, 23, 0.9)',
-          border: '2px solid rgba(56, 189, 248, 0.5)',
-          fontSize: 34,
-          fontWeight: 800,
-          color: '#f8fafc',
-          textAlign: 'center',
-          lineHeight: 1.38,
-          wordBreak: 'keep-all',
-        }}
-      >
-        {scene.subtitle}
+      {/* 하단 자막 바 & 면책 안내 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div
+          style={{
+            padding: '24px 34px',
+            borderRadius: 28,
+            background: 'rgba(2, 6, 23, 0.9)',
+            border: '2px solid rgba(56, 189, 248, 0.5)',
+            fontSize: 34,
+            fontWeight: 800,
+            color: '#f8fafc',
+            textAlign: 'center',
+            lineHeight: 1.38,
+            wordBreak: 'keep-all',
+          }}
+        >
+          {scene.subtitle}
+        </div>
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: 20,
+            fontWeight: 600,
+            color: '#94a3b8',
+          }}
+        >
+          ※ 본 번호 추천 및 분석은 과거 통계 기반 참고용으로 실제 당첨과 전혀
+          무관하며 법적 책임을 지지 않습니다.
+        </div>
       </div>
     </div>
   );

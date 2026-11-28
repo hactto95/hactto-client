@@ -279,23 +279,52 @@ export const HacttoPromoOutro: React.FC<{
         </div>
       </div>
 
-      {/* 하단 자막 바 */}
+      {/* 하단 자막 바 & 법적 면책 조항 고정 노출 */}
       <div
         style={{
           width: '100%',
-          padding: '28px 36px',
-          borderRadius: 28,
-          background: 'rgba(2, 6, 23, 0.88)',
-          border: '2px solid rgba(250, 204, 21, 0.5)',
-          textAlign: 'center',
-          fontSize: 36,
-          fontWeight: 800,
-          color: '#fef08a',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 18,
           zIndex: 2,
         }}
       >
-        {subtitle ||
-          '데이터로 분석하는 스마트한 로또 · 지금 검색창에 hactto.com 검색!'}
+        <div
+          style={{
+            width: '100%',
+            padding: '26px 36px',
+            borderRadius: 28,
+            background: 'rgba(2, 6, 23, 0.88)',
+            border: '2px solid rgba(250, 204, 21, 0.5)',
+            textAlign: 'center',
+            fontSize: 36,
+            fontWeight: 800,
+            color: '#fef08a',
+          }}
+        >
+          {subtitle ||
+            '데이터로 분석하는 스마트한 로또 · 지금 검색창에 hactto.com 검색!'}
+        </div>
+
+        <div
+          style={{
+            width: '100%',
+            padding: '18px 28px',
+            borderRadius: 20,
+            background: 'rgba(15, 23, 42, 0.92)',
+            border: '1.5px solid rgba(148, 163, 184, 0.35)',
+            textAlign: 'center',
+            fontSize: 22,
+            fontWeight: 600,
+            lineHeight: 1.45,
+            color: '#cbd5e1',
+            wordBreak: 'keep-all',
+          }}
+        >
+          ※ [면책 고지] 본 영상의 모든 추천 번호와 분석은 과거 통계 기반
+          참고·엔터테인먼트용이며 실제 당첨과 전혀 관계가 없습니다. 당첨을
+          보장하지 않으며 어떠한 법적 책임도 지지 않습니다.
+        </div>
       </div>
     </div>
   );
